@@ -141,9 +141,8 @@ The North Star and stop conditions are the decision record in
 
 ## Domain
 
-The live surface today is https://legibility.io. The intended domain
-`legibility.io` is being pointed at Vercel and is propagating. Do not reference
-`legibility.sh`. It is dead.
+The live surface today is https://legibility.io. DNS is delegated to Vercel and SSL is
+issued. Do not reference `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`. They are dead.
 
 ---
 Last reviewed: 2026-07-06.

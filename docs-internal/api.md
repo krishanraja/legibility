@@ -15,9 +15,9 @@ REST exposes `read_product`, `resolve_product`, `compare_products`, `brief_produ
 `brief_product` are REST-only for now (they compose `read_product`, so MCP parity is a thin
 follow-up when an agent needs them). `report_outcome` is REST-only and never billed.
 
-Live host today is `https://legibility.io`. `legibility.io` is being pointed at Vercel and
-is propagating; when it resolves, `APP_ORIGIN` in `src/config/product.ts` flips in one place. Do
-not reference `legibility.sh`: it was never the API host.
+Live host today is `https://legibility.io`, set as `APP_ORIGIN` in `src/config/product.ts`,
+which is the one place it is defined. Do not reference `onplinth.io`,
+`plinth-tan.vercel.app` or `plinth.sh`: they are dead.
 
 ## Tools
 

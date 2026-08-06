@@ -28,11 +28,14 @@ short list of items that need a human action or an external clock. Last updated 
       the agent to drive, or authorize one refunded live charge as a canary. Auto-overage-to-Stripe
       stays off until this passes.
 
-- [ ] **Point `legibility.io` at Vercel.** The domain is being pointed at Vercel and DNS is
-      propagating. At Namecheap, either set Custom DNS nameservers to `ns1.vercel-dns.com` /
-      `ns2.vercel-dns.com`, or set records `A @ 76.76.21.21` and `CNAME www cname.vercel-dns.com`.
-      Once it resolves, the agent flips `APP_ORIGIN` in `src/config/product.ts` (one place), repoints
-      the Stripe webhook URL, redeploys, and verifies. Everything on Vercel's side is provisioned.
+- [x] **Point `legibility.io` at Vercel.** Done. DNS is delegated, SSL is issued, and
+      `https://legibility.io/api/health` returns `status: ok`. `APP_ORIGIN` in
+      `src/config/product.ts` is set to `https://legibility.io`.
+
+- [ ] **Redirect the dead `onplinth.io` to `legibility.io`.** The domain still resolves to
+      Vercel but no project claims it, so it serves `DEPLOYMENT_NOT_FOUND`. Add it to the
+      Legibility project as a 301 redirect so the SEO and GEO work done under the old name is
+      not orphaned. Also repoint the Stripe webhook URL to the new origin.
 
 - [ ] **Counsel review of the interim legal** (`/terms`, `/privacy`) before paid GA.
 

@@ -243,9 +243,9 @@ offer -> onboard -> measure`
 | onboard | wire `legibility_id` storage and `report_outcome`; set the feedback cadence | `06-design-partner-motion.md` |
 | measure | read the North Star, keep the CRM current, run the weekly loop and kill checks | `07-metrics-crm-and-loop.md` |
 
-Surface facts for agents: live domain `https://legibility.io` (current prod
-alias `legibility.io`), docs at `/docs`, MCP at `/api/mcp`. Do not
-reference `legibility.sh`; it is dead.
+Surface facts for agents: live domain `https://legibility.io`, docs at `/docs`, MCP at
+`/api/mcp`. Do not reference `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`; they
+are dead.
 
 ---
 
@@ -302,5 +302,5 @@ reference `legibility.sh`; it is dead.
   not a live guarantee; webhooks, mainnet x402, SDKs, and auto-billed overage
   are roadmap; x402 is Base Sepolia testnet; `compare_products` and
   `brief_product` are REST-only. Never sell "any URL." Surfaces:
-  `https://legibility.io`, docs at `/docs`, MCP at `/api/mcp`; `legibility.sh` is
-  dead.
+  `https://legibility.io`, docs at `/docs`, MCP at `/api/mcp`; `onplinth.io`,
+  `plinth-tan.vercel.app` and `plinth.sh` are dead.

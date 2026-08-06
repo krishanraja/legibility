@@ -113,8 +113,7 @@ pool, lend, or rehypothecate received USDC.
 Supabase (project `cgkcplcamsijghalintq`) hosts the primary database; the app and the
 extractor worker both run on Vercel. The worker is deployable per region; v1 runs in a
 single region. Customers with residency requirements should be quoted on the Custom
-plan. The intended domain `legibility.io` is being pointed at Vercel (DNS propagating);
-the live surface today is `legibility.io`.
+plan. The live surface today is `legibility.io`, delegated to Vercel with SSL issued.
 
 ## Audit
 

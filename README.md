@@ -5,11 +5,11 @@ product name into a typed product object with per-field confidence, a price expr
 the source method, and the per-call cost stamped in the response. It is exposed over both REST and
 MCP, and payable either with an API key or per call in USDC over x402.
 
-**Status: live.** App at https://legibility.io (the custom domain `legibility.io` is being
-pointed at Vercel; DNS is propagating, so `legibility.io` is the live surface today). All
-four tools, key auth, trusted-read metering, per-plan quota, the dashboard, Stripe billing, and the
-MCP server are deployed. x402 runs on Base Sepolia (testnet; no live on-chain settlement yet).
-Private beta. The old `legibility.sh` host does not exist: use the URLs above.
+**Status: live.** App at https://legibility.io (DNS delegated to Vercel, SSL issued, serving
+today). All four tools, key auth, trusted-read metering, per-plan quota, the dashboard, Stripe
+billing, and the MCP server are deployed. x402 runs on Base Sepolia (testnet; no live on-chain
+settlement yet). Private beta. The former hosts `onplinth.io`, `plinth-tan.vercel.app` and
+`plinth.sh` are dead: use the URL above.
 
 ## Why Legibility (the five wedges)
 

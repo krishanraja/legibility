@@ -56,11 +56,9 @@ og:url match the route, never the homepage.
 
 ## Launch checklist
 
-- [ ] `legibility.io` DNS pointed at Vercel and resolving (propagating now;
-      today the live surface is `legibility.io`). Never reference
-      `legibility.sh`, which is dead.
-- [ ] `APP_ORIGIN` flipped to `legibility.io` in `src/config/product.ts` once
-      DNS resolves.
+- [x] `legibility.io` DNS pointed at Vercel and resolving. Never reference
+      `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`, which are dead.
+- [x] `APP_ORIGIN` set to `legibility.io` in `src/config/product.ts`.
 - [ ] Owner email + support@ alias.
 - [ ] x402 wallet set in `X402_RECIPIENT`; note settlement is testnet until
       a live Base Sepolia payment lands.

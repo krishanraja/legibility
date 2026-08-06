@@ -395,5 +395,5 @@ That account goes to the top of the list and straight into
 - Voice for any `wedge_hook` or note: direct, concrete, technically credible,
   no hype. Audience is technical founders and senior engineers.
 
-Surfaces: `https://legibility.io`, docs `/docs`, MCP `/api/mcp`. `legibility.sh` is
-dead.
+Surfaces: `https://legibility.io`, docs `/docs`, MCP `/api/mcp`. `onplinth.io`,
+`plinth-tan.vercel.app` and `plinth.sh` are dead.

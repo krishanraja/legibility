@@ -65,7 +65,8 @@ Fill all of these before assembling a message. A template with an unresolved
 | `{{calendar_link}}` | 15-min booking link | Fixed | (booking link) |
 
 Fixed surface facts to paste as-is: docs at `https://legibility.io/docs`, MCP at
-`https://legibility.io/api/mcp`. Never reference `legibility.sh`; it is dead.
+`https://legibility.io/api/mcp`. Never reference `onplinth.io`,
+`plinth-tan.vercel.app` or `plinth.sh`; they are dead.
 
 ---
 

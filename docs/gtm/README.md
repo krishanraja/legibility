@@ -112,6 +112,5 @@ section 6.
 - **Voice.** Direct, concrete, technically credible. No hype, no fluff. The
   reader is a technical founder or a senior engineer building an agent.
 
-Surfaces: live domain `https://legibility.io` (current prod alias
-`legibility.io`), docs at `/docs`, MCP at `/api/mcp`. Do not reference
-`legibility.sh`; it is dead.
+Surfaces: live domain `https://legibility.io`, docs at `/docs`, MCP at `/api/mcp`. Do not
+reference `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`; they are dead.

@@ -1,6 +1,6 @@
 // One source of truth for every public-facing URL, path, and demo input (PLAN F0.6).
-// legibility.io is live (DNS delegated to Vercel + SSL issued 2026-07-06); this is now the
-// canonical public origin. legibility.io still serves the same deployment.
+// legibility.io is live (DNS delegated to Vercel + SSL issued); this is the canonical public
+// origin. The former hosts onplinth.io, plinth-tan.vercel.app and plinth.sh are dead.
 
 export const APP_ORIGIN = "https://legibility.io";
 export const API_BASE = `${APP_ORIGIN}/api/v1`;

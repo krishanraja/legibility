@@ -8,6 +8,7 @@ FACTS win. Do not invent numbers, customers, logos, or proof that are not
 in this file or the brief.
 
 Hard rules for every line you send:
+
 - No em dashes, ever. Use commas, periods, colons, or "to" for ranges.
 - No fabricated proof. Every demo is a real live call that returns today.
 - Never promise the roadmap as shipped (webhooks, mainnet x402, SDKs,
@@ -27,18 +28,18 @@ resolve all of them from the prospect record before sending. If a field
 cannot be resolved, do not send; route back to `01-icp-and-targeting.md` to
 finish enrichment.
 
-| Field | Meaning | Example |
-|---|---|---|
-| `{{first_name}}` | prospect first name | Dana |
-| `{{company}}` | their company or project | Cartwheel |
-| `{{their_product}}` | the agent/product they are building | a buy-this-for-me copilot |
-| `{{their_scraper}}` | the extraction tool they already pay for | Firecrawl |
-| `{{their_target_url}}` | a real product URL from their target domain | a supplier catalogue page |
-| `{{proof_url}}` | the live URL you demo on (from section 4) | LEGO Millennium Falcon page |
-| `{{proof_result}}` | the real returned value (from section 4) | a typed object at $849.99 |
-| `{{signal}}` | the trigger you detected (from section 5) | "hiring an agent engineer" |
-| `{{sender_name}}` | the human or agent identity sending | Krish |
-| `{{docs_link}}` | https://legibility.io/docs | https://legibility.io/docs |
+| Field                  | Meaning                                     | Example                     |
+| ---------------------- | ------------------------------------------- | --------------------------- |
+| `{{first_name}}`       | prospect first name                         | Dana                        |
+| `{{company}}`          | their company or project                    | Cartwheel                   |
+| `{{their_product}}`    | the agent/product they are building         | a buy-this-for-me copilot   |
+| `{{their_scraper}}`    | the extraction tool they already pay for    | Firecrawl                   |
+| `{{their_target_url}}` | a real product URL from their target domain | a supplier catalogue page   |
+| `{{proof_url}}`        | the live URL you demo on (from section 4)   | LEGO Millennium Falcon page |
+| `{{proof_result}}`     | the real returned value (from section 4)    | a typed object at $849.99   |
+| `{{signal}}`           | the trigger you detected (from section 5)   | "hiring an agent engineer"  |
+| `{{sender_name}}`      | the human or agent identity sending         | Krish                       |
+| `{{docs_link}}`        | https://legibility.io/docs                  | https://legibility.io/docs  |
 
 ---
 
@@ -86,13 +87,13 @@ Who: teams of 1 to 20 engineers building buy-this-for-me agents, procurement
 copilots, and comparison agents. Already paying for Diffbot, Firecrawl,
 ScrapingBee, or running headless/Playwright.
 
-| Their pain | The Legibility wedge | The line to use |
-|---|---|---|
-| Reading the product page reliably is the wall every buy-flow hits | A finished typed-object layer behind one call | "The product-page read is the part you keep rebuilding. That is the whole of what we ship." |
-| The scraper returns HTML or a blob; you still own schema, parsing, price semantics | Typed object with a price band, source method, and a stable id, done | "You get a typed object, not a page. Title, brand, GTIN, a price band with as_of and n_sources." |
-| No signal to decide when to trust the answer, so agents hallucinate a model number or a price | Calibrated per-field confidence you can gate on | "Confidence is a calibrated probability. Hard-gate 0.9 on gtin, accept 0.6 on category. You decide per field." |
-| Cost per call is invisible until the invoice | The exact cost_usd stamped in every response | "Every response carries cost_usd. Build-vs-buy math is in the payload, not in a spreadsheet." |
-| You pay your scraper for every attempt, including the misses | Trusted-read billing: nulls and sub-0.7 reads are free | "You only pay when a read clears the 0.7 gate. Misses cost you nothing and burn no quota." |
+| Their pain                                                                                    | The Legibility wedge                                                 | The line to use                                                                                                |
+| --------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Reading the product page reliably is the wall every buy-flow hits                             | A finished typed-object layer behind one call                        | "The product-page read is the part you keep rebuilding. That is the whole of what we ship."                    |
+| The scraper returns HTML or a blob; you still own schema, parsing, price semantics            | Typed object with a price band, source method, and a stable id, done | "You get a typed object, not a page. Title, brand, GTIN, a price band with as_of and n_sources."               |
+| No signal to decide when to trust the answer, so agents hallucinate a model number or a price | Calibrated per-field confidence you can gate on                      | "Confidence is a calibrated probability. Hard-gate 0.9 on gtin, accept 0.6 on category. You decide per field." |
+| Cost per call is invisible until the invoice                                                  | The exact cost_usd stamped in every response                         | "Every response carries cost_usd. Build-vs-buy math is in the payload, not in a spreadsheet."                  |
+| You pay your scraper for every attempt, including the misses                                  | Trusted-read billing: nulls and sub-0.7 reads are free               | "You only pay when a read clears the 0.7 gate. Misses cost you nothing and burn no quota."                     |
 
 ### Segment B: Procurement and buy-flow design partners (the moat-critical subset)
 
@@ -103,22 +104,22 @@ field-level confidence is table stakes. This is the segment the fleet is
 really hunting. Lead these with the design-partner offer (see
 `06-design-partner-motion.md`).
 
-| Their pain | The Legibility wedge | The line to use |
-|---|---|---|
-| Procurement needs an audit trail: which source, what confidence, as of when | Source method, calibration_version, and per-field confidence on every read | "Every read is auditable: the method that produced it, the calibration version, per-field confidence, and n_sources on the price." |
-| Supplier pages restructure and your URL-keyed history dies | An opaque, stable legibility_id you store as a foreign key | "You store an opaque legibility_id in your own schema. It survives site restructures. Your history does not reset when a URL changes." |
-| No way to prove the agent's answer matched reality at the buy | The outcome-closure channel: report_outcome on real buys | "Call report_outcome when a buy succeeds at the stated price. It is never billed, and it makes every future read on that domain more trustworthy for you." |
-| Field-level confidence is a hard requirement, not a nicety | Calibrated per-field confidence, precision 1.0 at the gate on a held-out split | "Confidence is calibrated, not a coverage proxy. On the held-out golden split, precision at the gate was 1.0 (Wilson low 0.832)." |
+| Their pain                                                                  | The Legibility wedge                                                           | The line to use                                                                                                                                            |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Procurement needs an audit trail: which source, what confidence, as of when | Source method, calibration_version, and per-field confidence on every read     | "Every read is auditable: the method that produced it, the calibration version, per-field confidence, and n_sources on the price."                         |
+| Supplier pages restructure and your URL-keyed history dies                  | An opaque, stable legibility_id you store as a foreign key                     | "You store an opaque legibility_id in your own schema. It survives site restructures. Your history does not reset when a URL changes."                     |
+| No way to prove the agent's answer matched reality at the buy               | The outcome-closure channel: report_outcome on real buys                       | "Call report_outcome when a buy succeeds at the stated price. It is never billed, and it makes every future read on that domain more trustworthy for you." |
+| Field-level confidence is a hard requirement, not a nicety                  | Calibrated per-field confidence, precision 1.0 at the gate on a held-out split | "Confidence is calibrated, not a coverage proxy. On the held-out golden split, precision at the gate was 1.0 (Wilson low 0.832)."                          |
 
 ### Segment C: Autonomous agent platforms and MCP-native stacks (secondary)
 
 Who: stacks shipping MCP servers, looking for paid tools an agent can
 discover and call without a human.
 
-| Their pain | The Legibility wedge | The line to use |
-|---|---|---|
-| Every paid tool needs a human to sign up and hold a card | MCP server with free discovery, plus x402 agent payment | "Your agent discovers the tools for free over MCP, then pays per call over x402. No human in the loop." |
-| Product-data tools return untyped text an agent cannot reason over | A typed object with a confidence field the agent can branch on | "The agent gets a typed object and a calibrated confidence it can gate on, not a wall of text." |
+| Their pain                                                         | The Legibility wedge                                           | The line to use                                                                                         |
+| ------------------------------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Every paid tool needs a human to sign up and hold a card           | MCP server with free discovery, plus x402 agent payment        | "Your agent discovers the tools for free over MCP, then pays per call over x402. No human in the loop." |
+| Product-data tools return untyped text an agent cannot reason over | A typed object with a confidence field the agent can branch on | "The agent gets a typed object and a calibrated confidence it can gate on, not a wall of text."         |
 
 Honest limit to state up front with Segment C: x402 is Base Sepolia testnet.
 Card is the default and only live payment path. Say so before they build on
@@ -129,10 +130,10 @@ it.
 Who: marketplaces, affiliate networks, and comparison sites enriching their
 own catalogue.
 
-| Their pain | The Legibility wedge | The line to use |
-|---|---|---|
-| Enriching a catalogue means owning extraction, dedupe, and identity | Typed object plus a stable legibility_id for dedupe and joins | "One call gives you a typed object and a stable id you can dedupe and join on." |
-| GTIN and URL both point at the same product but you cannot tie them | Barcode and URL both resolve; legibility_id is the join key | "URL in or barcode in, same legibility_id out for the same product. That is your join key." |
+| Their pain                                                          | The Legibility wedge                                          | The line to use                                                                             |
+| ------------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Enriching a catalogue means owning extraction, dedupe, and identity | Typed object plus a stable legibility_id for dedupe and joins | "One call gives you a typed object and a stable id you can dedupe and join on."             |
+| GTIN and URL both point at the same product but you cannot tie them | Barcode and URL both resolve; legibility_id is the join key   | "URL in or barcode in, same legibility_id out for the same product. That is your join key." |
 
 ---
 
@@ -144,19 +145,20 @@ the shipped API in a quarter (we say this internally, never to a prospect).
 What compounds is outcome-closure under stored legibility_ids, which is the last
 two rows and is the only thing a competitor cannot backdate.
 
-| Capability | Legibility | Diffbot | Firecrawl + your LLM | DIY (Playwright + hand-rolled) |
-|---|---|---|---|---|
-| Typed product object | Yes, one call | Yes (entity graph) | You build the schema | You build the schema |
-| Per-field calibrated confidence | Yes, isotonic fit on a held-out set, gate at 0.7 | No | Self-reported, not calibrated | No |
-| Cost stamped per call (cost_usd) | Yes, in every response | No | You compute it | You compute it |
-| Only bill on a trusted read | Yes, nulls and sub-0.7 are free | No, per call | No, per scrape | N/A, your own infra cost either way |
-| Price as a band (as_of, n_sources) | Yes | Spot value | You build it | You build it |
-| MCP server (agent-discoverable) | Yes, read + resolve at /api/mcp | No | Firecrawl MCP scrapes pages, not typed product | No |
-| x402 agent micropayment | Yes, Base Sepolia testnet | No | No | No |
-| Opaque stable legibility_id you store | Yes, survives URL restructure | Its own entity ids | No | No |
-| Outcome-closure (report_outcome) | Yes, never billed | No | No | No |
+| Capability                            | Legibility                                       | Diffbot            | Firecrawl + your LLM                           | DIY (Playwright + hand-rolled)      |
+| ------------------------------------- | ------------------------------------------------ | ------------------ | ---------------------------------------------- | ----------------------------------- |
+| Typed product object                  | Yes, one call                                    | Yes (entity graph) | You build the schema                           | You build the schema                |
+| Per-field calibrated confidence       | Yes, isotonic fit on a held-out set, gate at 0.7 | No                 | Self-reported, not calibrated                  | No                                  |
+| Cost stamped per call (cost_usd)      | Yes, in every response                           | No                 | You compute it                                 | You compute it                      |
+| Only bill on a trusted read           | Yes, nulls and sub-0.7 are free                  | No, per call       | No, per scrape                                 | N/A, your own infra cost either way |
+| Price as a band (as_of, n_sources)    | Yes                                              | Spot value         | You build it                                   | You build it                        |
+| MCP server (agent-discoverable)       | Yes, read + resolve at /api/mcp                  | No                 | Firecrawl MCP scrapes pages, not typed product | No                                  |
+| x402 agent micropayment               | Yes, Base Sepolia testnet                        | No                 | No                                             | No                                  |
+| Opaque stable legibility_id you store | Yes, survives URL restructure                    | Its own entity ids | No                                             | No                                  |
+| Outcome-closure (report_outcome)      | Yes, never billed                                | No                 | No                                             | No                                  |
 
 Notes an agent can quote:
+
 - Diffbot owns a large product-identity graph and is a real answer for pure
   entity lookup. It does not calibrate confidence, does not stamp cost, has
   no MCP surface, and an agent cannot discover and pay for it on its own.
@@ -176,14 +178,15 @@ Always lead a demo or a skeptical reply with a real read. Never mock. These
 four are the standing proof URLs and they return today. Pick the one that
 matches the prospect's domain class.
 
-| Proof | Input | Method | What comes back | Use it when |
-|---|---|---|---|---|
-| LEGO Millennium Falcon | product URL | hard retailer via Web Unlocker | typed object at $849.99, clears the gate | prospect doubts hard-retailer coverage (Lego, Nike, MediaMarkt verified) |
-| Allbirds | Shopify product URL | jsonld | Men's Wool Runner at $110, confidence 1.0, field_confidence title 0.90 brand 0.98 price 0.98, cost_usd 0.003 | prospect runs on Shopify or structured retail |
-| Sony WH-1000XM5 | fuzzy name | resolve (Exa) | resolves synchronously to a typed object | prospect needs name-to-product, not just URL-in |
-| Coca-Cola | GTIN / barcode | gtin | typed object from barcode | prospect works from barcodes or catalogue GTINs |
+| Proof                  | Input               | Method                         | What comes back                                                                                              | Use it when                                                              |
+| ---------------------- | ------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| LEGO Millennium Falcon | product URL         | hard retailer via Web Unlocker | typed object at $849.99, clears the gate                                                                     | prospect doubts hard-retailer coverage (Lego, Nike, MediaMarkt verified) |
+| Allbirds               | Shopify product URL | jsonld                         | Men's Wool Runner at $110, confidence 1.0, field_confidence title 0.90 brand 0.98 price 0.98, cost_usd 0.003 | prospect runs on Shopify or structured retail                            |
+| Sony WH-1000XM5        | fuzzy name          | resolve (Exa)                  | resolves synchronously to a typed object                                                                     | prospect needs name-to-product, not just URL-in                          |
+| Coca-Cola              | GTIN / barcode      | gtin                           | typed object from barcode                                                                                    | prospect works from barcodes or catalogue GTINs                          |
 
 Rules for using proof:
+
 - The Allbirds envelope is the one with exact field numbers. Quote those
   numbers verbatim; do not invent confidence decimals for the other three.
   For Lego, Sony, and Coke, state the returned value and that it clears the

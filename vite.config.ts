@@ -24,7 +24,13 @@ function sitemapPlugin(origin: string): Plugin {
       for (const f of files) {
         const base = f.replace(/\.tsx$/, "");
         // Skip the root layout, private/auth, api, and dynamic ($param) routes.
-        if (base === "__root" || base.startsWith("_") || base.startsWith("api") || base.includes("$")) continue;
+        if (
+          base === "__root" ||
+          base.startsWith("_") ||
+          base.startsWith("api") ||
+          base.includes("$")
+        )
+          continue;
         let p = "/" + base.split(".").join("/");
         p = p.replace(/\/index$/, ""); // docs.index -> /docs, index -> ""
         if (p === "") p = "/";
@@ -32,14 +38,25 @@ function sitemapPlugin(origin: string): Plugin {
       }
       const isLegal = (p: string) => /^\/(privacy|terms|takedown)$/.test(p);
       const priority = (p: string) =>
-        p === "/" ? "1.0" : isLegal(p) ? "0.3" : p === "/docs" || /^\/docs\/(quickstart|api)/.test(p) ? "0.9" : p.startsWith("/docs") ? "0.7" : "0.6";
+        p === "/"
+          ? "1.0"
+          : isLegal(p)
+            ? "0.3"
+            : p === "/docs" || /^\/docs\/(quickstart|api)/.test(p)
+              ? "0.9"
+              : p.startsWith("/docs")
+                ? "0.7"
+                : "0.6";
       const changefreq = (p: string) => (isLegal(p) ? "monthly" : "weekly");
       const urls = [...paths].sort();
       const xml =
         '<?xml version="1.0" encoding="UTF-8"?>\n' +
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         urls
-          .map((p) => `  <url><loc>${origin}${p}</loc><changefreq>${changefreq(p)}</changefreq><priority>${priority(p)}</priority></url>`)
+          .map(
+            (p) =>
+              `  <url><loc>${origin}${p}</loc><changefreq>${changefreq(p)}</changefreq><priority>${priority(p)}</priority></url>`,
+          )
           .join("\n") +
         "\n</urlset>\n";
       writeFileSync(resolve(__dirname, "public/sitemap.xml"), xml);

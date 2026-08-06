@@ -26,14 +26,14 @@ Last reviewed: 2026-07-06.
 
 Do not skip. Each check is pass/fail. Any fail stops the send.
 
-| # | Check | Pass condition | On fail |
-|---|---|---|---|
-| G1 | Qualification | All 3 gates true, 0 disqualifiers (per `04`). | Do not send. Mark `disqualified`, log reason, stop. |
-| G2 | Real read run | You ran `read_product`/`resolve_product` in the last 24h and have the returned object in hand. | Run it now. If you cannot get a >= 0.7 read on their domain or a proof URL, do not send. |
-| G3 | Proof is honest | The read you will paste returned confidence >= 0.7 and is real. | If their targets returned null/low (hard retailers), use a known-good proof URL and say so plainly. If their whole target list is hard retailers, that is disqualifier D1: stop. |
-| G4 | Personalization line | You have one specific, researched sentence about this prospect (not generic). | Do the research or drop the prospect. No generic sends. |
-| G5 | Not suppressed | Prospect is not on the do-not-contact list and has not opted out. | Stop permanently. |
-| G6 | Channel fit | Email address is a real work address, or the channel (LinkedIn/community) permits outreach. | Pick a permitted channel or stop. |
+| #   | Check                | Pass condition                                                                                 | On fail                                                                                                                                                                          |
+| --- | -------------------- | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G1  | Qualification        | All 3 gates true, 0 disqualifiers (per `04`).                                                  | Do not send. Mark `disqualified`, log reason, stop.                                                                                                                              |
+| G2  | Real read run        | You ran `read_product`/`resolve_product` in the last 24h and have the returned object in hand. | Run it now. If you cannot get a >= 0.7 read on their domain or a proof URL, do not send.                                                                                         |
+| G3  | Proof is honest      | The read you will paste returned confidence >= 0.7 and is real.                                | If their targets returned null/low (hard retailers), use a known-good proof URL and say so plainly. If their whole target list is hard retailers, that is disqualifier D1: stop. |
+| G4  | Personalization line | You have one specific, researched sentence about this prospect (not generic).                  | Do the research or drop the prospect. No generic sends.                                                                                                                          |
+| G5  | Not suppressed       | Prospect is not on the do-not-contact list and has not opted out.                              | Stop permanently.                                                                                                                                                                |
+| G6  | Channel fit          | Email address is a real work address, or the channel (LinkedIn/community) permits outreach.    | Pick a permitted channel or stop.                                                                                                                                                |
 
 Decision rule: send only if G1 through G6 all pass. Log the pass in the CRM row
 (`07-metrics-crm-and-loop.md`) before the first touch.
@@ -45,24 +45,24 @@ Decision rule: send only if G1 through G6 all pass. Log the pass in the CRM row
 Fill all of these before assembling a message. A template with an unresolved
 `{{field}}` must never send.
 
-| Field | Meaning | Where the agent gets it | Example |
-|---|---|---|---|
-| `{{first_name}}` | Prospect first name | Enrichment / profile | Dana |
-| `{{company}}` | Company or project name | Enrichment | Cartpilot |
-| `{{signal}}` | Detected signal code (Section 3) | Your scoring pass | `PAYS_EXTRACTION` |
-| `{{signal_evidence}}` | The specific thing you saw | Research | "job post lists Firecrawl + Playwright" |
-| `{{personalization_line}}` | One researched sentence, prospect-specific | Research (Section 4.1) | See 4.1 examples |
-| `{{wedge_line}}` | The signal-keyed why-you sentence | Section 3 table | See 3.2 |
-| `{{proof_url}}` | The URL or GTIN you read | Their target list or proof set | `lego.com/.../75192` |
-| `{{proof_product_name}}` | Name from the returned object | The live read | LEGO Millennium Falcon |
-| `{{proof_price_band}}` | Price band from the object | The live read | $849.99 |
-| `{{proof_confidence}}` | Top-line confidence | The live read | 0.88 |
-| `{{proof_method}}` | Source method | The live read | web_unlocker |
-| `{{proof_cost}}` | Per-call cost stamped in | The live read | $0.006 |
-| `{{current_stack}}` | Extraction tools they pay for | Research | Diffbot |
-| `{{their_target_domain}}` | The domain they most need to read | Research | supplier catalogues |
-| `{{sender_name}}` | Sender | Fixed | Krish |
-| `{{calendar_link}}` | 15-min booking link | Fixed | (booking link) |
+| Field                      | Meaning                                    | Where the agent gets it        | Example                                 |
+| -------------------------- | ------------------------------------------ | ------------------------------ | --------------------------------------- |
+| `{{first_name}}`           | Prospect first name                        | Enrichment / profile           | Dana                                    |
+| `{{company}}`              | Company or project name                    | Enrichment                     | Cartpilot                               |
+| `{{signal}}`               | Detected signal code (Section 3)           | Your scoring pass              | `PAYS_EXTRACTION`                       |
+| `{{signal_evidence}}`      | The specific thing you saw                 | Research                       | "job post lists Firecrawl + Playwright" |
+| `{{personalization_line}}` | One researched sentence, prospect-specific | Research (Section 4.1)         | See 4.1 examples                        |
+| `{{wedge_line}}`           | The signal-keyed why-you sentence          | Section 3 table                | See 3.2                                 |
+| `{{proof_url}}`            | The URL or GTIN you read                   | Their target list or proof set | `lego.com/.../75192`                    |
+| `{{proof_product_name}}`   | Name from the returned object              | The live read                  | LEGO Millennium Falcon                  |
+| `{{proof_price_band}}`     | Price band from the object                 | The live read                  | $849.99                                 |
+| `{{proof_confidence}}`     | Top-line confidence                        | The live read                  | 0.88                                    |
+| `{{proof_method}}`         | Source method                              | The live read                  | web_unlocker                            |
+| `{{proof_cost}}`           | Per-call cost stamped in                   | The live read                  | $0.006                                  |
+| `{{current_stack}}`        | Extraction tools they pay for              | Research                       | Diffbot                                 |
+| `{{their_target_domain}}`  | The domain they most need to read          | Research                       | supplier catalogues                     |
+| `{{sender_name}}`          | Sender                                     | Fixed                          | Krish                                   |
+| `{{calendar_link}}`        | 15-min booking link                        | Fixed                          | (booking link)                          |
 
 Fixed surface facts to paste as-is: docs at `https://legibility.io/docs`, MCP at
 `https://legibility.io/api/mcp`. Never reference `onplinth.io`,
@@ -79,13 +79,13 @@ highest in this table (top = strongest wedge). `PROCUREMENT_LONGTAIL` is the
 moat-critical segment: if it applies at all, it wins and you route the
 design-partner ask earlier (Touch 2, not Touch 3).
 
-| Priority | Signal code | Evidence to look for | Proof read to run |
-|---|---|---|---|
-| 1 | `PROCUREMENT_LONGTAIL` | B2B procurement copilot, supplier/distributor catalogues, long-tail or wholesale domains, "buy for me" over non-consumer sites, audit/compliance language | A real reachable target URL from their supplier list; else LEGO proof URL |
-| 2 | `BUILDS_BUYFLOW` | Ships a shopping agent, buy-this-for-me, comparison agent, cart/checkout copilot | One of their real product targets; else Allbirds $110 |
-| 3 | `PAYS_EXTRACTION` | Job post / BuiltWith / GitHub deps show Diffbot, Firecrawl, ScrapingBee, Zyte, Bright Data, Apify | A Shopify/JSON-LD target they read today; else Sony WH-1000XM5 |
-| 4 | `HANDROLLS_SCRAPING` | Public repo with Playwright + JSON-LD parsing, blog post on scraping product pages, a home-grown extractor | A URL from their own examples; else Coca-Cola GTIN |
-| 5 | `SHIPS_MCP` | Publishes an MCP server, agent framework, or tool registry looking for paid tools | Same call via `/api/mcp` so you can cite the MCP path |
+| Priority | Signal code            | Evidence to look for                                                                                                                                      | Proof read to run                                                         |
+| -------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| 1        | `PROCUREMENT_LONGTAIL` | B2B procurement copilot, supplier/distributor catalogues, long-tail or wholesale domains, "buy for me" over non-consumer sites, audit/compliance language | A real reachable target URL from their supplier list; else LEGO proof URL |
+| 2        | `BUILDS_BUYFLOW`       | Ships a shopping agent, buy-this-for-me, comparison agent, cart/checkout copilot                                                                          | One of their real product targets; else Allbirds $110                     |
+| 3        | `PAYS_EXTRACTION`      | Job post / BuiltWith / GitHub deps show Diffbot, Firecrawl, ScrapingBee, Zyte, Bright Data, Apify                                                         | A Shopify/JSON-LD target they read today; else Sony WH-1000XM5            |
+| 4        | `HANDROLLS_SCRAPING`   | Public repo with Playwright + JSON-LD parsing, blog post on scraping product pages, a home-grown extractor                                                | A URL from their own examples; else Coca-Cola GTIN                        |
+| 5        | `SHIPS_MCP`            | Publishes an MCP server, agent framework, or tool registry looking for paid tools                                                                         | Same call via `/api/mcp` so you can cite the MCP path                     |
 
 ### 3.2 The wedge line per signal (paste into `{{wedge_line}}`)
 
@@ -101,12 +101,12 @@ design-partner ask earlier (Touch 2, not Touch 3).
 
 ### 4.0 Cadence
 
-| Touch | When | Purpose | Ends with |
-|---|---|---|---|
-| 1 | Day 0 | Real read + wedge | 15-min call |
-| 2 | Day +3 | New angle + proof/docs (design-partner ask if `PROCUREMENT_LONGTAIL`) | 15-min call or partner ask |
-| 3 | Day +7 | The design-partner ask, explicit | Design-partner ask |
-| 4 | Day +13 | One-line breakup | Permission to close the thread |
+| Touch | When    | Purpose                                                               | Ends with                      |
+| ----- | ------- | --------------------------------------------------------------------- | ------------------------------ |
+| 1     | Day 0   | Real read + wedge                                                     | 15-min call                    |
+| 2     | Day +3  | New angle + proof/docs (design-partner ask if `PROCUREMENT_LONGTAIL`) | 15-min call or partner ask     |
+| 3     | Day +7  | The design-partner ask, explicit                                      | Design-partner ask             |
+| 4     | Day +13 | One-line breakup                                                      | Permission to close the thread |
 
 Stop rules apply at all times (Section 8): any reply routes to the matrix and
 pauses the sequence; opt-out stops permanently; stop after Touch 4.
@@ -118,6 +118,7 @@ found. It proves you did the work. Rules: name the concrete thing, no flattery,
 no "I love what you are building," under 25 words.
 
 Good examples:
+
 - "Saw {{company}}'s changelog shipped a compare-prices step last week; that is exactly the read that breaks on half of retailers."
 - "Your repo's `extractor.ts` hand-parses JSON-LD and falls back to a regex on price; that fallback is where confidence gets silently wrong."
 - "Your job post lists Firecrawl and a Playwright pool, which is the two-tool setup Legibility collapses into one typed call."
@@ -128,6 +129,7 @@ finds you well." / anything you cannot cite.
 ### 4.2 Touch 1 (Day 0)
 
 Subject line, pick one (keep under 55 chars, lowercase-lead, no hype):
+
 - `typed read for {{their_target_domain}}, confidence stamped in`
 - `read {{proof_product_name}} at {{proof_confidence}} just now`
 - `{{company}}'s agent + reading product pages`
@@ -158,6 +160,7 @@ legibility.io/docs
 ### 4.3 Touch 2 (Day +3)
 
 Subject: reply in the same thread (blank/`Re:`), or if new:
+
 - `the part that is not shipped yet`
 - `where Legibility stops working, honestly`
 
@@ -207,6 +210,7 @@ Worth 15 minutes to see if {{company}} is a fit? {{calendar_link}}
 ### 4.4 Touch 3 (Day +7): the design-partner ask, explicit
 
 Subject:
+
 - `design partner slot for {{company}}`
 - `the ask, in two lines`
 
@@ -300,13 +304,13 @@ communities). These channels punish spam, so value-first is not optional.
 
 ### 6.1 Rules (all must hold before you post)
 
-| Rule | Requirement |
-|---|---|
-| On-topic | Someone is actively discussing product data, extraction, scraping reliability, or MCP tools. |
-| Permitted | The channel allows tool mentions / self-promo, or you are answering a direct question. |
-| Value first | Your message helps even if they never touch Legibility. |
-| One mention | Mention Legibility once, with a real read, then stop. No repeat pitching in-thread. |
-| Disclose | You are the builder. Say so. |
+| Rule        | Requirement                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------------- |
+| On-topic    | Someone is actively discussing product data, extraction, scraping reliability, or MCP tools. |
+| Permitted   | The channel allows tool mentions / self-promo, or you are answering a direct question.       |
+| Value first | Your message helps even if they never touch Legibility.                                      |
+| One mention | Mention Legibility once, with a real read, then stop. No repeat pitching in-thread.          |
+| Disclose    | You are the builder. Say so.                                                                 |
 
 If any rule fails, do not post. DM only if the person invited it or asked a
 question you can answer with a real result.
@@ -341,14 +345,14 @@ exchange for storing the legibility_id and wiring report_outcome. Worth 15 min?
 Any reply pauses the sequence. Classify the reply, then act. Never continue the
 scheduled cadence on top of a live reply.
 
-| Reply type | Trigger signals | Action | Response |
-|---|---|---|---|
-| Interested | "tell me more", "send docs", "how much", "let's talk", books time | Move to `demo`/`qualify` (`04`), stop the sequence, mark `engaged` | Template 7.1 |
-| Not now | "circle back in Q_", "busy", "not a priority yet" | Pause 30 days, set a single follow-up, mark `nurture` | Template 7.2 |
-| Objection | "Diffbot does this", "we use Firecrawl + GPT", "does it do Apple", "confidence, why trust it", "x402 risky" | Answer with the matched line from `05`, re-offer the call | Template 7.3 + route to `05` |
-| Referral | "talk to {{name}}", "not me, our eng lead" | Thank, ask for a warm intro, start a new gated row for the referral | Template 7.4 |
-| Not a fit | "we only do Amazon", "we track prices over time", "need live checkout" | Confirm disqualifier, thank, stop, log the reason | Template 7.5 |
-| Opt-out | "unsubscribe", "stop", "remove me", "do not contact" | Add to do-not-contact, stop permanently, no reply that re-pitches | Template 7.6 |
+| Reply type | Trigger signals                                                                                             | Action                                                              | Response                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------- |
+| Interested | "tell me more", "send docs", "how much", "let's talk", books time                                           | Move to `demo`/`qualify` (`04`), stop the sequence, mark `engaged`  | Template 7.1                 |
+| Not now    | "circle back in Q\_", "busy", "not a priority yet"                                                          | Pause 30 days, set a single follow-up, mark `nurture`               | Template 7.2                 |
+| Objection  | "Diffbot does this", "we use Firecrawl + GPT", "does it do Apple", "confidence, why trust it", "x402 risky" | Answer with the matched line from `05`, re-offer the call           | Template 7.3 + route to `05` |
+| Referral   | "talk to {{name}}", "not me, our eng lead"                                                                  | Thank, ask for a warm intro, start a new gated row for the referral | Template 7.4                 |
+| Not a fit  | "we only do Amazon", "we track prices over time", "need live checkout"                                      | Confirm disqualifier, thank, stop, log the reason                   | Template 7.5                 |
+| Opt-out    | "unsubscribe", "stop", "remove me", "do not contact"                                                        | Add to do-not-contact, stop permanently, no reply that re-pitches   | Template 7.6                 |
 
 ### 7.1 Interested
 
@@ -418,15 +422,15 @@ No further contact, ever. Add to do-not-contact immediately.
 
 ### 8.2 Stop conditions (any one halts the sequence)
 
-| Condition | Action |
-|---|---|
-| Any reply | Pause cadence, route to Section 7. |
-| Opt-out / unsubscribe / "stop" | Stop permanently, add to do-not-contact, no re-pitch reply. |
-| Meeting booked | Stop cadence, move to `demo` (`04`). |
-| Touch 4 sent, no reply | Stop. Mark `closed_no_reply`. Eligible for re-approach in 90 days only with a new signal. |
-| Disqualifier surfaces mid-thread | Stop, send 7.5, log the disqualifier. |
-| Hard bounce / invalid address | Stop, mark `bad_contact`, try one alternate channel max. |
-| Prospect asks for cadence to slow | Honor it exactly. Reset to their stated interval. |
+| Condition                         | Action                                                                                    |
+| --------------------------------- | ----------------------------------------------------------------------------------------- |
+| Any reply                         | Pause cadence, route to Section 7.                                                        |
+| Opt-out / unsubscribe / "stop"    | Stop permanently, add to do-not-contact, no re-pitch reply.                               |
+| Meeting booked                    | Stop cadence, move to `demo` (`04`).                                                      |
+| Touch 4 sent, no reply            | Stop. Mark `closed_no_reply`. Eligible for re-approach in 90 days only with a new signal. |
+| Disqualifier surfaces mid-thread  | Stop, send 7.5, log the disqualifier.                                                     |
+| Hard bounce / invalid address     | Stop, mark `bad_contact`, try one alternate channel max.                                  |
+| Prospect asks for cadence to slow | Honor it exactly. Reset to their stated interval.                                         |
 
 ### 8.3 Suppression and hygiene
 

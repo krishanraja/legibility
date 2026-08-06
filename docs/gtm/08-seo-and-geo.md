@@ -31,16 +31,16 @@ weeks, not by a config file.
 
 ## 1. Technical foundation (SHIPPED, verify after each deploy)
 
-| Asset | State | Where | Check |
-|---|---|---|---|
-| robots.txt | shipped | `public/robots.txt` | `curl https://legibility.io/robots.txt` 200, explicitly allows GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended, etc, points to the sitemap |
-| sitemap.xml | shipped, AUTO-GENERATED | `vite.config.ts` sitemapPlugin writes `public/sitemap.xml` from the route files on every build | `curl .../sitemap.xml` 200; add a public page route and it appears automatically, no manual edit |
-| llms.txt | shipped | `public/llms.txt` | `curl .../llms.txt` 200, the curated LLM summary (GEO keystone) |
-| JSON-LD Organization + WebSite + SoftwareApplication | shipped | `src/routes/__root.tsx` head | view-source has `application/ld+json` with the offers |
-| JSON-LD FAQPage | shipped | `src/routes/index.tsx` head | view-source has the FAQPage graph |
-| Canonical (absolute, self-referential) | shipped on home | per-route `head.links` | home canonical is `https://legibility.io/`, not `/` |
-| OpenGraph + Twitter image | shipped | `public/og.png` + head | share preview renders the branded card |
-| Server-rendered content | already true (TanStack Start SSR) | n/a | `curl .../` raw HTML contains the headline, pricing, and FAQ text |
+| Asset                                                | State                             | Where                                                                                          | Check                                                                                                                                                       |
+| ---------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| robots.txt                                           | shipped                           | `public/robots.txt`                                                                            | `curl https://legibility.io/robots.txt` 200, explicitly allows GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended, etc, points to the sitemap |
+| sitemap.xml                                          | shipped, AUTO-GENERATED           | `vite.config.ts` sitemapPlugin writes `public/sitemap.xml` from the route files on every build | `curl .../sitemap.xml` 200; add a public page route and it appears automatically, no manual edit                                                            |
+| llms.txt                                             | shipped                           | `public/llms.txt`                                                                              | `curl .../llms.txt` 200, the curated LLM summary (GEO keystone)                                                                                             |
+| JSON-LD Organization + WebSite + SoftwareApplication | shipped                           | `src/routes/__root.tsx` head                                                                   | view-source has `application/ld+json` with the offers                                                                                                       |
+| JSON-LD FAQPage                                      | shipped                           | `src/routes/index.tsx` head                                                                    | view-source has the FAQPage graph                                                                                                                           |
+| Canonical (absolute, self-referential)               | shipped on home                   | per-route `head.links`                                                                         | home canonical is `https://legibility.io/`, not `/`                                                                                                         |
+| OpenGraph + Twitter image                            | shipped                           | `public/og.png` + head                                                                         | share preview renders the branded card                                                                                                                      |
+| Server-rendered content                              | already true (TanStack Start SSR) | n/a                                                                                            | `curl .../` raw HTML contains the headline, pricing, and FAQ text                                                                                           |
 
 Standing rule: AI crawlers are WELCOME. Never block GPTBot, ClaudeBot,
 PerplexityBot, Google-Extended, or CCBot. Being read is the point.
@@ -64,13 +64,13 @@ PerplexityBot, Google-Extended, or CCBot. Being read is the point.
 Optimize for the questions the ICP and their LLMs actually ask, not vanity
 keywords. Primary intents:
 
-| Query family | Example queries | Where we must appear |
-|---|---|---|
-| Category definition | "product data API for AI agents", "typed product data for LLM agents" | own the phrase in the H1, llms.txt, and the meta description (done) |
-| Alternative / comparison | "Diffbot alternative for agents", "Firecrawl vs typed product data", "cheaper than Diffbot product API" | comparison pages (section 4), the FAQ answers (done in JSON-LD) |
-| How-to | "how to give an AI agent product data", "get a product price into an agent", "MCP server for product data" | a how-to doc + MCP registry listings |
-| Trust / mechanism | "product extraction with confidence score", "calibrated confidence product data" | the confidence FAQ + a short explainer post |
-| Payment-native | "API an agent can pay for per call", "x402 product data" | the x402 doc, honest testnet framing |
+| Query family             | Example queries                                                                                            | Where we must appear                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Category definition      | "product data API for AI agents", "typed product data for LLM agents"                                      | own the phrase in the H1, llms.txt, and the meta description (done) |
+| Alternative / comparison | "Diffbot alternative for agents", "Firecrawl vs typed product data", "cheaper than Diffbot product API"    | comparison pages (section 4), the FAQ answers (done in JSON-LD)     |
+| How-to                   | "how to give an AI agent product data", "get a product price into an agent", "MCP server for product data" | a how-to doc + MCP registry listings                                |
+| Trust / mechanism        | "product extraction with confidence score", "calibrated confidence product data"                           | the confidence FAQ + a short explainer post                         |
+| Payment-native           | "API an agent can pay for per call", "x402 product data"                                                   | the x402 doc, honest testnet framing                                |
 
 Rule: every target query should have one page whose title and first paragraph
 answer it directly and factually, in extractable prose (short declarative
@@ -133,14 +133,14 @@ vs-the-field content from `02-positioning-and-messaging.md` so it stays consiste
 This is where the fleet spends most of its GEO effort. Each listing is both a
 distribution channel and a citation source.
 
-| Channel | Action | Done condition |
-|---|---|---|
-| MCP registries | List the Legibility MCP server on Smithery, Glama, mcp.so, and PulseMCP with the tool descriptions, the legibility.io URL, and a one-key or no-key trial note | Legibility appears in a search for "product" or "shopping" on each |
-| AI tool directories | Submit to agent/AI tool aggregators (there's an AI tool for that, Futurepedia-style lists, dev tool directories) | listed with the correct one-liner |
-| GitHub | A public repo or a well-formed README/gist with the MCP config and quickstart, topics: mcp, ai-agents, product-data | discoverable under those topics |
-| Framework docs and awesome-lists | PRs adding Legibility to relevant "awesome MCP" and agent-tooling lists | merged |
-| Dev communities | Genuinely helpful answers where product-data pain shows up (agent framework Discords, relevant forums), leading with a real read, never spam | value-first, per `03-outreach-sequences.md` community rules |
-| Launch surfaces | A considered launch (Product Hunt, HN Show, relevant newsletters) once there is a design partner story | one strong launch, not a drip |
+| Channel                          | Action                                                                                                                                                        | Done condition                                                     |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| MCP registries                   | List the Legibility MCP server on Smithery, Glama, mcp.so, and PulseMCP with the tool descriptions, the legibility.io URL, and a one-key or no-key trial note | Legibility appears in a search for "product" or "shopping" on each |
+| AI tool directories              | Submit to agent/AI tool aggregators (there's an AI tool for that, Futurepedia-style lists, dev tool directories)                                              | listed with the correct one-liner                                  |
+| GitHub                           | A public repo or a well-formed README/gist with the MCP config and quickstart, topics: mcp, ai-agents, product-data                                           | discoverable under those topics                                    |
+| Framework docs and awesome-lists | PRs adding Legibility to relevant "awesome MCP" and agent-tooling lists                                                                                       | merged                                                             |
+| Dev communities                  | Genuinely helpful answers where product-data pain shows up (agent framework Discords, relevant forums), leading with a real read, never spam                  | value-first, per `03-outreach-sequences.md` community rules        |
+| Launch surfaces                  | A considered launch (Product Hunt, HN Show, relevant newsletters) once there is a design partner story                                                        | one strong launch, not a drip                                      |
 
 Rule: consistency. Same one-liner (from `00`), same URL (legibility.io), same
 category phrase everywhere, so every listing reinforces the same entity for the
@@ -150,13 +150,13 @@ models.
 
 ## 6. Measurement and loop
 
-| Metric | Source | Cadence |
-|---|---|---|
-| GEO scoreboard: is Legibility named and described correctly by ChatGPT/Claude/Perplexity/AI Overviews on the target queries | manual prompt tests (section 3.6), logged | monthly |
-| Organic + referral signups and their source | signup source field, `07-metrics-crm-and-loop.md` | weekly |
-| Search impressions and clicks by query | Google Search Console, Bing Webmaster | weekly once verified |
-| Registry and directory referral traffic | UTM on listing links | weekly |
-| Citations and mentions | brand search, GitHub mentions, backlink check | monthly |
+| Metric                                                                                                                      | Source                                            | Cadence              |
+| --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | -------------------- |
+| GEO scoreboard: is Legibility named and described correctly by ChatGPT/Claude/Perplexity/AI Overviews on the target queries | manual prompt tests (section 3.6), logged         | monthly              |
+| Organic + referral signups and their source                                                                                 | signup source field, `07-metrics-crm-and-loop.md` | weekly               |
+| Search impressions and clicks by query                                                                                      | Google Search Console, Bing Webmaster             | weekly once verified |
+| Registry and directory referral traffic                                                                                     | UTM on listing links                              | weekly               |
+| Citations and mentions                                                                                                      | brand search, GitHub mentions, backlink check     | monthly              |
 
 The loop: run the monthly prompt test, find where a model is silent or wrong,
 and turn that gap into the next content or listing action. GEO is a correction

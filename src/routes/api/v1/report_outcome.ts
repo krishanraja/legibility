@@ -8,10 +8,20 @@ import { postOnly } from "@/lib/api/http";
 // Keyed by lgk_ (the agent's identity), joined to usage via request_id / legibility_id.
 
 function json(body: unknown, status: number) {
-  return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "content-type": "application/json" },
+  });
 }
 
-const OUTCOMES = new Set(["purchased", "price_matched", "price_mismatch", "out_of_stock", "wrong_product", "other"]);
+const OUTCOMES = new Set([
+  "purchased",
+  "price_matched",
+  "price_mismatch",
+  "out_of_stock",
+  "wrong_product",
+  "other",
+]);
 
 export const Route = createFileRoute("/api/v1/report_outcome")({
   server: {
@@ -22,7 +32,11 @@ export const Route = createFileRoute("/api/v1/report_outcome")({
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
-        if (!principal) return json({ error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." }, 401);
+        if (!principal)
+          return json(
+            { error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." },
+            401,
+          );
 
         let body: unknown;
         try {
@@ -33,10 +47,22 @@ export const Route = createFileRoute("/api/v1/report_outcome")({
         const b = (body ?? {}) as Record<string, unknown>;
         const outcome = typeof b.outcome === "string" ? b.outcome : "";
         if (!OUTCOMES.has(outcome)) {
-          return json({ error: "invalid_request", message: `outcome must be one of: ${[...OUTCOMES].join(", ")}` }, 422);
+          return json(
+            {
+              error: "invalid_request",
+              message: `outcome must be one of: ${[...OUTCOMES].join(", ")}`,
+            },
+            422,
+          );
         }
         if (typeof b.request_id !== "string" && typeof b.legibility_id !== "string") {
-          return json({ error: "invalid_request", message: "Provide request_id or legibility_id to link the outcome to a read." }, 422);
+          return json(
+            {
+              error: "invalid_request",
+              message: "Provide request_id or legibility_id to link the outcome to a read.",
+            },
+            422,
+          );
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

@@ -70,11 +70,13 @@ these is a strategy meeting, not a footnote:
 ## 3. Positioning and pitch
 
 **Canonical one-liner (reuse verbatim everywhere):**
+
 > Legibility turns a product URL, barcode, or fuzzy name into a typed product
 > object your agent can trust: calibrated per-field confidence, a price band,
 > a stable id, and the per-call cost stamped in, over REST and MCP.
 
 **3-sentence pitch:**
+
 > If you build an agent that buys, compares, or looks up physical products,
 > you hit the same wall: reading the product page reliably. Legibility is that
 > layer, finished, behind one call over REST or MCP. You send a URL, a GTIN,
@@ -170,12 +172,12 @@ verified, Apple still blocked)."
 **Pricing (the trusted-read unit is the whole point: a null or below-0.7
 read charges nothing and consumes no quota).**
 
-| Tier | Price | Included trusted reads/mo | Overage | Notes |
-|---|---|---|---|---|
-| Free | $0, no card | 1,000 | none, hard stop at cap | key, REST + MCP, email support |
-| Starter | $29/mo | 5,000 | $0.01/read | priority email |
-| Growth | $199/mo | 50,000 | $0.005/read | higher limits, Slack, SLA |
-| Custom | quote | 250,000+/mo | quote | on-prem extractor, residency |
+| Tier    | Price       | Included trusted reads/mo | Overage                | Notes                          |
+| ------- | ----------- | ------------------------- | ---------------------- | ------------------------------ |
+| Free    | $0, no card | 1,000                     | none, hard stop at cap | key, REST + MCP, email support |
+| Starter | $29/mo      | 5,000                     | $0.01/read             | priority email                 |
+| Growth  | $199/mo     | 50,000                    | $0.005/read            | higher limits, Slack, SLA      |
+| Custom  | quote       | 250,000+/mo               | quote                  | on-prem extractor, residency   |
 
 Note for agents: overage rates are defined but automatic metering to Stripe
 is founder-gated on a live canary, so do not promise auto-billed overage as
@@ -186,12 +188,14 @@ cost is stamped in every response, so this stays transparent.
 **The design-partner offer (the fleet's real close).**
 
 What we give:
+
 - Free or heavily discounted access with generous trusted-read headroom.
 - Direct founder support and a private Slack channel.
 - Priority engineering attention on the partner's target domains.
 - Roadmap influence and hands-on help wiring outcome closure.
 
 What we ask (the two non-negotiables plus two soft asks):
+
 1. Store the opaque `legibility_id` as a foreign key in their own database.
 2. Wire `POST /api/v1/report_outcome` so their agent reports whether a Legibility
    answer led to a real purchase at the stated price and availability.
@@ -232,16 +236,16 @@ file so an agent can act from it without a human.
 `prospect -> personalize -> outreach -> demo -> qualify -> design-partner
 offer -> onboard -> measure`
 
-| Stage | What happens | Documented in |
-|---|---|---|
-| prospect | find and score ICP-fit targets; apply the gates and disqualifiers | `01-icp-and-targeting.md` |
-| personalize | pick the wedge and the proof read for this specific target | `02-positioning-and-messaging.md` |
-| outreach | send copy-paste templates with merge fields; obey cadence and stop conditions | `03-outreach-sequences.md` |
-| demo | run the live-read demo script; never mock | `04-demo-and-qualification.md` |
-| qualify | run the gate/disqualifier checklist and the qualifying questions | `04-demo-and-qualification.md` |
-| design-partner offer | present pricing, handle objections, make the partner offer and close | `05-pricing-objections-and-close.md` |
-| onboard | wire `legibility_id` storage and `report_outcome`; set the feedback cadence | `06-design-partner-motion.md` |
-| measure | read the North Star, keep the CRM current, run the weekly loop and kill checks | `07-metrics-crm-and-loop.md` |
+| Stage                | What happens                                                                   | Documented in                        |
+| -------------------- | ------------------------------------------------------------------------------ | ------------------------------------ |
+| prospect             | find and score ICP-fit targets; apply the gates and disqualifiers              | `01-icp-and-targeting.md`            |
+| personalize          | pick the wedge and the proof read for this specific target                     | `02-positioning-and-messaging.md`    |
+| outreach             | send copy-paste templates with merge fields; obey cadence and stop conditions  | `03-outreach-sequences.md`           |
+| demo                 | run the live-read demo script; never mock                                      | `04-demo-and-qualification.md`       |
+| qualify              | run the gate/disqualifier checklist and the qualifying questions               | `04-demo-and-qualification.md`       |
+| design-partner offer | present pricing, handle objections, make the partner offer and close           | `05-pricing-objections-and-close.md` |
+| onboard              | wire `legibility_id` storage and `report_outcome`; set the feedback cadence    | `06-design-partner-motion.md`        |
+| measure              | read the North Star, keep the CRM current, run the weekly loop and kill checks | `07-metrics-crm-and-loop.md`         |
 
 Surface facts for agents: live domain `https://legibility.io`, docs at `/docs`, MCP at
 `/api/mcp`. Do not reference `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`; they

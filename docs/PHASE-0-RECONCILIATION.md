@@ -15,18 +15,18 @@ narrower than feared. Details in section 4.
 The brief says the measurement apparatus is dividing by zero. That is confirmed, and it is
 stronger than "small N". It is a literal, unbroken zero.
 
-| Table | Rows |
-|---|---|
-| `usage_events` | **0** |
-| `product_cache` | **0** |
-| `outcome_reports` | **0** |
-| `resolutions` | 0 |
-| `ops_alerts` | 0 |
-| `api_keys` (active) | 1 |
-| `subscriptions` | 4 |
-| `profiles` | 4 |
-| `golden_eval_runs` | 1 |
-| `ops_daily` | 32 |
+| Table               | Rows  |
+| ------------------- | ----- |
+| `usage_events`      | **0** |
+| `product_cache`     | **0** |
+| `outcome_reports`   | **0** |
+| `resolutions`       | 0     |
+| `ops_alerts`        | 0     |
+| `api_keys` (active) | 1     |
+| `subscriptions`     | 4     |
+| `profiles`          | 4     |
+| `golden_eval_runs`  | 1     |
+| `ops_daily`         | 32    |
 
 `ops_daily` covers 2026-07-05 to 2026-08-05 without a gap. Across all 32 days:
 `sum(total_calls) = 0`, `sum(trusted_reads) = 0`, `sum(active_accounts) = 0`.
@@ -56,17 +56,17 @@ Revenue is $0 and no Stripe object exists behind any of them.
 
 Verified by response body, not status code, per the constraint.
 
-| Claim | Live state | Verdict |
-|---|---|---|
-| App live at `plinth-tan.vercel.app` | `/api/health` returns `{"status":"ok","checks":{"worker":"ok","billing":"configured","x402":"configured"}}` | **Confirmed** |
-| `onplinth.io` DNS propagating | Resolves to `216.150.1.1`, `216.150.1.65`. Serves the same healthy body over TLS | **Stale. It is live.** |
-| Worker is a separate live deploy | `plinth-worker.vercel.app/health` returns `{"ok":true,"service":"plinth-worker","version":"0.1.0"}` | **Confirmed** |
-| Keys sha256-hashed at rest | `hashKey()` in `src/integrations/supabase/api-keys.server.ts`, `key_hash` UNIQUE, column-level grants exclude `key_hash` from `anon`/`authenticated` | **Confirmed** |
-| Calibration credential | `golden_eval_runs`: `iso-63-2026-07-05`, split `test`, **n = 63**, precision 1.0, Wilson low 0.832, adversarial rejection 1.0, GTIN recall 1.0, **ECE 0.19** | **Confirmed, with caveats.** See below |
-| `trust_rate_by_method` breaks out by method | It groups by `split_part(domain, ':', 1)`. `domain` is the hostname, or the literal `gtin:` / `name:`. For a URL read it returns the whole hostname | **Wrong. It is by domain, not method** |
-| Metered overage not reported to Stripe | Correct, no such code exists | **Confirmed honest** |
-| Webhooks do not exist | Correct, tables reserved and unused | **Confirmed honest** |
-| x402 on Base Sepolia, no live settlement | Confirmed in `src/lib/api/x402.server.ts`. Wired only into `/api/mcp`, not into any REST route | **Confirmed** |
+| Claim                                       | Live state                                                                                                                                                   | Verdict                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- |
+| App live at `plinth-tan.vercel.app`         | `/api/health` returns `{"status":"ok","checks":{"worker":"ok","billing":"configured","x402":"configured"}}`                                                  | **Confirmed**                          |
+| `onplinth.io` DNS propagating               | Resolves to `216.150.1.1`, `216.150.1.65`. Serves the same healthy body over TLS                                                                             | **Stale. It is live.**                 |
+| Worker is a separate live deploy            | `plinth-worker.vercel.app/health` returns `{"ok":true,"service":"plinth-worker","version":"0.1.0"}`                                                          | **Confirmed**                          |
+| Keys sha256-hashed at rest                  | `hashKey()` in `src/integrations/supabase/api-keys.server.ts`, `key_hash` UNIQUE, column-level grants exclude `key_hash` from `anon`/`authenticated`         | **Confirmed**                          |
+| Calibration credential                      | `golden_eval_runs`: `iso-63-2026-07-05`, split `test`, **n = 63**, precision 1.0, Wilson low 0.832, adversarial rejection 1.0, GTIN recall 1.0, **ECE 0.19** | **Confirmed, with caveats.** See below |
+| `trust_rate_by_method` breaks out by method | It groups by `split_part(domain, ':', 1)`. `domain` is the hostname, or the literal `gtin:` / `name:`. For a URL read it returns the whole hostname          | **Wrong. It is by domain, not method** |
+| Metered overage not reported to Stripe      | Correct, no such code exists                                                                                                                                 | **Confirmed honest**                   |
+| Webhooks do not exist                       | Correct, tables reserved and unused                                                                                                                          | **Confirmed honest**                   |
+| x402 on Base Sepolia, no live settlement    | Confirmed in `src/lib/api/x402.server.ts`. Wired only into `/api/mcp`, not into any REST route                                                               | **Confirmed**                          |
 
 ### On the calibration credential
 
@@ -128,13 +128,13 @@ envelope_hash, calibration_version, billable
 
 Against the five fields the brief's gate requires:
 
-| Required field | Present? |
-|---|---|
-| domain | **Yes**, `domain` |
-| confidence | **Yes**, `confidence` |
-| trusted or not | **Yes**, `billable` |
-| **method** | **No such column** |
-| **failure reason** | **No such column** |
+| Required field     | Present?              |
+| ------------------ | --------------------- |
+| domain             | **Yes**, `domain`     |
+| confidence         | **Yes**, `confidence` |
+| trusted or not     | **Yes**, `billable`   |
+| **method**         | **No such column**    |
+| **failure reason** | **No such column**    |
 
 And the reason `method` is missing is not that the worker withholds it. `stampFromResponse()`
 in `src/lib/api/meter.ts:46-56` parses the worker envelope and lifts `request_id`, `confidence`,
@@ -176,17 +176,17 @@ underneath Phase 2 instead: what does the null column actually look like? Direct
 browser User-Agent, checking the response body for `application/ld+json` and
 `"@type": "Product"`. Cost $0.00.
 
-| Domain | HTTP | Bytes | JSON-LD Product | Verdict |
-|---|---|---|---|---|
-| gymshark.com | 200 | 1,068,004 | yes (7) | READABLE |
-| drsquatch.com | 200 | 689,218 | yes (1) | READABLE |
-| allbirds.com | 200 | 2,737,826 | JSON-LD but no `Product` | PARTIAL |
-| ridge.com | 403 | 4,545 | no | BLOCKED |
-| **nike.com** | 200 | 771,028 | **yes (1)** | **READABLE** |
-| apple.com | 200 | 367,470 | no | NO_STRUCTURED_DATA |
-| lego.com | 403 | 5,855 | no | BLOCKED |
-| amazon.com | 200 | 3,779 | no | BLOCKED, JS shell |
-| walmart.com | 200 | 15,194 | no | BLOCKED, JS shell |
+| Domain        | HTTP | Bytes     | JSON-LD Product          | Verdict            |
+| ------------- | ---- | --------- | ------------------------ | ------------------ |
+| gymshark.com  | 200  | 1,068,004 | yes (7)                  | READABLE           |
+| drsquatch.com | 200  | 689,218   | yes (1)                  | READABLE           |
+| allbirds.com  | 200  | 2,737,826 | JSON-LD but no `Product` | PARTIAL            |
+| ridge.com     | 403  | 4,545     | no                       | BLOCKED            |
+| **nike.com**  | 200  | 771,028   | **yes (1)**              | **READABLE**       |
+| apple.com     | 200  | 367,470   | no                       | NO_STRUCTURED_DATA |
+| lego.com      | 403  | 5,855     | no                       | BLOCKED            |
+| amazon.com    | 200  | 3,779     | no                       | BLOCKED, JS shell  |
+| walmart.com   | 200  | 15,194    | no                       | BLOCKED, JS shell  |
 
 **Caveat, stated before the conclusions:** this ran from this container's egress IP, not from
 the worker's Vercel IP, and without the worker's extraction logic. It measures what a plain
@@ -236,15 +236,15 @@ One key is hardcoded on purpose and is fine: the PostHog project key at
 
 Every var read by code, and how it was verified:
 
-| Variable | Read at | Verified |
-|---|---|---|
-| `PLINTH_EXTRACTOR_URL` / `_TOKEN` | 5 routes + health | **Set.** `/api/health` returns `worker: ok`, which requires a successful upstream fetch |
-| `STRIPE_SECRET_KEY` | billing, webhook, health | **Set.** health returns `billing: configured` |
-| `X402_RECIPIENT` | x402, health | **Set and non-zero.** health returns `x402: configured`, which is keyed on the recipient not being the zero address |
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_PUBLISHABLE_KEY` | client/auth | **Set.** The app serves authenticated pages |
-| `X402_FACILITATOR`, `_NETWORK`, `_ASSET`, `_PRICE_ATOMIC` | x402.server.ts | Have working defaults. Not separately verified |
-| `STRIPE_WEBHOOK_SECRET` | stripe/webhook.ts | **Not verified.** No way to confirm without triggering a webhook |
-| `APP_BASE_URL` | billing.functions.ts | **Not verified** |
+| Variable                                                                | Read at                  | Verified                                                                                                            |
+| ----------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `PLINTH_EXTRACTOR_URL` / `_TOKEN`                                       | 5 routes + health        | **Set.** `/api/health` returns `worker: ok`, which requires a successful upstream fetch                             |
+| `STRIPE_SECRET_KEY`                                                     | billing, webhook, health | **Set.** health returns `billing: configured`                                                                       |
+| `X402_RECIPIENT`                                                        | x402, health             | **Set and non-zero.** health returns `x402: configured`, which is keyed on the recipient not being the zero address |
+| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_PUBLISHABLE_KEY` | client/auth              | **Set.** The app serves authenticated pages                                                                         |
+| `X402_FACILITATOR`, `_NETWORK`, `_ASSET`, `_PRICE_ATOMIC`               | x402.server.ts           | Have working defaults. Not separately verified                                                                      |
+| `STRIPE_WEBHOOK_SECRET`                                                 | stripe/webhook.ts        | **Not verified.** No way to confirm without triggering a webhook                                                    |
+| `APP_BASE_URL`                                                          | billing.functions.ts     | **Not verified**                                                                                                    |
 
 Named in `.env.example` but read by no code: `SUPABASE_PROJECT_ID`, `VITE_SUPABASE_PROJECT_ID`,
 `RESEND_API_KEY`. The last one matters: `docs/KILL-CRITERIA.md` says alert delivery goes via
@@ -258,6 +258,7 @@ character over `src/`, failing the build on any hit. (The character itself is no
 this report, so that this file stays clean if the rule is extended to `docs/`.)
 
 Coverage gaps:
+
 - **`src/` only.** `docs/`, `docs-internal/`, `README.md`, `supabase/` are all unchecked.
 - **2 live violations today** in the unchecked area: `docs-internal/design.md` and
   `docs-internal/contributing.md`.
@@ -277,7 +278,7 @@ Per working rule: when the brief contradicts the repo, the repo wins. Recorded h
 
 1. **"Are nulls persisted anywhere, or discarded? If discarded, that is the most important gap."**
    They are persisted. The gap is real but it is one level finer than the brief expected: the
-   rows exist, the *typed reason* does not. This makes Phase 1 meaningfully cheaper. The
+   rows exist, the _typed reason_ does not. This makes Phase 1 meaningfully cheaper. The
    append-only observation table still has to be built, but the app is already writing an
    unconditional row per call, so the wiring pattern and the insert site both exist.
 

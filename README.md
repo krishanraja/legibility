@@ -69,12 +69,12 @@ consume quota (see Billing).
 
 ## Tools
 
-| Tool               | Input                       | Returns                                                          |
-| ------------------ | --------------------------- | --------------------------------------------------------------- |
-| `read_product`     | `url` XOR `gtin`            | typed product, per-field + overall confidence, price band, cost |
+| Tool               | Input                       | Returns                                                                             |
+| ------------------ | --------------------------- | ----------------------------------------------------------------------------------- |
+| `read_product`     | `url` XOR `gtin`            | typed product, per-field + overall confidence, price band, cost                     |
 | `resolve_product`  | `name`                      | best-match product via neural search (Exa) then extraction, in one synchronous call |
-| `compare_products` | `urls` (2 to 5)             | side-by-side matrix plus the price delta                        |
-| `brief_product`    | `url` XOR `gtin` XOR `name` | typed product plus a short agent-readable brief                 |
+| `compare_products` | `urls` (2 to 5)             | side-by-side matrix plus the price delta                                            |
+| `brief_product`    | `url` XOR `gtin` XOR `name` | typed product plus a short agent-readable brief                                     |
 
 REST: `POST /api/v1/<tool>`. MCP: `POST /api/mcp` exposes `read_product` and `resolve_product`.
 
@@ -97,11 +97,11 @@ step (an earlier draft of the docs described one; it was never built).
 The billing unit is a **trusted read**: a call is billable only when it returns a product **and**
 `confidence >= 0.7`. A `null` or below-gate read charges nothing and does not consume quota.
 
-| Plan    | Price     | Trusted reads / mo | Overage        | Card |
-| ------- | --------- | ------------------ | -------------- | ---- |
+| Plan    | Price     | Trusted reads / mo | Overage         | Card         |
+| ------- | --------- | ------------------ | --------------- | ------------ |
 | Free    | $0        | 1,000              | none, hard stop | not required |
-| Starter | $29 / mo  | 5,000              | $0.01 / read   | required |
-| Growth  | $199 / mo | 50,000             | $0.005 / read  | required |
+| Starter | $29 / mo  | 5,000              | $0.01 / read    | required     |
+| Growth  | $199 / mo | 50,000             | $0.005 / read   | required     |
 
 Quota is enforced by the `entitlement_check` RPC, which returns `402` **before** the worker call is
 made (a free-tier cost fuse backs this up), so the free tier is a genuine hard stop, not an invoice

@@ -45,17 +45,18 @@ account that cannot or will not report outcomes on legally readable domains.
 Score every candidate. The three REQUIRED rows are pass/fail gates. The
 scored rows break ties and set effort.
 
-| Dimension | Type | Test | Points |
-|---|---|---|---|
-| Use case is procurement / buy-flow | REQUIRED | They buy, procure, or compare real physical products and an agent acts on the answer (a buy, a PO, a shortlist a human executes). Not a dashboard, not analytics. | pass/fail |
-| Domain mix is legally readable | REQUIRED | Majority of their real target domains are Shopify, JSON-LD retailers, cooperating catalogues, supplier long-tail, or barcodes. NOT majority Amazon/Walmart/Target/Apple anti-bot head. | pass/fail |
-| Real production volume with downstream action | REQUIRED | They are (or within 2 weeks will be) calling in production, and real buys or matches happen downstream, so outcomes exist to report. A toy integration has nothing to close. | pass/fail |
-| Can integrate within ~2 weeks | scored | A named engineer with bandwidth to store `legibility_id` and wire `report_outcome`. | 0 to 3 |
-| WTP and audit-trail need | scored | Already pays for extraction/scraping/headless; procurement audit trail is a real requirement (corpus band $200 to 2K/mo). | 0 to 3 |
-| Founder-reachable contact | scored | A named human who will join a private Slack and do a weekly 15-minute check-in. | 0 to 3 |
-| Volume weight | scored | Expected trusted reads/week (higher demand-weighted volume = more label fuel). | 0 to 3 |
+| Dimension                                     | Type     | Test                                                                                                                                                                                   | Points    |
+| --------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Use case is procurement / buy-flow            | REQUIRED | They buy, procure, or compare real physical products and an agent acts on the answer (a buy, a PO, a shortlist a human executes). Not a dashboard, not analytics.                      | pass/fail |
+| Domain mix is legally readable                | REQUIRED | Majority of their real target domains are Shopify, JSON-LD retailers, cooperating catalogues, supplier long-tail, or barcodes. NOT majority Amazon/Walmart/Target/Apple anti-bot head. | pass/fail |
+| Real production volume with downstream action | REQUIRED | They are (or within 2 weeks will be) calling in production, and real buys or matches happen downstream, so outcomes exist to report. A toy integration has nothing to close.           | pass/fail |
+| Can integrate within ~2 weeks                 | scored   | A named engineer with bandwidth to store `legibility_id` and wire `report_outcome`.                                                                                                    | 0 to 3    |
+| WTP and audit-trail need                      | scored   | Already pays for extraction/scraping/headless; procurement audit trail is a real requirement (corpus band $200 to 2K/mo).                                                              | 0 to 3    |
+| Founder-reachable contact                     | scored   | A named human who will join a private Slack and do a weekly 15-minute check-in.                                                                                                        | 0 to 3    |
+| Volume weight                                 | scored   | Expected trusted reads/week (higher demand-weighted volume = more label fuel).                                                                                                         | 0 to 3    |
 
 **Decision rule.**
+
 - All 3 REQUIRED = pass AND scored total >= 7 of 12: make the design-partner
   offer (section 3). Open a CRM record tagged `design_partner_candidate`.
 - All 3 REQUIRED = pass AND scored total 4 to 6: make the offer only if the
@@ -186,6 +187,7 @@ after the retailer changes the URL. It is never derived from the URL or the
 GTIN, so a competitor cannot reconstruct or forge it.
 
 Why the partner stores it:
+
 - It is a stable join and dedupe key that outlives URL churn (the audit's
   Allbirds soft-redirect is the failure mode a URL key hits and `legibility_id`
   does not).
@@ -213,25 +215,25 @@ with them on it.
 
 Request body:
 
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| `outcome` | string | yes | One of the enum below. |
-| `request_id` | string | one of these two | The `request_id` returned on the original read. Preferred: it joins straight to the exact call in `usage_events`. |
-| `legibility_id` | string | one of these two | The `pl_...` id from the read. Use when the agent no longer has the request_id but kept the product id. |
-| `observed_price` | number | no | The price the agent actually saw at action time. Feeds price-band drift. |
-| `observed_currency` | string | no | ISO currency for `observed_price`. |
-| `note` | string | no | Free text, truncated to 500 chars. |
+| Field               | Type   | Required         | Notes                                                                                                             |
+| ------------------- | ------ | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `outcome`           | string | yes              | One of the enum below.                                                                                            |
+| `request_id`        | string | one of these two | The `request_id` returned on the original read. Preferred: it joins straight to the exact call in `usage_events`. |
+| `legibility_id`     | string | one of these two | The `pl_...` id from the read. Use when the agent no longer has the request_id but kept the product id.           |
+| `observed_price`    | number | no               | The price the agent actually saw at action time. Feeds price-band drift.                                          |
+| `observed_currency` | string | no               | ISO currency for `observed_price`.                                                                                |
+| `note`              | string | no               | Free text, truncated to 500 chars.                                                                                |
 
 Outcome enum (exact shipped values, use these verbatim):
 
-| Value | Meaning | Closure label |
-|---|---|---|
-| `purchased` | The buy completed at the stated price/availability. | positive (Legibility was right) |
-| `price_matched` | Price Legibility reported matched what the agent saw, even without a purchase. | positive |
-| `price_mismatch` | Price differed from the reported band. | negative (stale/wrong) |
-| `out_of_stock` | Item was unavailable when the agent acted. | negative (availability miss) |
-| `wrong_product` | Resolved product was not the intended item. | negative (resolution miss) |
-| `other` | Anything else; use `note`. | triage |
+| Value            | Meaning                                                                        | Closure label                   |
+| ---------------- | ------------------------------------------------------------------------------ | ------------------------------- |
+| `purchased`      | The buy completed at the stated price/availability.                            | positive (Legibility was right) |
+| `price_matched`  | Price Legibility reported matched what the agent saw, even without a purchase. | positive                        |
+| `price_mismatch` | Price differed from the reported band.                                         | negative (stale/wrong)          |
+| `out_of_stock`   | Item was unavailable when the agent acted.                                     | negative (availability miss)    |
+| `wrong_product`  | Resolved product was not the intended item.                                    | negative (resolution miss)      |
+| `other`          | Anything else; use `note`.                                                     | triage                          |
 
 Responses: `202 {"received": true}` on success. `401` if the key is missing or
 invalid. `422 invalid_request` if `outcome` is not in the enum or if neither
@@ -280,6 +282,7 @@ legibility.report_outcome(                           # ask 2: close the loop
 ```
 
 Mapping the partner's result to the enum (give them this rule):
+
 - Buy went through at the quoted price -> `purchased`.
 - Did not buy, but the price we quoted was right at action time -> `price_matched`.
 - Price was off -> `price_mismatch` with `observed_price`.
@@ -414,11 +417,11 @@ lines of `report_outcome`. The moat is our reason, not their pitch.
 
 ## 7. Success criteria (the only scoreboard that counts)
 
-| Milestone | Definition | Verify |
-|---|---|---|
-| Seed 1 | >= 1 partner storing `legibility_id` as a FK AND reporting outcomes on a regular cadence. | `outcome_reports` has rows across >= 2 distinct weeks for one `user_id`; partner confirms the id column exists. |
-| Ignition | Outcome reports flowing weekly, misses feeding golden-set updates and a calibration refit. | `golden_eval_runs` gains a new `calibration_version` fed by partner-sourced misses. |
-| Seed 2 to 3 | 2 to 3 partners each storing ids and reporting outcomes weekly. | 2 to 3 distinct `user_id`s each with multi-week `outcome_reports`. |
+| Milestone   | Definition                                                                                 | Verify                                                                                                          |
+| ----------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Seed 1      | >= 1 partner storing `legibility_id` as a FK AND reporting outcomes on a regular cadence.  | `outcome_reports` has rows across >= 2 distinct weeks for one `user_id`; partner confirms the id column exists. |
+| Ignition    | Outcome reports flowing weekly, misses feeding golden-set updates and a calibration refit. | `golden_eval_runs` gains a new `calibration_version` fed by partner-sourced misses.                             |
+| Seed 2 to 3 | 2 to 3 partners each storing ids and reporting outcomes weekly.                            | 2 to 3 distinct `user_id`s each with multi-week `outcome_reports`.                                              |
 
 Winning signal priority (from `00`, do not reorder): (1) outcome reports
 flowing, (2) `legibility_id` stored by partners, (3) fast first-trusted-read
@@ -433,14 +436,14 @@ plan, not an asset.
 Any one of these is a strategy meeting, not a footnote. Wire the SQL ones into
 the weekly loop and `07-metrics-crm-and-loop.md`.
 
-| Condition | Signal | Action |
-|---|---|---|
-| Onboarding stalls | 14 days after yes, not both (id stored AND >= 1 joined outcome report). | Escalate to founder. One pairing session. If still stalled at 21 days, downgrade to normal paid and stop concierge spend. |
-| Loop dies | A live partner logs `trusted_reads > 0` but `reports = 0` for 2 consecutive weeks. | Founder Slack, debug the `report_outcome` call. This is the moat leaking. Highest priority. |
-| No ignition | Zero outcome reports across ALL partners for 2 consecutive months after the first partner went live. | KILL CHECK (MOAT dashboard row 5). The moat is running on manufacturable fuel only. Re-examine partner selection and the ask. |
-| Nobody stores ids | 0 accounts with `legibility_id` as a FK 90 days after the id contract shipped. | KILL CHECK (row 6). Identity gravity is not forming. Rework onboarding. |
-| Wrong domains | A partner's query mix is > 50% anti-bot head. | The flywheel is calibrating unservable domains (dashboard row 4). Re-scope the partner's targets or exit them. |
-| Trust floor breached | `trust_rate_by_method` gate-pass below 0.60, or golden precision-at-gate below floor. | Engine failing (row 2). Freeze volume growth, escalate to engineering. |
+| Condition            | Signal                                                                                               | Action                                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Onboarding stalls    | 14 days after yes, not both (id stored AND >= 1 joined outcome report).                              | Escalate to founder. One pairing session. If still stalled at 21 days, downgrade to normal paid and stop concierge spend.     |
+| Loop dies            | A live partner logs `trusted_reads > 0` but `reports = 0` for 2 consecutive weeks.                   | Founder Slack, debug the `report_outcome` call. This is the moat leaking. Highest priority.                                   |
+| No ignition          | Zero outcome reports across ALL partners for 2 consecutive months after the first partner went live. | KILL CHECK (MOAT dashboard row 5). The moat is running on manufacturable fuel only. Re-examine partner selection and the ask. |
+| Nobody stores ids    | 0 accounts with `legibility_id` as a FK 90 days after the id contract shipped.                       | KILL CHECK (row 6). Identity gravity is not forming. Rework onboarding.                                                       |
+| Wrong domains        | A partner's query mix is > 50% anti-bot head.                                                        | The flywheel is calibrating unservable domains (dashboard row 4). Re-scope the partner's targets or exit them.                |
+| Trust floor breached | `trust_rate_by_method` gate-pass below 0.60, or golden precision-at-gate below floor.                | Engine failing (row 2). Freeze volume growth, escalate to engineering.                                                        |
 
 ---
 

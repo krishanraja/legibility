@@ -29,8 +29,14 @@ function Privacy() {
         <Section n="01" title="What we collect">
           <ul className="list-disc space-y-1 pl-5">
             <li>Your email, for magic-link sign-in.</li>
-            <li>API key metadata: a one-way hash, the prefix, and the last four characters. We never store the full key.</li>
-            <li>Per-call usage events: the tool, status, cost, latency, and timestamp. We do not store request bodies beyond the product reference needed to serve and cache the result.</li>
+            <li>
+              API key metadata: a one-way hash, the prefix, and the last four characters. We never
+              store the full key.
+            </li>
+            <li>
+              Per-call usage events: the tool, status, cost, latency, and timestamp. We do not store
+              request bodies beyond the product reference needed to serve and cache the result.
+            </li>
           </ul>
         </Section>
 
@@ -43,7 +49,10 @@ function Privacy() {
         </Section>
 
         <Section n="03" title="How we use data">
-          <p>We use the above only to operate, secure, meter, and bill the API, and to provide support. We do not sell personal data.</p>
+          <p>
+            We use the above only to operate, secure, meter, and bill the API, and to provide
+            support. We do not sell personal data.
+          </p>
         </Section>
 
         <Section n="04" title="Processors we use">
@@ -51,15 +60,18 @@ function Privacy() {
             <li>Supabase: database and authentication.</li>
             <li>Vercel: application hosting.</li>
             <li>Stripe: subscription billing (we never see full card numbers).</li>
-            <li>The public sources we extract from on your behalf, plus search and barcode providers used to resolve a query.</li>
+            <li>
+              The public sources we extract from on your behalf, plus search and barcode providers
+              used to resolve a query.
+            </li>
           </ul>
         </Section>
 
         <Section n="05" title="Retention">
           <p>
             Usage events are retained for at least 90 days for billing and abuse prevention. Cache
-            entries follow their TTL (a few days by default, shorter for volatile fields like price).
-            Account data is kept while your account is active.
+            entries follow their TTL (a few days by default, shorter for volatile fields like
+            price). Account data is kept while your account is active.
           </p>
         </Section>
 

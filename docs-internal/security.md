@@ -85,7 +85,7 @@ then the app, so the fail-closed sequence never opens a gap.
   unbounded real-cost extractions.
 - Billing unit is the trusted read: a null or low-confidence result is not billed
   and does not consume quota (`usage_events.billable = product returned AND
-  confidence >= 0.7`), so abuse that only produces misses cannot cost the customer
+confidence >= 0.7`), so abuse that only produces misses cannot cost the customer
   and is bounded by the free cost fuse.
 - Takedown blocklist enforced at extraction time (see `legal-trust.md`).
 - No bulk endpoints, no result pagination in v1.
@@ -107,4 +107,5 @@ memory (managed via the security tool). Update both when posture
 changes.
 
 ---
+
 Last reviewed: 2026-07-06.

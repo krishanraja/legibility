@@ -27,22 +27,22 @@ stage is the **entry criterion** of the next. Stages `sourced` through
 the Legibility database, joined to the CRM row by `legibility_user_id`. An agent never
 hand-sets `activated` or `outcome-reporting`; those flip from the data.
 
-| Stage | Definition (account is here when...) | Entry criterion (what moves it in) | Exit criterion (what moves it on) | Owner agent | Source of truth |
-|---|---|---|---|---|---|
-| `sourced` | A candidate account exists with a captured signal, not yet scored against the gates | An agent found an ICP-shaped target (see `01-icp-and-targeting.md`) and wrote a CRM row | Fit score computed and all 3 gates evaluated (section 3 rubric) | sourcing agent | CRM |
-| `qualified` | Passes all 3 qualification gates, hits no disqualifier, score >= 50 | Gates all true, disqualifiers all false, `score >= 50` | A demo is booked or an async live-read proof is sent and opened | qualifier agent | CRM |
-| `demoed` | Has seen a real live read on one of their own target URLs or a proof URL | Demo delivered per `04-demo-and-qualification.md` (never a mock) | Prospect verbally accepts the design-partner offer, or asks for the agreement | outreach agent | CRM |
-| `design-partner` | Accepted the offer, has an account and an API key, has agreed to the two non-negotiables | Offer accepted per `06-design-partner-motion.md`; `legibility_user_id` recorded on the CRM row | First trusted read lands for that `legibility_user_id` (`billable = true`) | partner agent | CRM, joined to Legibility DB |
-| `activated` | Their account has produced at least one trusted read (confidence >= 0.7) | First `usage_events` row with `billable = true` for `legibility_user_id` | First `outcome_reports` row for that account | product-instrumented | Legibility DB (`usage_events`) |
-| `outcome-reporting` | `report_outcome` is flowing on a regular cadence | At least one `outcome_reports` row, then a second in a later week | Stays here; this is the goal state. Regression to no reports for 60 days triggers the kill check | product-instrumented | Legibility DB (`outcome_reports`) |
+| Stage               | Definition (account is here when...)                                                     | Entry criterion (what moves it in)                                                             | Exit criterion (what moves it on)                                                                | Owner agent          | Source of truth                   |
+| ------------------- | ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------- | --------------------------------- |
+| `sourced`           | A candidate account exists with a captured signal, not yet scored against the gates      | An agent found an ICP-shaped target (see `01-icp-and-targeting.md`) and wrote a CRM row        | Fit score computed and all 3 gates evaluated (section 3 rubric)                                  | sourcing agent       | CRM                               |
+| `qualified`         | Passes all 3 qualification gates, hits no disqualifier, score >= 50                      | Gates all true, disqualifiers all false, `score >= 50`                                         | A demo is booked or an async live-read proof is sent and opened                                  | qualifier agent      | CRM                               |
+| `demoed`            | Has seen a real live read on one of their own target URLs or a proof URL                 | Demo delivered per `04-demo-and-qualification.md` (never a mock)                               | Prospect verbally accepts the design-partner offer, or asks for the agreement                    | outreach agent       | CRM                               |
+| `design-partner`    | Accepted the offer, has an account and an API key, has agreed to the two non-negotiables | Offer accepted per `06-design-partner-motion.md`; `legibility_user_id` recorded on the CRM row | First trusted read lands for that `legibility_user_id` (`billable = true`)                       | partner agent        | CRM, joined to Legibility DB      |
+| `activated`         | Their account has produced at least one trusted read (confidence >= 0.7)                 | First `usage_events` row with `billable = true` for `legibility_user_id`                       | First `outcome_reports` row for that account                                                     | product-instrumented | Legibility DB (`usage_events`)    |
+| `outcome-reporting` | `report_outcome` is flowing on a regular cadence                                         | At least one `outcome_reports` row, then a second in a later week                              | Stays here; this is the goal state. Regression to no reports for 60 days triggers the kill check | product-instrumented | Legibility DB (`outcome_reports`) |
 
 **Terminal and holding states** (set explicitly, with a reason):
 
-| State | Set when | Re-entry rule |
-|---|---|---|
-| `disqualified` | Any one hard disqualifier is true (section 3). Record `disqualify_reason` | Only if the disqualifier provably changes (e.g. they re-target off the anti-bot head). Log the change before re-opening |
-| `parked` | Qualified but `score < 50`, or no reply after the full outreach cadence in `03-outreach-sequences.md` | Auto-review in 90 days, or on a fresh intent signal that raises the score to >= 50 |
-| `churned` | Was `activated` or `outcome-reporting`, then zero keyed calls for 28 days | Founder-touch only. Do not re-run cold outreach on a churned partner |
+| State          | Set when                                                                                              | Re-entry rule                                                                                                           |
+| -------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `disqualified` | Any one hard disqualifier is true (section 3). Record `disqualify_reason`                             | Only if the disqualifier provably changes (e.g. they re-target off the anti-bot head). Log the change before re-opening |
+| `parked`       | Qualified but `score < 50`, or no reply after the full outreach cadence in `03-outreach-sequences.md` | Auto-review in 90 days, or on a fresh intent signal that raises the score to >= 50                                      |
+| `churned`      | Was `activated` or `outcome-reporting`, then zero keyed calls for 28 days                             | Founder-touch only. Do not re-run cold outreach on a churned partner                                                    |
 
 **Stop conditions inside the pipeline.** Do not advance an account past
 `qualified` if any disqualifier flips true later (targets go majority
@@ -128,7 +128,7 @@ Movement, not just standing counts. Read from the CRM.
 
 - **Stage counts:** accounts in each stage right now.
 - **Weekly conversion:** for each adjacent pair of stages, `moved_forward /
-  entered_prior_stage` over the trailing 4 weeks.
+entered_prior_stage` over the trailing 4 weeks.
 - **Dwell time:** median days an account has sat in its current stage. Flag any
   account past the dwell ceiling: `sourced` 3 days, `qualified` 7 days,
   `demoed` 10 days, `design-partner` 14 days to activation. Past ceiling means
@@ -174,22 +174,22 @@ separate from the Legibility product database; the join key to product metrics i
 
 ### 3.1 Schema
 
-| Column | Type | Written by | Notes |
-|---|---|---|---|
-| `account_id` | text (pk) | sourcing agent | Stable slug, e.g. company domain |
-| `name` | text | sourcing agent | Company or team name |
-| `domain` | text | sourcing agent | Their site |
-| `target_domains` | text | qualifier agent | The domains their agent needs to read (drives gate 3 and the feedback loop) |
-| `signal` | text | any agent | Freshest observed reason they fit: the wedge and the evidence. One line |
-| `score` | int (0 to 100) | qualifier agent | Fit + intent, computed by 3.2 |
-| `stage` | enum | agents (sales stages) / system (product stages) | Section 1 values |
-| `owner_agent` | text | router | Which fleet agent owns the next action |
-| `last_touch` | timestamptz + channel | outreach agent | When and how last contacted |
-| `next_action` | text | owner agent | The single next move, decided by 3.3 |
-| `next_action_due` | date | owner agent | When it must happen; drives the daily sweep |
-| `legibility_user_id` | uuid (nullable) | partner agent | Join key to `usage_events` / `outcome_reports`; null until signup |
-| `disqualify_reason` | text (nullable) | any agent | Required when `stage = disqualified` |
-| `notes` | text | any agent | Append-only log of what happened |
+| Column               | Type                  | Written by                                      | Notes                                                                       |
+| -------------------- | --------------------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
+| `account_id`         | text (pk)             | sourcing agent                                  | Stable slug, e.g. company domain                                            |
+| `name`               | text                  | sourcing agent                                  | Company or team name                                                        |
+| `domain`             | text                  | sourcing agent                                  | Their site                                                                  |
+| `target_domains`     | text                  | qualifier agent                                 | The domains their agent needs to read (drives gate 3 and the feedback loop) |
+| `signal`             | text                  | any agent                                       | Freshest observed reason they fit: the wedge and the evidence. One line     |
+| `score`              | int (0 to 100)        | qualifier agent                                 | Fit + intent, computed by 3.2                                               |
+| `stage`              | enum                  | agents (sales stages) / system (product stages) | Section 1 values                                                            |
+| `owner_agent`        | text                  | router                                          | Which fleet agent owns the next action                                      |
+| `last_touch`         | timestamptz + channel | outreach agent                                  | When and how last contacted                                                 |
+| `next_action`        | text                  | owner agent                                     | The single next move, decided by 3.3                                        |
+| `next_action_due`    | date                  | owner agent                                     | When it must happen; drives the daily sweep                                 |
+| `legibility_user_id` | uuid (nullable)       | partner agent                                   | Join key to `usage_events` / `outcome_reports`; null until signup           |
+| `disqualify_reason`  | text (nullable)       | any agent                                       | Required when `stage = disqualified`                                        |
+| `notes`              | text                  | any agent                                       | Append-only log of what happened                                            |
 
 ### 3.2 Scoring rubric (compute `score`, deterministic)
 
@@ -205,6 +205,7 @@ Evaluate the disqualifiers first. If any one is true, set `score = 0`, `stage =
 disqualified`, and write `disqualify_reason`. Stop.
 
 Disqualifiers (any one true kills it):
+
 1. Priority target domains are majority Amazon, Walmart, Target, Apple, or
    other top-tier anti-bot heads.
 2. Price-tracker or time-series price-monitoring use case.
@@ -213,15 +214,16 @@ Disqualifiers (any one true kills it):
 
 Otherwise score is additive, capped at 100:
 
-| Component | Points | Condition |
-|---|---|---|
-| Gate 1: programmatic consumer | +20 | Building an agent/automation that consumes product data programmatically, wants a typed schema, not a human dashboard |
-| Gate 2: existing extraction spend | +20 | Already pays for Diffbot, Firecrawl, ScrapingBee, Playwright, or Browserless, or hand-rolls JSON-LD |
-| Gate 3: reachable domains | +25 | Priority domains majority reachable today (JSON-LD, Shopify, barcodes, cooperating catalogues, supplier long-tail) |
-| Intent: public buy-flow build | +15 | Public evidence they are building a buy-this-for-me, procurement, or comparison agent |
-| Moat-critical subset | +20 | Procurement or buy-flow on supplier and long-tail domains (highest WTP, audit-trail requirement, legally readable traffic) |
+| Component                         | Points | Condition                                                                                                                  |
+| --------------------------------- | ------ | -------------------------------------------------------------------------------------------------------------------------- |
+| Gate 1: programmatic consumer     | +20    | Building an agent/automation that consumes product data programmatically, wants a typed schema, not a human dashboard      |
+| Gate 2: existing extraction spend | +20    | Already pays for Diffbot, Firecrawl, ScrapingBee, Playwright, or Browserless, or hand-rolls JSON-LD                        |
+| Gate 3: reachable domains         | +25    | Priority domains majority reachable today (JSON-LD, Shopify, barcodes, cooperating catalogues, supplier long-tail)         |
+| Intent: public buy-flow build     | +15    | Public evidence they are building a buy-this-for-me, procurement, or comparison agent                                      |
+| Moat-critical subset              | +20    | Procurement or buy-flow on supplier and long-tail domains (highest WTP, audit-trail requirement, legally readable traffic) |
 
 Bands and routing:
+
 - **A, score 80 to 100:** work now, design-partner candidate. Owner is the
   qualifier then partner agent.
 - **B, score 50 to 79:** qualified, nurture. Standard outreach cadence.
@@ -234,16 +236,16 @@ points push it over 50. All three gates must be true to advance past
 
 ### 3.3 Next-action decision rules
 
-| If stage is | And | Then next_action | Stop condition |
-|---|---|---|---|
-| `sourced` | score not yet computed | Run gates + disqualifiers, set score | Disqualifier true: move to `disqualified` |
-| `qualified` | band A or B | Pick wedge (`02-`) and send outreach step 1 (`03-`) | Cadence exhausted, no reply: `parked` |
-| `qualified` | band C | Set `parked`, no touch | Fresh signal raising score to >= 50 |
-| `demoed` | offer not yet accepted | Send the design-partner offer (`06-`) | 2 declines or 14 days silent: `parked` |
-| `design-partner` | `legibility_user_id` set, no trusted read yet | Onboard: help wire `legibility_id` storage + `report_outcome` (`06-`) | 14 days to activation exceeded: founder-touch, then evaluate churn |
-| `activated` | no outcome reports yet | Founder cadence to wire `report_outcome` on real buys | 60 days activated with zero reports: kill check |
-| `outcome-reporting` | reports flowing | Keep the feedback cadence, log misses (section 5) | 60 days no reports: back to kill check |
-| any | past dwell ceiling (2.4) | Re-decide the action or park | See dwell ceilings |
+| If stage is         | And                                           | Then next_action                                                      | Stop condition                                                     |
+| ------------------- | --------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `sourced`           | score not yet computed                        | Run gates + disqualifiers, set score                                  | Disqualifier true: move to `disqualified`                          |
+| `qualified`         | band A or B                                   | Pick wedge (`02-`) and send outreach step 1 (`03-`)                   | Cadence exhausted, no reply: `parked`                              |
+| `qualified`         | band C                                        | Set `parked`, no touch                                                | Fresh signal raising score to >= 50                                |
+| `demoed`            | offer not yet accepted                        | Send the design-partner offer (`06-`)                                 | 2 declines or 14 days silent: `parked`                             |
+| `design-partner`    | `legibility_user_id` set, no trusted read yet | Onboard: help wire `legibility_id` storage + `report_outcome` (`06-`) | 14 days to activation exceeded: founder-touch, then evaluate churn |
+| `activated`         | no outcome reports yet                        | Founder cadence to wire `report_outcome` on real buys                 | 60 days activated with zero reports: kill check                    |
+| `outcome-reporting` | reports flowing                               | Keep the feedback cadence, log misses (section 5)                     | 60 days no reports: back to kill check                             |
+| any                 | past dwell ceiling (2.4)                      | Re-decide the action or park                                          | See dwell ceilings                                                 |
 
 ### 3.4 Copy-paste CRM row template
 
@@ -282,26 +284,30 @@ moat signals first, volume second, kill status third, asks last.
 LEGIBILITY GTM ROLLUP :: week of {{monday_date}}
 
 MOAT SIGNALS (priority order)
+
 - Outcome reports this week: {{reports_this_week}} from {{reporting_accounts}} account(s)
-    (prior week: {{reports_prior_week}}). Ignition: {{yes_first_ever | ongoing | none}}
+  (prior week: {{reports_prior_week}}). Ignition: {{yes_first_ever | ongoing | none}}
 - Accounts storing legibility_id as a foreign key: {{count}} ({{delta_vs_prior}})
 - New activations this week: {{new_activated}}; median time-to-first-trusted-read: {{ttfr_median}} min
-    (target < 3). Activation leak (signed up, never activated): {{never_activated_count}}
+  (target < 3). Activation leak (signed up, never activated): {{never_activated_count}}
 
 NORTH STAR
+
 - Active accounts (>=1 keyed call, trailing 7d): {{active_accounts}}
 - Median trusted reads / active account / week: {{median_tr}} (target 7+; warn 3 to 7; red < 3)
 - Repeat rate (active this week and last): {{repeat_pct}}% (red < 30%)
 - Overall trust rate: {{trust_rate}} (floor 0.60); precision-at-gate (last golden run): {{p_at_gate}}
 
 PIPELINE
+
 - Standing: sourced {{n}} / qualified {{n}} / demoed {{n}} / design-partner {{n}}
-    / activated {{n}} / outcome-reporting {{n}}
+  / activated {{n}} / outcome-reporting {{n}}
 - Moved forward this week: {{moves_summary}}
 - Conversion (4wk): qualified->demoed {{pct}}%, demoed->partner {{pct}}%, partner->activated {{pct}}%
 - Past dwell ceiling (need re-decision): {{count}} -> {{account_ids}}
 
 KILL DASHBOARD (from kill_dashboard())
+
 - Trust rate vs 0.60 floor: {{GREEN|RED}} ({{value}})
 - 28-day active accounts: {{value}}
 - 30-day outcome reports: {{value}}
@@ -309,6 +315,7 @@ KILL DASHBOARD (from kill_dashboard())
 - Competitor watch (manual): {{none | vendor + what shipped}}
 
 ASKS / BLOCKERS FOR KRISH
+
 - {{founder_actions_this_week_or_none}}
 ```
 
@@ -325,13 +332,13 @@ fleet's job is to capture those as structured signals and route them, not to
 argue them in the rollup. Five categories, each with a trigger threshold (so one
 anecdote does not become a roadmap) and a destination.
 
-| Observed | Category | Trigger to escalate | Destination |
-|---|---|---|---|
-| A specific hard domain shows up in target lists and fails to return a trusted object | `hard-domain-gap` | Same domain in the `target_domains` of 3 or more qualified accounts | Product: unlocker/coverage backlog. Never promise it as shipped |
-| Prospects keep needing a field Legibility does not return well (e.g. dimensions, MPN, warranty) | `missing-field` | Same field asked by 3 or more qualified accounts | Product: schema backlog |
-| A design partner says a confidence looked wrong (over or under stated) on a real read | `calibration-miss` | Any instance from an activated account, with the URL and returned object | Product: calibration / golden-set. Attach `request_id` and `envelope_hash` |
-| An objection recurs that current messaging does not answer | `positioning-gap` | Same objection in 3 or more demos | Update `02-positioning-and-messaging.md`, not product |
-| A prospect asks for something on the roadmap (webhooks, SDK, mainnet x402, compare/brief over MCP, auto-billed overage) | `roadmap-ask` | Log every instance; escalate at 5 | Product: demand-rank the roadmap. State honestly it is not shipped |
+| Observed                                                                                                                | Category           | Trigger to escalate                                                      | Destination                                                                |
+| ----------------------------------------------------------------------------------------------------------------------- | ------------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| A specific hard domain shows up in target lists and fails to return a trusted object                                    | `hard-domain-gap`  | Same domain in the `target_domains` of 3 or more qualified accounts      | Product: unlocker/coverage backlog. Never promise it as shipped            |
+| Prospects keep needing a field Legibility does not return well (e.g. dimensions, MPN, warranty)                         | `missing-field`    | Same field asked by 3 or more qualified accounts                         | Product: schema backlog                                                    |
+| A design partner says a confidence looked wrong (over or under stated) on a real read                                   | `calibration-miss` | Any instance from an activated account, with the URL and returned object | Product: calibration / golden-set. Attach `request_id` and `envelope_hash` |
+| An objection recurs that current messaging does not answer                                                              | `positioning-gap`  | Same objection in 3 or more demos                                        | Update `02-positioning-and-messaging.md`, not product                      |
+| A prospect asks for something on the roadmap (webhooks, SDK, mainnet x402, compare/brief over MCP, auto-billed overage) | `roadmap-ask`      | Log every instance; escalate at 5                                        | Product: demand-rank the roadmap. State honestly it is not shipped         |
 
 Two rules. First, a `hard-domain-gap` or `missing-field` never becomes a sales
 promise. It is logged as demand and demand-ranks the roadmap; the agent tells
@@ -344,11 +351,12 @@ Copy-paste product-feedback ticket:
 
 ```md
 LEGIBILITY PRODUCT FEEDBACK :: {{category}}
-- Raised by (agent): {{owner_agent}}   Date: {{iso_date}}
+
+- Raised by (agent): {{owner_agent}} Date: {{iso_date}}
 - Accounts affected: {{account_ids}} ({{count}}, threshold {{threshold}})
 - Evidence: {{target_domain_or_field_or_objection}}
 - For calibration-miss only: request_id {{id}}, envelope_hash {{hash}}, URL {{url}},
-    returned {{object_summary}}, partner-observed truth {{what_they_saw}}
+  returned {{object_summary}}, partner-observed truth {{what_they_saw}}
 - Honest scope told to prospect: {{what_the_agent_said_is_true_today}}
 - Suggested rank: {{P1|P2|P3}}
 ```
@@ -358,6 +366,7 @@ LEGIBILITY PRODUCT FEEDBACK :: {{category}}
 ## 6. Cadence and stop conditions
 
 **Cadence.**
+
 - **Daily:** sweep the CRM for rows where `next_action_due <= today`; execute or
   re-decide each. Refresh `stage` for any account with a `legibility_user_id` by
   re-reading `usage_events` (activated?) and `outcome_reports` (reporting?).
@@ -397,4 +406,5 @@ question with a timer on it. The metrics say whether the timer is being beaten.
 Report the red numbers first.
 
 ---
+
 Last reviewed: 2026-07-06.

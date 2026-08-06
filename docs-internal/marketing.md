@@ -84,4 +84,5 @@ og:url match the route, never the homepage.
 - Em dashes (see design.md)
 
 ---
+
 Last reviewed: 2026-07-06.

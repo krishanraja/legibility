@@ -63,7 +63,14 @@ export async function settle(
 
   let verify: { isValid?: boolean; invalidReason?: string } | null = null;
   try {
-    verify = await (await fetch(`${FACILITATOR}/verify`, { method: "POST", headers, body, signal: AbortSignal.timeout(15000) })).json();
+    verify = await (
+      await fetch(`${FACILITATOR}/verify`, {
+        method: "POST",
+        headers,
+        body,
+        signal: AbortSignal.timeout(15000),
+      })
+    ).json();
   } catch {
     return { ok: false, reason: "facilitator verify unreachable" };
   }
@@ -71,7 +78,14 @@ export async function settle(
 
   let settled: { success?: boolean; errorReason?: string } | null = null;
   try {
-    settled = await (await fetch(`${FACILITATOR}/settle`, { method: "POST", headers, body, signal: AbortSignal.timeout(30000) })).json();
+    settled = await (
+      await fetch(`${FACILITATOR}/settle`, {
+        method: "POST",
+        headers,
+        body,
+        signal: AbortSignal.timeout(30000),
+      })
+    ).json();
   } catch {
     return { ok: false, reason: "facilitator settle unreachable" };
   }

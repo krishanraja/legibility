@@ -23,12 +23,12 @@ zero crashes. Each billable read stamps `confidence`, `method`, `domain`,
 
 ## Stripe SKUs
 
-| Plan    | Stripe product       | Monthly price | Included trusted reads | Overage        |
-| ------- | -------------------- | ------------- | ---------------------- | -------------- |
-| Free    | `plinth_free`        | $0            | 1,000                  | none, hard stop |
-| Starter | `plinth_starter_v1`  | $29           | 5,000                  | $0.01/read     |
-| Growth  | `plinth_growth_v1`   | $199          | 50,000                 | $0.005/read    |
-| Custom  | `plinth_custom_*`    | quote         | quote                  | quote          |
+| Plan    | Stripe product      | Monthly price | Included trusted reads | Overage         |
+| ------- | ------------------- | ------------- | ---------------------- | --------------- |
+| Free    | `plinth_free`       | $0            | 1,000                  | none, hard stop |
+| Starter | `plinth_starter_v1` | $29           | 5,000                  | $0.01/read      |
+| Growth  | `plinth_growth_v1`  | $199          | 50,000                 | $0.005/read     |
+| Custom  | `plinth_custom_*`   | quote         | quote                  | quote           |
 
 **Status (2026-07-06):** live products and prices exist in Stripe
 (Starter `price_1Tki9C4w6vAdI2o574L46LZW`, Growth
@@ -138,4 +138,5 @@ one with a true per-success external cost.
 See [support.md](./support.md). Process via Stripe; mirror to `invoices`.
 
 ---
+
 Last reviewed: 2026-07-06.

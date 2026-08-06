@@ -12,10 +12,22 @@
       "title": "Millennium Falcon™",
       "brand": "LEGO®",
       "sku": "6175771",
-      "price": { "low": 849.99, "high": 849.99, "currency": "USD", "as_of": "2026-07-06T17:17:47.001Z", "n_sources": 3 },
+      "price": {
+        "low": 849.99,
+        "high": 849.99,
+        "currency": "USD",
+        "as_of": "2026-07-06T17:17:47.001Z",
+        "n_sources": 3
+      },
       "availability": "in_stock"
     },
-    "field_confidence": { "title": 0.846, "brand": 0.978, "sku": 0.92, "priceLow": 0.978, "currency": 0.978 },
+    "field_confidence": {
+      "title": 0.846,
+      "brand": 0.978,
+      "sku": 0.92,
+      "priceLow": 0.978,
+      "currency": 0.978
+    },
     "confidence": 1,
     "method": "jsonld",
     "cost_usd": 0.006,

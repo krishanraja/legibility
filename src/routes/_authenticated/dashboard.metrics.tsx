@@ -23,7 +23,9 @@ function MetricsPage() {
     return (
       <div>
         <h1 className="font-display text-4xl">Metrics</h1>
-        <p className="mt-3 text-muted-foreground">This surface is available to Legibility admins only.</p>
+        <p className="mt-3 text-muted-foreground">
+          This surface is available to Legibility admins only.
+        </p>
       </div>
     );
   }
@@ -46,9 +48,16 @@ function MetricsPage() {
         <Tile
           label="Moat metric: precision at gate"
           value={ev ? `${Number(ev.precision_at_gate)}` : "n/a"}
-          sub={ev ? `golden ${String(ev.calibration_version)}, Wilson low ${Number(ev.precision_wilson_low)}` : "no eval run"}
+          sub={
+            ev
+              ? `golden ${String(ev.calibration_version)}, Wilson low ${Number(ev.precision_wilson_low)}`
+              : "no eval run"
+          }
         />
-        <Tile label="Active accounts (weeks)" value={String(new Set(m.weekly.map((w) => w.user_id)).size)} />
+        <Tile
+          label="Active accounts (weeks)"
+          value={String(new Set(m.weekly.map((w) => w.user_id)).size)}
+        />
       </div>
 
       <Section title="Gate-pass rate by method (this is gate-pass, NOT correctness)">
@@ -57,7 +66,12 @@ function MetricsPage() {
         ) : (
           <Table
             head={["method", "calls", "gate pass", "rate"]}
-            rows={m.byMethod.map((r) => [r.method, String(r.calls), String(r.gate_pass), String(r.gate_pass_rate)])}
+            rows={m.byMethod.map((r) => [
+              r.method,
+              String(r.calls),
+              String(r.gate_pass),
+              String(r.gate_pass_rate),
+            ])}
           />
         )}
       </Section>
@@ -65,7 +79,12 @@ function MetricsPage() {
       <Section title="Kill dashboard (monthly review, one query)">
         <Table
           head={["signal", "value", "red threshold", "status"]}
-          rows={m.kill.map((k) => [k.signal, k.value === null ? "no-data" : String(k.value), k.red_threshold, k.status])}
+          rows={m.kill.map((k) => [
+            k.signal,
+            k.value === null ? "no-data" : String(k.value),
+            k.red_threshold,
+            k.status,
+          ])}
         />
       </Section>
     </div>
@@ -75,7 +94,9 @@ function MetricsPage() {
 function Tile({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="rounded-md border border-hairline bg-surface p-5">
-      <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        {label}
+      </div>
       <div className="mt-2 font-display text-3xl">{value}</div>
       {sub && <div className="mt-1 font-mono text-[11px] text-muted-foreground">{sub}</div>}
     </div>
@@ -84,24 +105,42 @@ function Tile({ label, value, sub }: { label: string; value: string; sub?: strin
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{title}</div>
+      <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+        {title}
+      </div>
       <div className="mt-3">{children}</div>
     </div>
   );
 }
 function Empty({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-md border border-dashed border-hairline bg-surface p-6 text-center font-mono text-xs text-muted-foreground">{children}</div>;
+  return (
+    <div className="rounded-md border border-dashed border-hairline bg-surface p-6 text-center font-mono text-xs text-muted-foreground">
+      {children}
+    </div>
+  );
 }
 function Table({ head, rows }: { head: string[]; rows: string[][] }) {
   return (
     <div className="overflow-x-auto rounded-md border border-hairline">
       <table className="w-full min-w-[520px] text-sm">
         <thead className="bg-surface font-mono text-xs uppercase tracking-widest text-muted-foreground text-left">
-          <tr>{head.map((h) => <th key={h} className="px-4 py-3">{h}</th>)}</tr>
+          <tr>
+            {head.map((h) => (
+              <th key={h} className="px-4 py-3">
+                {h}
+              </th>
+            ))}
+          </tr>
         </thead>
         <tbody className="divide-y divide-hairline font-mono text-xs">
           {rows.map((r, i) => (
-            <tr key={i}>{r.map((c, j) => <td key={j} className="px-4 py-3 text-foreground">{c}</td>)}</tr>
+            <tr key={i}>
+              {r.map((c, j) => (
+                <td key={j} className="px-4 py-3 text-foreground">
+                  {c}
+                </td>
+              ))}
+            </tr>
           ))}
         </tbody>
       </table>
@@ -109,4 +148,6 @@ function Table({ head, rows }: { head: string[]; rows: string[][] }) {
   );
 }
 
-export const Route = createFileRoute("/_authenticated/dashboard/metrics")({ component: MetricsPage });
+export const Route = createFileRoute("/_authenticated/dashboard/metrics")({
+  component: MetricsPage,
+});

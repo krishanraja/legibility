@@ -10,16 +10,16 @@ accent, not as the dominant voice.
 
 Defined as `oklch` in `src/styles.css`. Use the token, never a hex.
 
-| Token              | Role                                |
-| ------------------ | ----------------------------------- |
-| `--background`     | Cream page background               |
-| `--surface`        | Slightly raised panel               |
-| `--foreground`     | Deep navy text                      |
-| `--muted-foreground` | Secondary text                    |
-| `--signal`         | Terracotta accent (CTAs, highlights)|
-| `--verified`       | Cool green (rare; payment states)   |
-| `--hairline`       | Border colour                       |
-| `--stone`          | Italic editorial text               |
+| Token                | Role                                 |
+| -------------------- | ------------------------------------ |
+| `--background`       | Cream page background                |
+| `--surface`          | Slightly raised panel                |
+| `--foreground`       | Deep navy text                       |
+| `--muted-foreground` | Secondary text                       |
+| `--signal`           | Terracotta accent (CTAs, highlights) |
+| `--verified`         | Cool green (rare; payment states)    |
+| `--hairline`         | Border colour                        |
+| `--stone`            | Italic editorial text                |
 
 Never hardcode `text-white`, `bg-black`, or bracket hex utilities.
 
@@ -106,13 +106,14 @@ and the page says so. Keep that honesty: do not dress a zero up as traction.
 
 ### On-brand vs off-brand
 
-| Off-brand                                              | On-brand                                                |
-| ------------------------------------------------------ | ------------------------------------------------------- |
-| "AI-powered next-gen product intelligence."            | "Typed product object, confidence per field."           |
-| "Real-time pricing across the entire web."             | "Price as a band, with as_of and n_sources."            |
-| "Unleash your agents with our seamless API!"           | "Agents can discover the MCP server and pay per call."  |
-| "Trusted by leading enterprises."                      | (omit; use a real customer logo or nothing)             |
-| A hero object richer than the engine returns.          | The exact captured call, private-beta caveat and all.   |
+| Off-brand                                     | On-brand                                               |
+| --------------------------------------------- | ------------------------------------------------------ |
+| "AI-powered next-gen product intelligence."   | "Typed product object, confidence per field."          |
+| "Real-time pricing across the entire web."    | "Price as a band, with as_of and n_sources."           |
+| "Unleash your agents with our seamless API!"  | "Agents can discover the MCP server and pay per call." |
+| "Trusted by leading enterprises."             | (omit; use a real customer logo or nothing)            |
+| A hero object richer than the engine returns. | The exact captured call, private-beta caveat and all.  |
 
 ---
+
 Last reviewed: 2026-07-06.

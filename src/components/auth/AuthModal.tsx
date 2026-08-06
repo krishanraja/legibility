@@ -1,11 +1,23 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+export function AuthModal({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+}) {
   const [email, setEmail] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -52,11 +64,23 @@ export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange:
               autoFocus
               className="bg-background"
             />
-            <Button type="submit" disabled={sending || !email} className="w-full bg-signal text-background hover:bg-signal/90">
+            <Button
+              type="submit"
+              disabled={sending || !email}
+              className="w-full bg-signal text-background hover:bg-signal/90"
+            >
               {sending ? "Sending…" : "Send magic link"}
             </Button>
             <p className="text-xs text-muted-foreground">
-              By continuing you agree to the <a href="/terms" className="underline">Terms</a> and <a href="/privacy" className="underline">Privacy Policy</a>.
+              By continuing you agree to the{" "}
+              <a href="/terms" className="underline">
+                Terms
+              </a>{" "}
+              and{" "}
+              <a href="/privacy" className="underline">
+                Privacy Policy
+              </a>
+              .
             </p>
           </form>
         )}

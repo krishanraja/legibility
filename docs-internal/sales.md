@@ -113,4 +113,5 @@ Never demo on `an-example-store.com` or a bot-hard retailer; use a URL that
 returns a trusted object today.
 
 ---
+
 Last reviewed: 2026-07-06.

@@ -53,12 +53,12 @@ The trusted-read unit is the whole pricing story: **a null read or a read
 below 0.7 confidence charges nothing and consumes no quota.** You only pay for
 answers your agent could actually trust. Lead with that line every time.
 
-| Tier | Price | Included trusted reads/mo | Overage | Notes |
-|---|---|---|---|---|
-| Free | $0, no card | 1,000 | none, hard stop at cap | key, REST + MCP, email support |
-| Starter | $29/mo | 5,000 | $0.01/read | priority email |
-| Growth | $199/mo | 50,000 | $0.005/read | higher limits, Slack, SLA |
-| Custom | quote | 250,000+/mo | quote | on-prem extractor, residency |
+| Tier    | Price       | Included trusted reads/mo | Overage                | Notes                          |
+| ------- | ----------- | ------------------------- | ---------------------- | ------------------------------ |
+| Free    | $0, no card | 1,000                     | none, hard stop at cap | key, REST + MCP, email support |
+| Starter | $29/mo      | 5,000                     | $0.01/read             | priority email                 |
+| Growth  | $199/mo     | 50,000                    | $0.005/read            | higher limits, Slack, SLA      |
+| Custom  | quote       | 250,000+/mo               | quote                  | on-prem extractor, residency   |
 
 **Overage honesty rule.** The overage rates above are defined, but automatic
 metering to Stripe is not shipped (`00` section 5). Never promise auto-billed
@@ -69,13 +69,13 @@ way: "you will not get a surprise bill; you hit the cap and we talk."
 **Tier-by-volume decision rule.** Estimate the prospect's monthly trusted
 reads from the qualifying call (`{{monthly_read_estimate}}`), then:
 
-| Estimated trusted reads/mo | Quote |
-|---|---|
-| Under 1,000, evaluating | **Free.** No card. Let the product prove itself. |
-| 1,000 to 5,000 | **Starter, $29/mo.** |
-| 5,000 to 50,000 | **Growth, $199/mo.** |
+| Estimated trusted reads/mo                               | Quote                                                        |
+| -------------------------------------------------------- | ------------------------------------------------------------ |
+| Under 1,000, evaluating                                  | **Free.** No card. Let the product prove itself.             |
+| 1,000 to 5,000                                           | **Starter, $29/mo.**                                         |
+| 5,000 to 50,000                                          | **Growth, $199/mo.**                                         |
 | Over 50,000, or needs on-prem extractor / data residency | **Custom quote.** Do not name a number; escalate to founder. |
-| Any volume, but moat-critical target | **Design-partner offer (section 4), not a tier.** |
+| Any volume, but moat-critical target                     | **Design-partner offer (section 4), not a tier.**            |
 
 Rule of thumb for the quote: quote the tier whose cap comfortably covers
 their estimate with headroom, not the tier they will immediately overflow.
@@ -142,6 +142,7 @@ the `legibility_id` stored and `report_outcome` flowing (`00` sections 1 and 6,
 ### 4.1 The standard offer (default terms)
 
 **What we give:**
+
 - **Growth-tier headroom free for 3 months** (50,000 trusted reads/mo),
   extendable by mutual agreement. This is the default `{{N_months}} = 3`.
 - Direct founder support and a **private Slack channel** (`{{slack_channel}}`).
@@ -150,6 +151,7 @@ the `legibility_id` stored and `report_outcome` flowing (`00` sections 1 and 6,
 - Roadmap influence and hands-on help wiring outcome closure.
 
 **What we ask (the two non-negotiables plus two soft asks):**
+
 1. **Store the opaque `legibility_id`** as a foreign key in their own database.
    (Non-negotiable. This is where switching cost forms.)
 2. **Wire `POST /api/v1/report_outcome`** so their agent reports whether a
@@ -248,6 +250,7 @@ are calibrated confidence and outcome closure, and those are exactly what a
 weekend Firecrawl wrapper does not have.
 
 **Copy-paste:**
+
 ```
 You can build it, and then you own the schema, the cache, the barcode merge,
 the is-product verifier, the MCP server, x402, a stable identity, and the
@@ -276,6 +279,7 @@ an agent and to tell that agent how much to trust each field. If you want a
 can gate on and pay for autonomously, Legibility.
 
 **Copy-paste:**
+
 ```
 Diffbot is a real product and their entity graph is deep. The difference for
 an agent: Diffbot gives you a typed object but not a calibrated confidence
@@ -302,6 +306,7 @@ show the real hit rate, not argue about Apple. If their list is majority
 anti-bot head, that is a disqualifier and you say so.
 
 **Copy-paste:**
+
 ```
 Straight answer: Apple and a handful of top anti-bot sites are best-effort
 right now. They come back as a clean null with no charge, never a wrong
@@ -328,6 +333,7 @@ and shortlisting, the band is exactly the right primitive. If they need a
 legal price guarantee, that is a disqualifier.
 
 **Copy-paste:**
+
 ```
 It is a band, not a live spot price, and we return it with an as_of timestamp
 and the source count so you can see its freshness. That is deliberate: we
@@ -357,6 +363,7 @@ the design-partner mechanism makes this concrete: once you wire
 it learns from whether your buys actually succeeded.
 
 **Copy-paste:**
+
 ```
 The confidence is calibrated against a labelled golden set, so 0.7 really
 means about 70% likely correct, and you get it per field. You do not trust
@@ -381,6 +388,7 @@ happened. The agent-pays-directly surface is a bonus for autonomous stacks,
 not a dependency for anyone. Card is the default and only real payment path.
 
 **Copy-paste:**
+
 ```
 x402 is opt-in and testnet only today (Base Sepolia). No mainnet settlement
 has happened, and you never have to touch it: card is the default and only
@@ -403,6 +411,7 @@ MCP (`read_product` and `resolve_product`). `compare_products` and
 and a typed response, which is exactly what ships.
 
 **Copy-paste:**
+
 ```
 Honest answer: webhooks and SDKs are roadmap, not shipped, so I will not sell
 them to you. What ships today is REST for all four tools and MCP for read and
@@ -426,6 +435,7 @@ that fits. If they are genuinely high-volume and buy-flow-shaped, that is a
 design-partner conversation, not a discount conversation.
 
 **Copy-paste:**
+
 ```
 Worth re-checking the number, because you only pay for reads that cleared 0.7.
 The nulls and the low-confidence answers in your traffic are free and never
@@ -450,6 +460,7 @@ not invent customers or logos (hard rule, `00` section 7). Sell the trade and
 the founder access, not a customer list you do not have.
 
 **Copy-paste:**
+
 ```
 Straight answer: we are early and in private beta, which is why design-partner
 spots are open and the terms are this generous. I am not going to wave logos
@@ -487,6 +498,7 @@ Two closing motions, by path.
 
 **Self-serve close (fits a tier).** The close is "start free, no card, and
 move up when you cross the cap." Lower the activation barrier to zero.
+
 ```
 Easiest next step: grab a key at https://legibility.io, no card, 1,000 trusted
 reads a month to prove it on your own URLs. When you cross the cap we move you
@@ -497,6 +509,7 @@ send a 5-line curl that reads {{their_target_domain}} right now?
 **Design-partner close (moat-critical).** The close is a yes to the trade and
 a same-day Slack channel. The commitment you are closing is the wiring, not a
 signature.
+
 ```
 If the trade works for you, say yes and I will open the Slack channel today
 and send the two wiring steps: store the legibility_id, and call report_outcome
@@ -517,6 +530,7 @@ North Star (calls on domains Legibility cannot serve poison the calibration) and
 protects trust.
 
 **Copy-paste disqualification (hard-domain head):**
+
 ```
 Being straight with you: your target list is mostly {{disqualifying_domains}},
 which are top-tier anti-bot sites we do not serve reliably today, and I would
@@ -526,6 +540,7 @@ I will run them live. Not the right fit right now.
 ```
 
 **Copy-paste disqualification (price-tracking / live-guarantee use case):**
+
 ```
 Honest fit check: Legibility returns a price band with a timestamp, not a live
 guaranteed spot price or a time-series price feed, and we deliberately do not
@@ -535,6 +550,7 @@ readable domains, that is exactly us, and I am happy to run a live read.
 ```
 
 Other stop conditions:
+
 - Prospect will not commit even in principle to storing the `legibility_id` and
   wiring `report_outcome` -> not a design partner. Offer Free/Starter and move
   on.

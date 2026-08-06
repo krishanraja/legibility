@@ -61,28 +61,28 @@ subjective.
 
 ### Tier 1: correctness (blocking from Phase 0)
 
-| Gate | Command | Threshold |
-|---|---|---|
-| Typecheck | `tsc --noEmit` | 0 errors |
-| Lint | `eslint .` | 0 errors, **blocking** |
-| Format | `prettier --check .` | clean |
-| Unit tests | `vitest run` | 100 percent pass |
+| Gate                  | Command                 | Threshold                                                   |
+| --------------------- | ----------------------- | ----------------------------------------------------------- |
+| Typecheck             | `tsc --noEmit`          | 0 errors                                                    |
+| Lint                  | `eslint .`              | 0 errors, **blocking**                                      |
+| Format                | `prettier --check .`    | clean                                                       |
+| Unit tests            | `vitest run`            | 100 percent pass                                            |
 | Coverage, money paths | `vitest run --coverage` | **100 percent** line and branch on the files in section 4.1 |
-| Coverage, global | same | 70 percent, raised to 80 after Phase 2 |
-| Build | `vite build` | success |
-| Secrets | `gitleaks` | 0 findings |
-| House style | em dash scan | 0 across `src/`, `docs/`, `public/`, `README.md` |
-| Database | Supabase advisors | 0 at ERROR or WARN |
+| Coverage, global      | same                    | 70 percent, raised to 80 after Phase 2                      |
+| Build                 | `vite build`            | success                                                     |
+| Secrets               | `gitleaks`              | 0 findings                                                  |
+| House style           | em dash scan            | 0 across `src/`, `docs/`, `public/`, `README.md`            |
+| Database              | Supabase advisors       | 0 at ERROR or WARN                                          |
 
 ### Tier 2: the live surface (blocking from Phase 3)
 
-| Gate | Tool | Threshold |
-|---|---|---|
-| E2E flows | Playwright vs preview URL | all pass |
-| Accessibility | axe-core on 6 routes | 0 serious, 0 critical |
-| Lighthouse | mobile, preview URL | perf 90+, a11y 100, best practices 95+, SEO 100 |
-| Broken links | linkinator on the built site | 0 broken |
-| GEO validity | custom (section 4.4) | robots parses and excludes `/dashboard` for **every** agent group; every sitemap URL returns 200; `llms.txt` claims match the database |
+| Gate          | Tool                         | Threshold                                                                                                                              |
+| ------------- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| E2E flows     | Playwright vs preview URL    | all pass                                                                                                                               |
+| Accessibility | axe-core on 6 routes         | 0 serious, 0 critical                                                                                                                  |
+| Lighthouse    | mobile, preview URL          | perf 90+, a11y 100, best practices 95+, SEO 100                                                                                        |
+| Broken links  | linkinator on the built site | 0 broken                                                                                                                               |
+| GEO validity  | custom (section 4.4)         | robots parses and excludes `/dashboard` for **every** agent group; every sitemap URL returns 200; `llms.txt` claims match the database |
 
 ### Tier 3: informational, reported not enforced
 
@@ -130,14 +130,14 @@ These are pure or near-pure functions that decide what a customer is charged and
 They are cheap to test and they are what an enterprise reviewer asks about first. **100 percent
 line and branch coverage required.**
 
-| Target | File | Cases that must exist |
-|---|---|---|
-| Stripe signature verify | `src/routes/api/stripe/webhook.ts` | valid signature; wrong signature; missing header; malformed header; timestamp outside the 300s replay window; timestamp in the future; empty body |
-| Billing stamp | `src/lib/api/meter.ts` | confidence exactly 0.7 is billable; 0.6999 is not; `product: null` is not; non-JSON body; missing `confidence`; domain derivation for url, gtin and name; `envelope_hash` stability for identical bodies |
-| Key auth | `src/integrations/supabase/api-keys.server.ts` | wrong prefix rejected; revoked key rejected; unknown hash rejected; valid key returns userId and keyId; `hashKey` is stable sha256 |
-| Webhook handlers | `src/routes/api/stripe/webhook.ts` | the three failure modes fixed this pass: DB error returns 500; a failed `plans` lookup does not downgrade to free; a silent `{error}` result is surfaced |
-| MCP protocol | `src/routes/api/mcp.ts` | `initialize` shape; `tools/list`; `tools/call` with no auth returns 402 with payment requirements; unknown method returns -32601; `GET` returns 405 |
-| x402 | `src/lib/api/x402.server.ts` | `paymentRequirements()` shape; zero-address recipient means unconfigured |
+| Target                  | File                                           | Cases that must exist                                                                                                                                                                                    |
+| ----------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stripe signature verify | `src/routes/api/stripe/webhook.ts`             | valid signature; wrong signature; missing header; malformed header; timestamp outside the 300s replay window; timestamp in the future; empty body                                                        |
+| Billing stamp           | `src/lib/api/meter.ts`                         | confidence exactly 0.7 is billable; 0.6999 is not; `product: null` is not; non-JSON body; missing `confidence`; domain derivation for url, gtin and name; `envelope_hash` stability for identical bodies |
+| Key auth                | `src/integrations/supabase/api-keys.server.ts` | wrong prefix rejected; revoked key rejected; unknown hash rejected; valid key returns userId and keyId; `hashKey` is stable sha256                                                                       |
+| Webhook handlers        | `src/routes/api/stripe/webhook.ts`             | the three failure modes fixed this pass: DB error returns 500; a failed `plans` lookup does not downgrade to free; a silent `{error}` result is surfaced                                                 |
+| MCP protocol            | `src/routes/api/mcp.ts`                        | `initialize` shape; `tools/list`; `tools/call` with no auth returns 402 with payment requirements; unknown method returns -32601; `GET` returns 405                                                      |
+| x402                    | `src/lib/api/x402.server.ts`                   | `paymentRequirements()` shape; zero-address recipient means unconfigured                                                                                                                                 |
 
 **One refactor required:** `verifySignature` is module-private. Export it (or move it to
 `src/lib/api/stripe-signature.ts`) so it can be tested directly. That is the only production
@@ -217,8 +217,7 @@ failure modes.
    for the `has_role` probe this pass.
 4. **Stuck detector.** If the same gate fails three consecutive times without the error changing,
    stop and escalate with the logs. Do not keep pushing variations.
-5. **No new runtime dependencies.** DevDependencies limited to the approved list in Phase 0 step
-   3. Anything else needs a human.
+5. **No new runtime dependencies.** DevDependencies limited to the approved list in Phase 0 step 3. Anything else needs a human.
 6. **Cost ceiling.** No metered call (Exa, Bright Data, any paid API) without an explicit per-run
    cap. The truth tests in 4.4 use plain fetches only.
 7. **Secrets never leave CI.** The agent reads job logs, which are already redacted. It never
@@ -231,28 +230,28 @@ failure modes.
 
 Be honest about the boundary. These need you.
 
-| Item | Why |
-|---|---|
-| **Rotate the exposed Stripe and Supabase keys** | Dashboard access plus secret handling. **Do this first, independent of everything above** |
-| Enable leaked password protection | Supabase Auth dashboard toggle |
-| 301 `onplinth.io` to `legibility.io` | Vercel domain config |
-| Create `support@legibility.io` | Needs a real mailbox before `mcp.json` can stop using a personal Gmail |
-| `og.png` and `favicon.png` | You have these |
-| Merging the PR to `main` | Deliberately human |
-| Accepting the Lighthouse and coverage numbers as "good enough" | A judgement call, not a check |
+| Item                                                           | Why                                                                                       |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| **Rotate the exposed Stripe and Supabase keys**                | Dashboard access plus secret handling. **Do this first, independent of everything above** |
+| Enable leaked password protection                              | Supabase Auth dashboard toggle                                                            |
+| 301 `onplinth.io` to `legibility.io`                           | Vercel domain config                                                                      |
+| Create `support@legibility.io`                                 | Needs a real mailbox before `mcp.json` can stop using a personal Gmail                    |
+| `og.png` and `favicon.png`                                     | You have these                                                                            |
+| Merging the PR to `main`                                       | Deliberately human                                                                        |
+| Accepting the Lighthouse and coverage numbers as "good enough" | A judgement call, not a check                                                             |
 
 ---
 
 ## 7. Sequencing and realistic effort
 
-| Phase | Content | Sessions | Gate to proceed |
-|---|---|---|---|
-| 0 | Substrate: PR, vitest, blocking lint, format, scorecard, subscribe | 1 | CI verdict is trustworthy |
-| 1 | Money-path unit tests, 100 percent on those files | 1 to 2 | Tier 1 green |
-| 2 | Route integration tests, global coverage 80 | 1 to 2 | Tier 1 green at the higher threshold |
-| 3 | Playwright, axe, Lighthouse, truth tests | 2 | Tier 2 green |
-| 4 | Remaining audit items | 1 | Tier 1 and 2 green, three consecutive runs |
-| 5 | Steady state: nightly scorecard, weekly truth tests | ongoing | n/a |
+| Phase | Content                                                            | Sessions | Gate to proceed                            |
+| ----- | ------------------------------------------------------------------ | -------- | ------------------------------------------ |
+| 0     | Substrate: PR, vitest, blocking lint, format, scorecard, subscribe | 1        | CI verdict is trustworthy                  |
+| 1     | Money-path unit tests, 100 percent on those files                  | 1 to 2   | Tier 1 green                               |
+| 2     | Route integration tests, global coverage 80                        | 1 to 2   | Tier 1 green at the higher threshold       |
+| 3     | Playwright, axe, Lighthouse, truth tests                           | 2        | Tier 2 green                               |
+| 4     | Remaining audit items                                              | 1        | Tier 1 and 2 green, three consecutive runs |
+| 5     | Steady state: nightly scorecard, weekly truth tests                | ongoing  | n/a                                        |
 
 Phase 5 matters more than it looks. The truth tests in 4.4 are the ones that keep the repo honest
 after the agent stops paying attention, and they are the direct answer to how this repo drifted

@@ -13,7 +13,9 @@ export const Route = createFileRoute("/_authenticated/dashboard/webhooks")({
         get a typed product object back synchronously with its confidence and cost stamped in.
       </p>
       <div className="mt-8 rounded-md border border-hairline bg-surface p-6">
-        <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">On the roadmap</div>
+        <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          On the roadmap
+        </div>
         <p className="mt-2 text-sm text-muted-foreground">
           Delivery of product-change events (price moved, back in stock) for products you have read.
           Want it? Tell us what you would build with it and we will prioritise.

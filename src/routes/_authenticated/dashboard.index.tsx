@@ -12,7 +12,9 @@ function Overview() {
         </p>
       </div>
       <div className="rounded-md border border-hairline bg-surface p-6">
-        <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">Get started</div>
+        <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          Get started
+        </div>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-muted-foreground">
           <li>
             Create your secret key on the{" "}
@@ -27,7 +29,8 @@ function Overview() {
           {demoCurl()}
         </pre>
         <p className="mt-2 font-mono text-[11px] text-muted-foreground">
-          The sample GTIN is real and returns a real object you can inspect. Swap in your key and run it as-is.
+          The sample GTIN is real and returns a real object you can inspect. Swap in your key and
+          run it as-is.
         </p>
         <p className="mt-3 text-sm text-muted-foreground">
           Full reference in the{" "}

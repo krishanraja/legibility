@@ -121,4 +121,5 @@ The `audit_log` table records: takedowns received and applied, key
 revocations, admin actions, refund issuances. Retention: 7 years.
 
 ---
+
 Last reviewed: 2026-07-06.

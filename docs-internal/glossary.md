@@ -49,7 +49,7 @@ response and stored on `product_cache`. It is Legibility's identity handle for a
 product, independent of the source URL or GTIN, and the anchor for outcome
 reporting.
 
-**lgk_ key.** Customer API key with `lgk_` prefix. sha256-hashed at
+**lgk\_ key.** Customer API key with `lgk_` prefix. sha256-hashed at
 rest, shown ONCE at creation.
 
 **Resolve vs read.** `read_product` takes a precise reference (URL or
@@ -67,10 +67,11 @@ schema.org Product. We add `confidence`, `field_confidence`, `source`,
 Lets an agent budget and decide whether to keep calling.
 
 **Trusted read.** A call that returned a product object at overall confidence
->= 0.7. This is the unit that matters: the North Star counts trusted reads per
-active account per week, billing charges only trusted reads (see Billable),
-and the cache stores only trusted reads. A null or below-gate response is not
-a trusted read: it is free and does not consume quota.
+
+> = 0.7. This is the unit that matters: the North Star counts trusted reads per
+> active account per week, billing charges only trusted reads (see Billable),
+> and the cache stores only trusted reads. A null or below-gate response is not
+> a trusted read: it is free and does not consume quota.
 
 **Wedge.** One of the five differentiators in [README.md](./README.md).
 If a piece of copy or a product decision does not ladder to a wedge,
@@ -82,4 +83,5 @@ flow is proven there, but there is no live mainnet settlement yet. Mainnet is
 roadmap.
 
 ---
+
 Last reviewed: 2026-07-06.

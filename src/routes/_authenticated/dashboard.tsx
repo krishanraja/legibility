@@ -20,7 +20,10 @@ function DashboardLayout() {
           <div className="flex items-center gap-5 text-muted-foreground">
             <span className="hidden sm:inline">{user?.email}</span>
             <button
-              onClick={async () => { await signOut(); router.navigate({ to: "/" }); }}
+              onClick={async () => {
+                await signOut();
+                router.navigate({ to: "/" });
+              }}
               className="rounded-sm border border-hairline px-3 py-1.5 text-foreground hover:border-signal"
             >
               sign out
@@ -43,13 +46,17 @@ function DashboardLayout() {
               to={i.to}
               activeOptions={{ exact: i.exact }}
               activeProps={{ className: "block rounded-sm bg-surface px-3 py-2 text-signal" }}
-              inactiveProps={{ className: "block rounded-sm px-3 py-2 text-muted-foreground hover:text-foreground" }}
+              inactiveProps={{
+                className: "block rounded-sm px-3 py-2 text-muted-foreground hover:text-foreground",
+              }}
             >
               {i.label}
             </Link>
           ))}
         </nav>
-        <main id="main-content"><Outlet /></main>
+        <main id="main-content">
+          <Outlet />
+        </main>
       </div>
     </div>
   );

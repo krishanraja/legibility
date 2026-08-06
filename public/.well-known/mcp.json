@@ -11,12 +11,27 @@
     "endpoint": "https://legibility.io/api/mcp",
     "discovery": "free",
     "auth": [
-      { "type": "bearer_api_key", "prefix": "lgk_", "description": "Create a key at https://legibility.io in the dashboard. Required for tools/call unless paying per call over x402." },
-      { "type": "x402", "network": "base-sepolia", "asset": "USDC", "description": "Per-call payment. tools/call returns HTTP 402 with payment requirements when no valid key or X-PAYMENT header is presented. Testnet only, no mainnet settlement yet." }
+      {
+        "type": "bearer_api_key",
+        "prefix": "lgk_",
+        "description": "Create a key at https://legibility.io in the dashboard. Required for tools/call unless paying per call over x402."
+      },
+      {
+        "type": "x402",
+        "network": "base-sepolia",
+        "asset": "USDC",
+        "description": "Per-call payment. tools/call returns HTTP 402 with payment requirements when no valid key or X-PAYMENT header is presented. Testnet only, no mainnet settlement yet."
+      }
     ],
     "tools": [
-      { "name": "read_product", "description": "Resolve a product URL or GTIN into a typed Schema.org Product object with per-field and overall confidence, a price band, source method, and the per-call cost." },
-      { "name": "resolve_product", "description": "Resolve a fuzzy product name into a typed product object via neural search then extraction, returned in the same call." }
+      {
+        "name": "read_product",
+        "description": "Resolve a product URL or GTIN into a typed Schema.org Product object with per-field and overall confidence, a price band, source method, and the per-call cost."
+      },
+      {
+        "name": "resolve_product",
+        "description": "Resolve a fuzzy product name into a typed product object via neural search then extraction, returned in the same call."
+      }
     ]
   },
   "rest_api": {

@@ -90,11 +90,11 @@ Reuse verbatim from the operating brief. An account passes only if all three
 are true. If you cannot verify a gate, mark it `unknown` and treat it as not
 yet passed (it caps the score, see section 6).
 
-| # | Gate | How an agent verifies it |
-|---|---|---|
-| G1 | Building an agent or automation that consumes product data programmatically, wants a typed schema, not a human browsing dashboard | Repo, docs, landing page, or job post describes an agent/API/automation over product data, not a dashboard/BI tool |
-| G2 | Already spends on extraction/scraping/headless or hand-rolls JSON-LD | Dependency on Diffbot/Firecrawl/ScrapingBee/Zyte/Apify/Bright Data/Browserless/Playwright/Puppeteer/Selenium in code, docs, or job posts; or a "we parse product pages" statement |
-| G3 | Priority domains are majority reachable today | Their named target stores/domains are majority structured-data (JSON-LD), Shopify, barcodes/GTIN, cooperating catalogues, or supplier long-tail, not the anti-bot head |
+| #   | Gate                                                                                                                              | How an agent verifies it                                                                                                                                                          |
+| --- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G1  | Building an agent or automation that consumes product data programmatically, wants a typed schema, not a human browsing dashboard | Repo, docs, landing page, or job post describes an agent/API/automation over product data, not a dashboard/BI tool                                                                |
+| G2  | Already spends on extraction/scraping/headless or hand-rolls JSON-LD                                                              | Dependency on Diffbot/Firecrawl/ScrapingBee/Zyte/Apify/Bright Data/Browserless/Playwright/Puppeteer/Selenium in code, docs, or job posts; or a "we parse product pages" statement |
+| G3  | Priority domains are majority reachable today                                                                                     | Their named target stores/domains are majority structured-data (JSON-LD), Shopify, barcodes/GTIN, cooperating catalogues, or supplier long-tail, not the anti-bot head            |
 
 Passing all three does not make an account a good target. It makes it eligible
 to be scored. The disqualifiers in section 4 can still drop it.
@@ -107,13 +107,13 @@ If any of these is true, set `fit_score = 0`, set `status = "DROP"`, record the
 reason, and stop scoring. Do not soften, do not "keep for later." Dropping bad
 targets is how the fleet protects the North Star and the trust rate.
 
-| # | Disqualifier | Signal an agent detects | Why it is fatal |
-|---|---|---|---|
-| D1 | Targets are majority Amazon, Walmart, Target, Apple, or other top-tier anti-bot heads | Their example URLs, docs, or product all point at the anti-bot head | Legibility returns a graceful null there, not a trusted object. We would be selling a wall. |
-| D2 | Price-tracker or time-series price-monitoring product | "track price over time", "price history", "price drop alerts", "camelcamelcamel-style" | Lowest WTP ($0.001 to 0.005), live-price legal risk, and the exact segment Legibility refuses on principle |
-| D3 | Needs live checkout/order placement, inventory/stock feeds, or a legal price guarantee | "places the order", "real-time inventory", "guaranteed in-stock/price" | Out of v1 scope. Selling it is a promise we cannot keep. |
-| D4 | x402-first tinkerer with no real buy-flow | Toy repo whose whole point is "pay an API with crypto", no product use case, no revenue path | Research explicitly warns off this segment; it never becomes a retained, outcome-reporting account |
-| D5 | No real buy-flow or product-data need at all | Generic LLM wrapper, chatbot, or infra with no physical-product surface | Not the ICP. Zero pull. |
+| #   | Disqualifier                                                                           | Signal an agent detects                                                                      | Why it is fatal                                                                                            |
+| --- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| D1  | Targets are majority Amazon, Walmart, Target, Apple, or other top-tier anti-bot heads  | Their example URLs, docs, or product all point at the anti-bot head                          | Legibility returns a graceful null there, not a trusted object. We would be selling a wall.                |
+| D2  | Price-tracker or time-series price-monitoring product                                  | "track price over time", "price history", "price drop alerts", "camelcamelcamel-style"       | Lowest WTP ($0.001 to 0.005), live-price legal risk, and the exact segment Legibility refuses on principle |
+| D3  | Needs live checkout/order placement, inventory/stock feeds, or a legal price guarantee | "places the order", "real-time inventory", "guaranteed in-stock/price"                       | Out of v1 scope. Selling it is a promise we cannot keep.                                                   |
+| D4  | x402-first tinkerer with no real buy-flow                                              | Toy repo whose whole point is "pay an API with crypto", no product use case, no revenue path | Research explicitly warns off this segment; it never becomes a retained, outcome-reporting account         |
+| D5  | No real buy-flow or product-data need at all                                           | Generic LLM wrapper, chatbot, or infra with no physical-product surface                      | Not the ICP. Zero pull.                                                                                    |
 
 Note on D1: "majority" is the test. An account whose targets are 30% Amazon
 and 70% Shopify/supplier passes the gate; flag the Amazon share in
@@ -129,11 +129,11 @@ ordered by hit-rate for the primary ICP.
 
 ### 5.1 MCP registries (highest hit-rate: these teams ship agent tools)
 
-| Registry | Where | What to pull | Query terms |
-|---|---|---|---|
-| Smithery | `smithery.ai` | Servers/tools in commerce, shopping, product, e-commerce, scraping categories; the org/author behind each | `shopping`, `product`, `ecommerce`, `commerce`, `scrape`, `catalog`, `procurement` |
-| Glama | `glama.ai/mcp/servers` | Same categories; note authors publishing multiple tools (they build agents) | same as above |
-| mcp.so | `mcp.so` | Listed servers + the "agents" and "shopping" tags | same as above |
+| Registry | Where                  | What to pull                                                                                              | Query terms                                                                        |
+| -------- | ---------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Smithery | `smithery.ai`          | Servers/tools in commerce, shopping, product, e-commerce, scraping categories; the org/author behind each | `shopping`, `product`, `ecommerce`, `commerce`, `scrape`, `catalog`, `procurement` |
+| Glama    | `glama.ai/mcp/servers` | Same categories; note authors publishing multiple tools (they build agents)                               | same as above                                                                      |
+| mcp.so   | `mcp.so`               | Listed servers + the "agents" and "shopping" tags                                                         | same as above                                                                      |
 
 Decision rule: an author who publishes a shopping/commerce MCP server AND has a
 product/company (not just a personal demo) is a strong primary candidate.
@@ -170,12 +170,12 @@ product/price fields is a gate-G1+G2 pass on sight. Capture the owning org.
 
 ### 5.3 Company and community sources
 
-| Source | Where | What to pull |
-|---|---|---|
-| Y Combinator company directory | `ycombinator.com/companies` filtered to AI + e-commerce/agents | Recent-batch companies building shopping/procurement agents |
-| Product Hunt | `producthunt.com` search: shopping agent, buy-for-me, procurement copilot | Launched products in the space + maker's company |
-| Hacker News | "Show HN" for shopping/procurement/comparison agents | Builder + repo + whether they mention their scraping stack |
-| Agent-framework communities | LangChain, LlamaIndex, CrewAI, Vercel AI SDK, AutoGen Discords/forums/GitHub discussions | People asking "how do I reliably read a product page/price?" (pain = wedge) |
+| Source                         | Where                                                                                    | What to pull                                                                |
+| ------------------------------ | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Y Combinator company directory | `ycombinator.com/companies` filtered to AI + e-commerce/agents                           | Recent-batch companies building shopping/procurement agents                 |
+| Product Hunt                   | `producthunt.com` search: shopping agent, buy-for-me, procurement copilot                | Launched products in the space + maker's company                            |
+| Hacker News                    | "Show HN" for shopping/procurement/comparison agents                                     | Builder + repo + whether they mention their scraping stack                  |
+| Agent-framework communities    | LangChain, LlamaIndex, CrewAI, Vercel AI SDK, AutoGen Discords/forums/GitHub discussions | People asking "how do I reliably read a product page/price?" (pain = wedge) |
 
 ### 5.4 Job boards (catalog-enrichment and extraction hiring = live budget)
 
@@ -218,31 +218,32 @@ an account earns, apply the caps, then map the total to a band.
 
 ### 6.1 Signal points (additive)
 
-| Signal | Points | Detected from |
-|---|---|---|
-| Ships a buy-flow / procurement / comparison agent as a product (primary ICP) | +3 | Landing page, repo, MCP server, launch post |
-| Moat-critical subset: procurement or buy-flow on supplier/long-tail domains | +3 | Their target domains are supplier/catalogue, audit trail mentioned |
-| Verified existing extraction spend (Diffbot/Firecrawl/ScrapingBee/Zyte/Apify/Bright Data/Browserless) | +2 | Code import, docs, job post |
-| Hand-rolls JSON-LD/Playwright product parsing (build-vs-buy wedge open) | +2 | Code, "we parse product pages ourselves" |
-| Explicit "product data / reliable read / confidence" pain in an issue, forum post, or JD | +2 | GitHub issue, Discord, HN, JD |
-| Ships or curates MCP tools (distribution + agent-native) | +1 | Registry listing, repo |
-| 1 to 20 engineers (right-sized, fast to close) | +1 | Team page, LinkedIn headcount |
-| Reachable contact identified (founder/founding eng/catalog lead) | +1 | LinkedIn, GitHub profile, site |
-| Secondary ICP only (commerce-infra enrichment or agent-platform, no own buy-flow) | -1 | Segment classification |
-| Any gate marked `unknown` (unverified) | cap at band 3 | Missing evidence |
+| Signal                                                                                                | Points        | Detected from                                                      |
+| ----------------------------------------------------------------------------------------------------- | ------------- | ------------------------------------------------------------------ |
+| Ships a buy-flow / procurement / comparison agent as a product (primary ICP)                          | +3            | Landing page, repo, MCP server, launch post                        |
+| Moat-critical subset: procurement or buy-flow on supplier/long-tail domains                           | +3            | Their target domains are supplier/catalogue, audit trail mentioned |
+| Verified existing extraction spend (Diffbot/Firecrawl/ScrapingBee/Zyte/Apify/Bright Data/Browserless) | +2            | Code import, docs, job post                                        |
+| Hand-rolls JSON-LD/Playwright product parsing (build-vs-buy wedge open)                               | +2            | Code, "we parse product pages ourselves"                           |
+| Explicit "product data / reliable read / confidence" pain in an issue, forum post, or JD              | +2            | GitHub issue, Discord, HN, JD                                      |
+| Ships or curates MCP tools (distribution + agent-native)                                              | +1            | Registry listing, repo                                             |
+| 1 to 20 engineers (right-sized, fast to close)                                                        | +1            | Team page, LinkedIn headcount                                      |
+| Reachable contact identified (founder/founding eng/catalog lead)                                      | +1            | LinkedIn, GitHub profile, site                                     |
+| Secondary ICP only (commerce-infra enrichment or agent-platform, no own buy-flow)                     | -1            | Segment classification                                             |
+| Any gate marked `unknown` (unverified)                                                                | cap at band 3 | Missing evidence                                                   |
 
 ### 6.2 Band mapping (points to 0 to 5)
 
-| Points | fit_score | Tier | Meaning and action |
-|---|---|---|---|
-| 9+ | 5 | A | Moat-critical fit. Work now, personalize hard, aim for design partner. |
-| 7 to 8 | 4 | A | Strong primary fit. Work now. |
-| 5 to 6 | 3 | B | Solid primary or strong secondary. Work after tier A. |
-| 3 to 4 | 2 | B | Marginal. Queue; work only if a run is thin. |
-| 1 to 2 | 1 | C | Weak. Park. Revisit if segment shifts. |
-| 0, or any disqualifier | 0 | DROP | Do not contact. Record reason. |
+| Points                 | fit_score | Tier | Meaning and action                                                     |
+| ---------------------- | --------- | ---- | ---------------------------------------------------------------------- |
+| 9+                     | 5         | A    | Moat-critical fit. Work now, personalize hard, aim for design partner. |
+| 7 to 8                 | 4         | A    | Strong primary fit. Work now.                                          |
+| 5 to 6                 | 3         | B    | Solid primary or strong secondary. Work after tier A.                  |
+| 3 to 4                 | 2         | B    | Marginal. Queue; work only if a run is thin.                           |
+| 1 to 2                 | 1         | C    | Weak. Park. Revisit if segment shifts.                                 |
+| 0, or any disqualifier | 0         | DROP | Do not contact. Record reason.                                         |
 
 Caps and tie-breaks:
+
 - Any hit in section 4 forces `fit_score = 0` regardless of points.
 - Any gate `unknown` caps `fit_score` at 3 until the gate is verified. Prefer
   spending a verification step over guessing.
@@ -349,6 +350,7 @@ Stop the run and return the ranked list when any of these is true:
   scope in the next run rather than lowering the bar this run.
 
 Never do to hit a count:
+
 - Do not contact a `DROP`. Ever.
 - Do not downgrade a disqualifier to keep an account.
 - Do not fill the list with x402-first tinkerers (D4) or price-trackers (D2).

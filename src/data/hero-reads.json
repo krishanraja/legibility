@@ -1,124 +1,124 @@
 {
- "_meta": {
-  "note": "Four REAL captured reads (one per input type), verbatim from the live worker. The hero rotates through them. Refresh via scripts/capture-hero.mjs; never hand-edit values."
- },
- "reads": [
-  {
-   "tool": "read_product",
-   "input": {
-    "url": "https://www.lego.com/en-us/product/millennium-falcon-75192"
-   },
-   "product": {
-    "title": "Millennium Falcon™",
-    "brand": "LEGO®",
-    "sku": "6175771",
-    "price": {
-     "low": 849.99,
-     "high": 849.99,
-     "currency": "USD",
-     "as_of": "2026-07-06T17:17:47.001Z",
-     "n_sources": 3
-    },
-    "availability": "in_stock"
-   },
-   "field_confidence": {
-    "title": 0.846,
-    "brand": 0.978,
-    "sku": 0.92,
-    "priceLow": 0.978,
-    "currency": 0.978
-   },
-   "method": "jsonld",
-   "confidence": 1,
-   "cost_usd": 0.006,
-   "legibility_id": "pl_N1f03XTCv38zwThJhLWmpHsMyx4"
+  "_meta": {
+    "note": "Four REAL captured reads (one per input type), verbatim from the live worker. The hero rotates through them. Refresh via scripts/capture-hero.mjs; never hand-edit values."
   },
-  {
-   "tool": "read_product",
-   "input": {
-    "url": "https://www.allbirds.com/products/mens-wool-runner"
-   },
-   "product": {
-    "title": "Men's Wool Runner",
-    "brand": "Allbirds",
-    "sku": "MENS_WOOL_RUNNERS",
-    "price": {
-     "low": 110,
-     "high": 110,
-     "currency": "USD",
-     "as_of": "2026-07-06T17:35:30.003Z",
-     "n_sources": 3
+  "reads": [
+    {
+      "tool": "read_product",
+      "input": {
+        "url": "https://www.lego.com/en-us/product/millennium-falcon-75192"
+      },
+      "product": {
+        "title": "Millennium Falcon™",
+        "brand": "LEGO®",
+        "sku": "6175771",
+        "price": {
+          "low": 849.99,
+          "high": 849.99,
+          "currency": "USD",
+          "as_of": "2026-07-06T17:17:47.001Z",
+          "n_sources": 3
+        },
+        "availability": "in_stock"
+      },
+      "field_confidence": {
+        "title": 0.846,
+        "brand": 0.978,
+        "sku": 0.92,
+        "priceLow": 0.978,
+        "currency": 0.978
+      },
+      "method": "jsonld",
+      "confidence": 1,
+      "cost_usd": 0.006,
+      "legibility_id": "pl_N1f03XTCv38zwThJhLWmpHsMyx4"
     },
-    "category": "Shoes",
-    "attributes": null,
-    "availability": "in_stock"
-   },
-   "field_confidence": {
-    "title": 0.9016000000000001,
-    "brand": 0.98,
-    "sku": 0.8464,
-    "priceLow": 0.98,
-    "priceHigh": 0.98,
-    "currency": 0.98,
-    "availability": 0.8464,
-    "category": 0.9
-   },
-   "method": "jsonld",
-   "confidence": 1,
-   "cost_usd": 0.008,
-   "legibility_id": "pl_F_VxlG1ku7-UpoTF231Ul1H-w3g"
-  },
-  {
-   "tool": "resolve_product",
-   "input": {
-    "name": "Sony WH-1000XM5 wireless headphones"
-   },
-   "product": {
-    "title": "WH-1000XM5 Wireless Noise Cancelling Headphones",
-    "brand": "SONY",
-    "sku": null,
-    "price": null,
-    "category": null,
-    "attributes": null,
-    "availability": "unknown"
-   },
-   "field_confidence": {
-    "title": 0.8993920000000001,
-    "brand": 0.92
-   },
-   "method": "jsonld",
-   "confidence": 1,
-   "cost_usd": 0.023,
-   "legibility_id": null
-  },
-  {
-   "tool": "read_product",
-   "input": {
-    "gtin": "0049000042566"
-   },
-   "product": {
-    "title": "Coca-Cola Zero Sugar",
-    "brand": "Coca-Cola",
-    "sku": null,
-    "price": null,
-    "category": "Refrescos-de-cola",
-    "attributes": {
-     "quantity": "355 ml",
-     "nutriscore": "C"
+    {
+      "tool": "read_product",
+      "input": {
+        "url": "https://www.allbirds.com/products/mens-wool-runner"
+      },
+      "product": {
+        "title": "Men's Wool Runner",
+        "brand": "Allbirds",
+        "sku": "MENS_WOOL_RUNNERS",
+        "price": {
+          "low": 110,
+          "high": 110,
+          "currency": "USD",
+          "as_of": "2026-07-06T17:35:30.003Z",
+          "n_sources": 3
+        },
+        "category": "Shoes",
+        "attributes": null,
+        "availability": "in_stock"
+      },
+      "field_confidence": {
+        "title": 0.9016000000000001,
+        "brand": 0.98,
+        "sku": 0.8464,
+        "priceLow": 0.98,
+        "priceHigh": 0.98,
+        "currency": 0.98,
+        "availability": 0.8464,
+        "category": 0.9
+      },
+      "method": "jsonld",
+      "confidence": 1,
+      "cost_usd": 0.008,
+      "legibility_id": "pl_F_VxlG1ku7-UpoTF231Ul1H-w3g"
     },
-    "availability": "unknown"
-   },
-   "field_confidence": {
-    "gtin": 0.9775,
-    "title": 0.9775,
-    "brand": 0.782,
-    "category": 0.782,
-    "model": 0.85
-   },
-   "method": "barcode",
-   "confidence": 1,
-   "cost_usd": 0.008,
-   "legibility_id": "pl_u62kvz9RZCbJLO8W1YpaeH_PxGg"
-  }
- ]
+    {
+      "tool": "resolve_product",
+      "input": {
+        "name": "Sony WH-1000XM5 wireless headphones"
+      },
+      "product": {
+        "title": "WH-1000XM5 Wireless Noise Cancelling Headphones",
+        "brand": "SONY",
+        "sku": null,
+        "price": null,
+        "category": null,
+        "attributes": null,
+        "availability": "unknown"
+      },
+      "field_confidence": {
+        "title": 0.8993920000000001,
+        "brand": 0.92
+      },
+      "method": "jsonld",
+      "confidence": 1,
+      "cost_usd": 0.023,
+      "legibility_id": null
+    },
+    {
+      "tool": "read_product",
+      "input": {
+        "gtin": "0049000042566"
+      },
+      "product": {
+        "title": "Coca-Cola Zero Sugar",
+        "brand": "Coca-Cola",
+        "sku": null,
+        "price": null,
+        "category": "Refrescos-de-cola",
+        "attributes": {
+          "quantity": "355 ml",
+          "nutriscore": "C"
+        },
+        "availability": "unknown"
+      },
+      "field_confidence": {
+        "gtin": 0.9775,
+        "title": 0.9775,
+        "brand": 0.782,
+        "category": 0.782,
+        "model": 0.85
+      },
+      "method": "barcode",
+      "confidence": 1,
+      "cost_usd": 0.008,
+      "legibility_id": "pl_u62kvz9RZCbJLO8W1YpaeH_PxGg"
+    }
+  ]
 }

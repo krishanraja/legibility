@@ -97,7 +97,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: "https://legibility.io/og.png" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Legibility · Product data for agents" },
-      { name: "twitter:description", content: "One call turns a URL, a barcode, or a fuzzy name into a typed product object with calibrated confidence and cost stamped in. REST and MCP." },
+      {
+        name: "twitter:description",
+        content:
+          "One call turns a URL, a barcode, or a fuzzy name into a typed product object with calibrated confidence and cost stamped in. REST and MCP.",
+      },
       { name: "twitter:image", content: "https://legibility.io/og.png" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       { name: "application-name", content: "Legibility" },
@@ -136,9 +140,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               description:
                 "Turns a product URL, a barcode, or a fuzzy name into a typed product object an agent can trust: calibrated per-field confidence, a price band, a stable id, and the per-call cost stamped in. REST and MCP, payable by key or per call over x402.",
               offers: [
-                { "@type": "Offer", name: "Free", price: "0", priceCurrency: "USD", description: "1,000 trusted reads per month, no card" },
-                { "@type": "Offer", name: "Starter", price: "29", priceCurrency: "USD", description: "5,000 trusted reads per month" },
-                { "@type": "Offer", name: "Growth", price: "199", priceCurrency: "USD", description: "50,000 trusted reads per month" },
+                {
+                  "@type": "Offer",
+                  name: "Free",
+                  price: "0",
+                  priceCurrency: "USD",
+                  description: "1,000 trusted reads per month, no card",
+                },
+                {
+                  "@type": "Offer",
+                  name: "Starter",
+                  price: "29",
+                  priceCurrency: "USD",
+                  description: "5,000 trusted reads per month",
+                },
+                {
+                  "@type": "Offer",
+                  name: "Growth",
+                  price: "199",
+                  priceCurrency: "USD",
+                  description: "50,000 trusted reads per month",
+                },
               ],
             },
           ],

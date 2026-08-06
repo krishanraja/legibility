@@ -29,18 +29,18 @@ every PR. End commit messages with the `Co-Authored-By` trailer.
 
 ## Where to put things
 
-| Adding...                          | Goes in                                      |
-| ---------------------------------- | -------------------------------------------- |
-| A public page                      | `src/routes/<name>.tsx`                      |
-| A docs page                        | `src/routes/docs.<name>.tsx` + sidebar link  |
-| A dashboard page                   | `src/routes/_authenticated/dashboard.<name>.tsx` |
-| A REST endpoint                    | `src/routes/api/v1/<name>.ts`                |
+| Adding...                            | Goes in                                                                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A public page                        | `src/routes/<name>.tsx`                                                                                                                                              |
+| A docs page                          | `src/routes/docs.<name>.tsx` + sidebar link                                                                                                                          |
+| A dashboard page                     | `src/routes/_authenticated/dashboard.<name>.tsx`                                                                                                                     |
+| A REST endpoint                      | `src/routes/api/v1/<name>.ts`                                                                                                                                        |
 | An inbound provider webhook receiver | `src/routes/api/<provider>/<name>.ts` (for example `api/stripe/webhook.ts`). Legibility receives provider webhooks; it does NOT send outbound webhooks to customers. |
-| A client-callable server function  | `src/lib/api/<area>.functions.ts`            |
-| A server-only helper               | `src/lib/api/<area>.server.ts` or `src/integrations/...server.ts` |
-| A migration                        | Supabase Management API / MCP, mirror to `supabase/migrations/` |
-| An image / font / binary asset     | `src/assets/` or `public/`                   |
-| Engine, scorer, calibration, eval  | the `legibility-worker` repo, not here           |
+| A client-callable server function    | `src/lib/api/<area>.functions.ts`                                                                                                                                    |
+| A server-only helper                 | `src/lib/api/<area>.server.ts` or `src/integrations/...server.ts`                                                                                                    |
+| A migration                          | Supabase Management API / MCP, mirror to `supabase/migrations/`                                                                                                      |
+| An image / font / binary asset       | `src/assets/` or `public/`                                                                                                                                           |
+| Engine, scorer, calibration, eval    | the `legibility-worker` repo, not here                                                                                                                               |
 
 ## The eval harness (the engine's ground truth)
 
@@ -118,4 +118,5 @@ not ask about settled defaults (Vercel hosting, the `cgkc` Supabase project,
 the standalone `legibility-worker` extraction worker).
 
 ---
+
 Last reviewed: 2026-07-06.

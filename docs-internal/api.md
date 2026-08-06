@@ -21,12 +21,12 @@ which is the one place it is defined. Do not reference `onplinth.io`,
 
 ## Tools
 
-| Tool               | Status | Sync/async | Body                                                        |
-| ------------------ | ------ | ---------- | ----------------------------------------------------------- |
-| `read_product`     | live   | sync       | exactly one of `url`, `gtin`; optional `min_confidence`     |
-| `resolve_product`  | live   | sync       | `name` (2+ chars); optional `min_confidence`                |
-| `compare_products` | live   | sync       | `urls`: array of 2 to 5 product URLs                        |
-| `brief_product`    | live   | sync       | exactly one of `url`, `gtin`, `name`; optional `min_confidence` |
+| Tool               | Status | Sync/async | Body                                                                                                     |
+| ------------------ | ------ | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `read_product`     | live   | sync       | exactly one of `url`, `gtin`; optional `min_confidence`                                                  |
+| `resolve_product`  | live   | sync       | `name` (2+ chars); optional `min_confidence`                                                             |
+| `compare_products` | live   | sync       | `urls`: array of 2 to 5 product URLs                                                                     |
+| `brief_product`    | live   | sync       | exactly one of `url`, `gtin`, `name`; optional `min_confidence`                                          |
 | `report_outcome`   | live   | sync       | `outcome` + one of `request_id`, `legibility_id`; optional `observed_price`, `observed_currency`, `note` |
 
 `resolve_product` is **synchronous**. It takes `{ name }`, runs neural retrieval (Exa) then
@@ -42,9 +42,12 @@ when Exa is out of credits the call returns a null envelope, not an error.)
   "request_id": "req_...",
   "input": { "url": "..." },
   "product": {
-    "title": "...", "brand": "...", "gtin": "...",
+    "title": "...",
+    "brand": "...",
+    "gtin": "...",
     "price": { "low": 110, "high": 110, "currency": "USD", "as_of": "...", "n_sources": 2 },
-    "availability": "in_stock", "attributes": {}
+    "availability": "in_stock",
+    "attributes": {}
   },
   "legibility_id": "pl_...",
   "field_confidence": { "title": 0.95, "price": 0.8 },
@@ -154,11 +157,11 @@ The billing unit is the **trusted read**, not the call.
 
 Plans (trusted reads per calendar month, UTC):
 
-| Plan    | Price     | Included trusted reads | Overage                     | Card |
-| ------- | --------- | ---------------------- | --------------------------- | ---- |
-| Free    | $0        | 1,000                  | none (hard stop at the cap) | no   |
-| Starter | $29/mo    | 5,000                  | $0.01 / trusted read        | yes  |
-| Growth  | $199/mo   | 50,000                 | $0.005 / trusted read       | yes  |
+| Plan    | Price   | Included trusted reads | Overage                     | Card |
+| ------- | ------- | ---------------------- | --------------------------- | ---- |
+| Free    | $0      | 1,000                  | none (hard stop at the cap) | no   |
+| Starter | $29/mo  | 5,000                  | $0.01 / trusted read        | yes  |
+| Growth  | $199/mo | 50,000                 | $0.005 / trusted read       | yes  |
 
 Paid-tier overage is defined in `plans` but is **not yet auto-metered to Stripe**: the metered
 reporter is founder-gated on a live billing canary. Until it ships, paid accounts are not hard
@@ -168,18 +171,18 @@ blocked at the cap (only free accounts are).
 
 JSON error bodies with a stable shape: `{ error, message }`. Codes in use:
 
-| HTTP | `error`                          | When                                                        |
-| ---- | -------------------------------- | ----------------------------------------------------------- |
-| 400  | `invalid_json`                   | body is not valid JSON                                      |
-| 401  | `unauthorized`                   | missing or invalid `lgk_` key                               |
-| 402  | `quota_exceeded` / `cost_fuse`   | free account over its monthly quota or the free cost fuse   |
-| 402  | (x402 `PaymentRequirements`)     | MCP `tools/call` with no key and no settled payment         |
+| HTTP | `error`                          | When                                                         |
+| ---- | -------------------------------- | ------------------------------------------------------------ |
+| 400  | `invalid_json`                   | body is not valid JSON                                       |
+| 401  | `unauthorized`                   | missing or invalid `lgk_` key                                |
+| 402  | `quota_exceeded` / `cost_fuse`   | free account over its monthly quota or the free cost fuse    |
+| 402  | (x402 `PaymentRequirements`)     | MCP `tools/call` with no key and no settled payment          |
 | 405  | `method_not_allowed`             | wrong HTTP method on a POST-only route (with `Allow` header) |
-| 422  | `invalid_request`                | wrong arity or a malformed argument                         |
-| 429  | `rate_limited`                   | over the per-plan rate window (with `retry-after`)          |
-| 500  | `insert_failed`                  | `report_outcome` could not persist                          |
-| 502  | `upstream_unavailable`           | the extraction worker did not respond                       |
-| 503  | `external_worker_not_configured` | worker URL/token not set (should not happen in prod)        |
+| 422  | `invalid_request`                | wrong arity or a malformed argument                          |
+| 429  | `rate_limited`                   | over the per-plan rate window (with `retry-after`)           |
+| 500  | `insert_failed`                  | `report_outcome` could not persist                           |
+| 502  | `upstream_unavailable`           | the extraction worker did not respond                        |
+| 503  | `external_worker_not_configured` | worker URL/token not set (should not happen in prod)         |
 
 New codes are additive. In MCP, tool-level input errors are returned inside a JSON-RPC result with
 `isError: true` rather than as an RPC error, so discovery-vs-call semantics stay clean.
@@ -214,4 +217,5 @@ ships.
 - **Free MCP discovery, paid call:** an agent must be able to see the tools before it decides to pay.
 
 ---
+
 Last reviewed: 2026-07-06.

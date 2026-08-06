@@ -29,22 +29,22 @@ If you change any of these, update this file AND `docs-internal/product.md`.
 
 ## Routing table
 
-| You are working on...                     | Read                                |
-| ----------------------------------------- | ----------------------------------- |
-| Product strategy, roadmap, positioning    | [product.md](./product.md)          |
-| Code, schema, server functions, routes    | [engineering.md](./engineering.md)  |
-| Tables, RLS, retention                    | [data-model.md](./data-model.md)    |
-| REST, MCP, x402, webhooks, rate limits    | [api.md](./api.md)                  |
-| Visual system, voice, logo usage          | [design.md](./design.md)            |
-| Selling, ICP, objections                  | [sales.md](./sales.md)              |
-| Launch, channels, messaging               | [marketing.md](./marketing.md)      |
-| Runbooks, incidents, rotations            | [ops.md](./ops.md)                  |
-| Customer support, common tickets          | [support.md](./support.md)          |
-| TOS, privacy, takedown, PII, custody      | [legal-trust.md](./legal-trust.md)  |
-| Plans, overage, Stripe, x402 settlement   | [finance-billing.md](./finance-billing.md) |
-| Auth, RLS posture, secrets, abuse         | [security.md](./security.md)        |
-| Branching, commit style, ship checklist   | [contributing.md](./contributing.md) |
-| Definitions of any unfamiliar term        | [glossary.md](./glossary.md)        |
+| You are working on...                   | Read                                       |
+| --------------------------------------- | ------------------------------------------ |
+| Product strategy, roadmap, positioning  | [product.md](./product.md)                 |
+| Code, schema, server functions, routes  | [engineering.md](./engineering.md)         |
+| Tables, RLS, retention                  | [data-model.md](./data-model.md)           |
+| REST, MCP, x402, webhooks, rate limits  | [api.md](./api.md)                         |
+| Visual system, voice, logo usage        | [design.md](./design.md)                   |
+| Selling, ICP, objections                | [sales.md](./sales.md)                     |
+| Launch, channels, messaging             | [marketing.md](./marketing.md)             |
+| Runbooks, incidents, rotations          | [ops.md](./ops.md)                         |
+| Customer support, common tickets        | [support.md](./support.md)                 |
+| TOS, privacy, takedown, PII, custody    | [legal-trust.md](./legal-trust.md)         |
+| Plans, overage, Stripe, x402 settlement | [finance-billing.md](./finance-billing.md) |
+| Auth, RLS posture, secrets, abuse       | [security.md](./security.md)               |
+| Branching, commit style, ship checklist | [contributing.md](./contributing.md)       |
+| Definitions of any unfamiliar term      | [glossary.md](./glossary.md)               |
 
 ## Public docs
 
@@ -59,4 +59,5 @@ This README is the load-bearing index. When you change a load-bearing
 rule here (or in any role doc), update this README in the same pass.
 
 ---
+
 Last reviewed: 2026-06-21. If this is wrong, fix it and update the affected role doc.

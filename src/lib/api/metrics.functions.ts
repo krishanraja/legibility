@@ -22,15 +22,34 @@ export const getMetrics = createServerFn({ method: "GET" })
     const [weekly, byMethod, evalRun, kill] = await Promise.all([
       supabaseAdmin.rpc("northstar_weekly"),
       supabaseAdmin.rpc("trust_rate_by_method"),
-      supabaseAdmin.from("golden_eval_runs").select("*").order("created_at", { ascending: false }).limit(1),
+      supabaseAdmin
+        .from("golden_eval_runs")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(1),
       supabaseAdmin.rpc("kill_dashboard"),
     ]);
 
     return {
       admin: true as const,
-      weekly: (weekly.data ?? []) as { user_id: string; week: string; trusted_reads: number; total_calls: number }[],
-      byMethod: (byMethod.data ?? []) as { method: string; calls: number; gate_pass: number; gate_pass_rate: number }[],
+      weekly: (weekly.data ?? []) as {
+        user_id: string;
+        week: string;
+        trusted_reads: number;
+        total_calls: number;
+      }[],
+      byMethod: (byMethod.data ?? []) as {
+        method: string;
+        calls: number;
+        gate_pass: number;
+        gate_pass_rate: number;
+      }[],
       latestEval: (evalRun.data ?? [])[0] ?? null,
-      kill: (kill.data ?? []) as { signal: string; value: number | null; red_threshold: string; status: string }[],
+      kill: (kill.data ?? []) as {
+        signal: string;
+        value: number | null;
+        red_threshold: string;
+        status: string;
+      }[],
     };
   });

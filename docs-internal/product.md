@@ -1,12 +1,14 @@
 # Product
 
 ## Vision
+
 Legibility is the product-data primitive for the agent era. When an agent has
 decided to buy, find, compare, or summarise a physical good, it should be
 able to ask one API a typed question and get a typed answer, with a
 calibrated confidence it can reason about and a cost it can pay for itself.
 
 ## The five wedges
+
 See [README.md](./README.md). These are the non-negotiables. Every PR,
 every section of copy, every demo, every objection handler should ladder
 to at least one of them.
@@ -145,4 +147,5 @@ The live surface today is https://legibility.io. DNS is delegated to Vercel and 
 issued. Do not reference `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`. They are dead.
 
 ---
+
 Last reviewed: 2026-07-06.

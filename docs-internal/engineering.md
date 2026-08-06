@@ -155,4 +155,5 @@ Vercel deploys `main` automatically. Migrations are applied to `cgkc` via the Su
 MCP and mirrored into `supabase/migrations/`.
 
 ---
+
 Last reviewed: 2026-07-06.

@@ -123,4 +123,5 @@ Full procedure and the current founder queue live in `docs/security-rotation.md`
 - CI (gitleaks) blocks any secret from being committed in the first place.
 
 ---
+
 Last reviewed: 2026-07-06.

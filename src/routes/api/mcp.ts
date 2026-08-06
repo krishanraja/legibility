@@ -42,15 +42,26 @@ function rpc(id: unknown, result: unknown, extraHeaders?: Record<string, string>
   });
 }
 function rpcError(id: unknown, code: number, message: string) {
-  return new Response(JSON.stringify({ jsonrpc: "2.0", id: id ?? null, error: { code, message } }), {
-    headers: { "content-type": "application/json" },
-  });
+  return new Response(
+    JSON.stringify({ jsonrpc: "2.0", id: id ?? null, error: { code, message } }),
+    {
+      headers: { "content-type": "application/json" },
+    },
+  );
 }
-function toolResult(id: unknown, text: string, isError = false, extraHeaders?: Record<string, string>) {
+function toolResult(
+  id: unknown,
+  text: string,
+  isError = false,
+  extraHeaders?: Record<string, string>,
+) {
   return rpc(id, { content: [{ type: "text", text }], isError }, extraHeaders);
 }
 function json402(bodyObj: unknown) {
-  return new Response(JSON.stringify(bodyObj), { status: 402, headers: { "content-type": "application/json" } });
+  return new Response(JSON.stringify(bodyObj), {
+    status: 402,
+    headers: { "content-type": "application/json" },
+  });
 }
 
 export const Route = createFileRoute("/api/mcp")({
@@ -91,17 +102,32 @@ export const Route = createFileRoute("/api/mcp")({
               const hasUrl = typeof args.url === "string" && (args.url as string).length > 0;
               const hasGtin = typeof args.gtin === "string" && (args.gtin as string).length > 0;
               if (hasUrl === hasGtin) {
-                return toolResult(id, JSON.stringify({ error: "invalid_request", message: "Provide exactly one of: url, gtin." }), true);
+                return toolResult(
+                  id,
+                  JSON.stringify({
+                    error: "invalid_request",
+                    message: "Provide exactly one of: url, gtin.",
+                  }),
+                  true,
+                );
               }
               if (hasUrl) payload.url = args.url;
               if (hasGtin) payload.gtin = args.gtin;
             } else {
               if (typeof args.name !== "string" || (args.name as string).trim().length < 2) {
-                return toolResult(id, JSON.stringify({ error: "invalid_request", message: "Provide a product name (2+ chars)." }), true);
+                return toolResult(
+                  id,
+                  JSON.stringify({
+                    error: "invalid_request",
+                    message: "Provide a product name (2+ chars).",
+                  }),
+                  true,
+                );
               }
               payload.name = (args.name as string).trim();
             }
-            if (typeof args.min_confidence === "number") payload.min_confidence = args.min_confidence;
+            if (typeof args.min_confidence === "number")
+              payload.min_confidence = args.min_confidence;
 
             // Auth: a lgk_ key OR a settled x402 payment.
             const authz = request.headers.get("authorization");
@@ -111,7 +137,8 @@ export const Route = createFileRoute("/api/mcp")({
 
             let xPaymentResponse: string | undefined;
             if (!principal) {
-              const { paymentRequirements, quote402, settle } = await import("@/lib/api/x402.server");
+              const { paymentRequirements, quote402, settle } =
+                await import("@/lib/api/x402.server");
               const resource = new URL(request.url).toString();
               const desc = `Legibility ${name}`;
               const xpay = request.headers.get("x-payment");
@@ -127,7 +154,11 @@ export const Route = createFileRoute("/api/mcp")({
               const rl = await rateCheck(principal.userId);
               if (!rl.allowed) {
                 return new Response(
-                  JSON.stringify({ jsonrpc: "2.0", id: id ?? null, error: { code: -32099, message: "Rate limit exceeded." } }),
+                  JSON.stringify({
+                    jsonrpc: "2.0",
+                    id: id ?? null,
+                    error: { code: -32099, message: "Rate limit exceeded." },
+                  }),
                   {
                     status: 429,
                     headers: {
@@ -141,14 +172,21 @@ export const Route = createFileRoute("/api/mcp")({
                 );
               }
               // Monthly quota + cost fuse for keyed calls (x402 calls are paid per call).
-              const { entitlementCheck } = await import("@/integrations/supabase/entitlement.server");
+              const { entitlementCheck } =
+                await import("@/integrations/supabase/entitlement.server");
               const ent = await entitlementCheck(principal.userId);
               if (!ent.allowed) {
                 return new Response(
                   JSON.stringify({
                     jsonrpc: "2.0",
                     id: id ?? null,
-                    error: { code: -32098, message: ent.reason === "cost_fuse" ? "Free usage safety limit reached." : `Monthly quota reached (${ent.included_calls} calls). Upgrade to continue.` },
+                    error: {
+                      code: -32098,
+                      message:
+                        ent.reason === "cost_fuse"
+                          ? "Free usage safety limit reached."
+                          : `Monthly quota reached (${ent.included_calls} calls). Upgrade to continue.`,
+                    },
                   }),
                   { status: 402, headers: { "content-type": "application/json" } },
                 );
@@ -158,7 +196,11 @@ export const Route = createFileRoute("/api/mcp")({
             const WORKER_URL = process.env.PLINTH_EXTRACTOR_URL;
             const WORKER_TOKEN = process.env.PLINTH_EXTRACTOR_TOKEN;
             if (!WORKER_URL || !WORKER_TOKEN) {
-              return toolResult(id, JSON.stringify({ error: "external_worker_not_configured" }), true);
+              return toolResult(
+                id,
+                JSON.stringify({ error: "external_worker_not_configured" }),
+                true,
+              );
             }
             const started = Date.now();
             let text = JSON.stringify({ error: "upstream_unavailable" });
@@ -166,7 +208,10 @@ export const Route = createFileRoute("/api/mcp")({
             try {
               const res = await fetch(WORKER_URL, {
                 method: "POST",
-                headers: { "content-type": "application/json", authorization: `Bearer ${WORKER_TOKEN}` },
+                headers: {
+                  "content-type": "application/json",
+                  authorization: `Bearer ${WORKER_TOKEN}`,
+                },
                 body: JSON.stringify(payload),
                 signal: AbortSignal.timeout(30000),
               });
@@ -179,7 +224,10 @@ export const Route = createFileRoute("/api/mcp")({
             // Meter keyed calls (x402 calls are recorded on-chain by the facilitator).
             if (principal) {
               const { stampFromResponse } = await import("@/lib/api/meter");
-              const stamp = stampFromResponse(text, payload as { url?: unknown; gtin?: unknown; name?: unknown });
+              const stamp = stampFromResponse(
+                text,
+                payload as { url?: unknown; gtin?: unknown; name?: unknown },
+              );
               try {
                 const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
                 await Promise.all([
@@ -200,14 +248,22 @@ export const Route = createFileRoute("/api/mcp")({
                     envelope_hash: stamp.envelope_hash,
                     calibration_version: stamp.calibration_version,
                   }),
-                  supabaseAdmin.from("api_keys").update({ last_used_at: new Date().toISOString() }).eq("id", principal.keyId),
+                  supabaseAdmin
+                    .from("api_keys")
+                    .update({ last_used_at: new Date().toISOString() })
+                    .eq("id", principal.keyId),
                 ]);
               } catch {
                 /* metering best-effort */
               }
             }
 
-            return toolResult(id, text, false, xPaymentResponse ? { "x-payment-response": xPaymentResponse } : undefined);
+            return toolResult(
+              id,
+              text,
+              false,
+              xPaymentResponse ? { "x-payment-response": xPaymentResponse } : undefined,
+            );
           }
           default:
             return rpcError(id, -32601, `Method not found: ${String(method)}`);
@@ -215,7 +271,11 @@ export const Route = createFileRoute("/api/mcp")({
       },
       GET: async () =>
         new Response(
-          JSON.stringify({ jsonrpc: "2.0", error: { code: -32000, message: "Method not allowed." }, id: null }),
+          JSON.stringify({
+            jsonrpc: "2.0",
+            error: { code: -32000, message: "Method not allowed." },
+            id: null,
+          }),
           { status: 405, headers: { "content-type": "application/json", allow: "POST" } },
         ),
     },

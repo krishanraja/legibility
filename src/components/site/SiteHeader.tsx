@@ -12,16 +12,29 @@ export function SiteHeader() {
 
   const links = (
     <>
-      <Link to="/docs" className="hover:text-foreground" onClick={() => setMenu(false)}>docs</Link>
-      <a href="/#pricing" className="hover:text-foreground" onClick={() => setMenu(false)}>pricing</a>
-      <Link to="/docs/mcp" className="hover:text-foreground" onClick={() => setMenu(false)}>mcp</Link>
+      <Link to="/docs" className="hover:text-foreground" onClick={() => setMenu(false)}>
+        docs
+      </Link>
+      <a href="/#pricing" className="hover:text-foreground" onClick={() => setMenu(false)}>
+        pricing
+      </a>
+      <Link to="/docs/mcp" className="hover:text-foreground" onClick={() => setMenu(false)}>
+        mcp
+      </Link>
       {user ? (
-        <Link to="/dashboard" onClick={() => setMenu(false)} className="rounded-sm border border-hairline px-3 py-1.5 text-foreground hover:border-signal hover:text-signal">
+        <Link
+          to="/dashboard"
+          onClick={() => setMenu(false)}
+          className="rounded-sm border border-hairline px-3 py-1.5 text-foreground hover:border-signal hover:text-signal"
+        >
           dashboard
         </Link>
       ) : (
         <button
-          onClick={() => { setMenu(false); setOpen(true); }}
+          onClick={() => {
+            setMenu(false);
+            setOpen(true);
+          }}
           className="rounded-sm bg-signal px-3 py-1.5 text-background hover:opacity-90"
         >
           sign in
@@ -47,7 +60,9 @@ export function SiteHeader() {
           onClick={() => setMenu((m) => !m)}
           className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-sm border border-hairline text-foreground"
         >
-          <span aria-hidden className="text-base leading-none">{menu ? "✕" : "☰"}</span>
+          <span aria-hidden className="text-base leading-none">
+            {menu ? "✕" : "☰"}
+          </span>
         </button>
       </div>
       {menu && (

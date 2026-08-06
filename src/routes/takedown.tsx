@@ -23,7 +23,9 @@ function Takedown() {
       <SiteHeader />
       <main id="main-content" className="mx-auto max-w-2xl px-6 py-16">
         <h1 className="font-display text-5xl">Takedown request</h1>
-        <p className="mt-4 text-muted-foreground">File a request to remove cached product data. We respond within 24 hours.</p>
+        <p className="mt-4 text-muted-foreground">
+          File a request to remove cached product data. We respond within 24 hours.
+        </p>
         {done ? (
           <div className="mt-8 rounded-md border border-hairline bg-surface p-6">
             <div className="font-display text-2xl">Received.</div>
@@ -34,15 +36,39 @@ function Takedown() {
             className="mt-8 space-y-3"
             onSubmit={async (e) => {
               e.preventDefault();
-              const { error } = await supabase.from("takedown_requests").insert({ email, url, reason });
+              const { error } = await supabase
+                .from("takedown_requests")
+                .insert({ email, url, reason });
               if (error) return toast.error(error.message);
               setDone(true);
             }}
           >
-            <Input required type="email" placeholder="Your email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-surface" />
-            <Input required placeholder="URL to remove" value={url} onChange={(e) => setUrl(e.target.value)} className="bg-surface" />
-            <Textarea required placeholder="Reason" value={reason} onChange={(e) => setReason(e.target.value)} className="bg-surface" rows={5} />
-            <Button type="submit" className="bg-signal text-background hover:opacity-90">File request</Button>
+            <Input
+              required
+              type="email"
+              placeholder="Your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-surface"
+            />
+            <Input
+              required
+              placeholder="URL to remove"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              className="bg-surface"
+            />
+            <Textarea
+              required
+              placeholder="Reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              className="bg-surface"
+              rows={5}
+            />
+            <Button type="submit" className="bg-signal text-background hover:opacity-90">
+              File request
+            </Button>
           </form>
         )}
       </main>

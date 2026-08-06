@@ -37,6 +37,13 @@ export default defineConfig({
           functions: 100,
           statements: 100,
         },
+        // Global floor, pinned at the actuals measured when this landed. It exists as a
+        // ratchet: coverage can go up, never down. Phase 2 (route integration tests over
+        // http.ts, x402.server.ts and api-keys.server.ts) raises these toward 80.
+        lines: 47,
+        branches: 55,
+        functions: 28,
+        statements: 49,
       },
     },
   },

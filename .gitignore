@@ -24,6 +24,9 @@ dist-ssr
 # Vercel
 .vercel
 
+# Test coverage output (vitest --coverage)
+coverage
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

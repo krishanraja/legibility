@@ -61,18 +61,18 @@ subjective.
 
 ### Tier 1: correctness (blocking from Phase 0)
 
-| Gate                  | Command                 | Threshold                                                   |
-| --------------------- | ----------------------- | ----------------------------------------------------------- |
-| Typecheck             | `tsc --noEmit`          | 0 errors                                                    |
-| Lint                  | `eslint .`              | 0 errors, **blocking**                                      |
-| Format                | `prettier --check .`    | clean                                                       |
-| Unit tests            | `vitest run`            | 100 percent pass                                            |
-| Coverage, money paths | `vitest run --coverage` | **100 percent** line and branch on the files in section 4.1 |
-| Coverage, global      | same                    | ratchet at measured actuals, raised toward 80 in Phase 2    |
-| Build                 | `vite build`            | success                                                     |
-| Secrets               | `gitleaks`              | 0 findings                                                  |
-| House style           | em dash scan            | 0 across `src/`, `docs/`, `public/`, `README.md`            |
-| Database              | Supabase advisors       | 0 at ERROR or WARN                                          |
+| Gate                  | Command                 | Threshold                                                            |
+| --------------------- | ----------------------- | -------------------------------------------------------------------- |
+| Typecheck             | `tsc --noEmit`          | 0 errors                                                             |
+| Lint                  | `eslint .`              | 0 errors, **blocking**                                               |
+| Format                | `prettier --check .`    | clean                                                                |
+| Unit tests            | `vitest run`            | 100 percent pass                                                     |
+| Coverage, money paths | `vitest run --coverage` | **100 percent** line and branch on the files in section 4.1          |
+| Coverage, global      | same                    | ratchet at measured actuals, currently 100 on the money-path include |
+| Build                 | `vite build`            | success                                                              |
+| Secrets               | `gitleaks`              | 0 findings                                                           |
+| House style           | em dash scan            | 0 across `src/`, `docs/`, `public/`, `README.md`                     |
+| Database              | Supabase advisors       | 0 at ERROR or WARN                                                   |
 
 ### Tier 2: the live surface (blocking from Phase 3)
 

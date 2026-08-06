@@ -37,13 +37,20 @@ export default defineConfig({
           functions: 100,
           statements: 100,
         },
-        // Global floor, pinned at the actuals measured when this landed. It exists as a
-        // ratchet: coverage can go up, never down. Phase 2 (route integration tests over
-        // http.ts, x402.server.ts and api-keys.server.ts) raises these toward 80.
-        lines: 47,
-        branches: 55,
-        functions: 28,
-        statements: 49,
+        // Global floor, pinned at the actuals measured by CI run 31131343100.
+        //
+        // Every file inside the `include` above is now fully covered, so the floor is 100.
+        // Read it as "nothing in the money-path surface ships untested": adding a new file
+        // under src/lib/api/ without tests fails the build immediately, which is the point.
+        //
+        // Phase 2 widens `include` to the route handlers (src/routes/api/v1/*). That will
+        // drop the measured global below 100 on the first run. When it does, re-pin these
+        // to the NEW measured actuals and let them climb from there. Do not pre-emptively
+        // lower them now in anticipation.
+        lines: 100,
+        branches: 100,
+        functions: 100,
+        statements: 100,
       },
     },
   },

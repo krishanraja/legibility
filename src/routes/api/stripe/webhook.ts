@@ -36,10 +36,17 @@ async function upsertSubscription(admin: AdminClient, userId: string, sub: Recor
   const priceId = sub.items?.data?.[0]?.price?.id as string | undefined;
   let planId = "free";
   if (priceId) {
-    const { data: plan } = await admin.from("plans").select("id").eq("stripe_price_id", priceId).maybeSingle();
+    const { data: plan, error } = await admin
+      .from("plans")
+      .select("id")
+      .eq("stripe_price_id", priceId)
+      .maybeSingle();
+    // Never silently fall back to "free" on a lookup failure: that downgrades a paying
+    // customer. Throw so the handler returns 5xx and Stripe redelivers.
+    if (error) throw new Error(`plans lookup failed for price ${priceId}: ${error.message}`);
     if (plan?.id) planId = plan.id;
   }
-  await admin.from("subscriptions").upsert(
+  const { error: upsertError } = await admin.from("subscriptions").upsert(
     {
       user_id: userId,
       plan_id: planId,
@@ -52,6 +59,9 @@ async function upsertSubscription(admin: AdminClient, userId: string, sub: Recor
     },
     { onConflict: "user_id" },
   );
+  // supabase-js resolves with { error } rather than throwing, so an unchecked call
+  // fails silently. Surface it.
+  if (upsertError) throw new Error(`subscriptions upsert failed for ${userId}: ${upsertError.message}`);
 }
 
 export const Route = createFileRoute("/api/stripe/webhook")({
@@ -99,13 +109,16 @@ export const Route = createFileRoute("/api/stripe/webhook")({
             }
             case "invoice.paid":
             case "invoice.payment_failed": {
-              const { data: sub } = await supabaseAdmin
+              const { data: sub, error: lookupError } = await supabaseAdmin
                 .from("subscriptions")
                 .select("user_id")
                 .eq("stripe_customer_id", obj.customer)
                 .maybeSingle();
+              if (lookupError) {
+                throw new Error(`subscription lookup failed for customer ${obj.customer}: ${lookupError.message}`);
+              }
               if (sub?.user_id) {
-                await supabaseAdmin.from("invoices").upsert(
+                const { error: invoiceError } = await supabaseAdmin.from("invoices").upsert(
                   {
                     user_id: sub.user_id,
                     stripe_invoice_id: obj.id,
@@ -119,12 +132,22 @@ export const Route = createFileRoute("/api/stripe/webhook")({
                   },
                   { onConflict: "stripe_invoice_id" },
                 );
+                if (invoiceError) {
+                  throw new Error(`invoice upsert failed for ${obj.id}: ${invoiceError.message}`);
+                }
               }
               break;
             }
           }
         } catch (e) {
+          // Returning 200 here would tell Stripe the event was handled and stop redelivery,
+          // permanently losing a subscription or invoice on a transient DB failure. Return
+          // 500 so Stripe retries on its own backoff schedule.
           console.error("[stripe webhook]", e);
+          return new Response(JSON.stringify({ error: "handler_failed" }), {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          });
         }
         return new Response(JSON.stringify({ received: true }), {
           status: 200,

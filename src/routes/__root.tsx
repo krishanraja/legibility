@@ -178,6 +178,13 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        {/* WCAG 2.4.1 Bypass Blocks. Visually hidden until focused by keyboard. */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-foreground focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-background"
+        >
+          Skip to content
+        </a>
         {children}
         <Scripts />
       </body>

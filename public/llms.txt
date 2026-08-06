@@ -25,8 +25,8 @@ Coverage today: Shopify stores (currency resolved through the storefront's own m
 
 - Free: 0 USD per month, no card, 1,000 trusted reads per month, hard stop (no overage, no surprise charge). A trusted read is a call that returned a product at confidence 0.7 or higher. Null and low-confidence reads are free and do not count against the quota.
 - Starter: 29 USD per month, 5,000 trusted reads, 0.01 USD per read overage.
-- Growth: 199 USD per month, 50,000 trusted reads, 0.005 USD per read overage, higher rate limits, Slack, SLA.
-- Custom: quote, for 250,000 or more reads per month, on-prem extractor and data residency.
+- Growth: 199 USD per month, 50,000 trusted reads, 0.005 USD per read overage, higher rate limits.
+- These three plans are the complete list. There is no Custom or Enterprise plan, no Slack support channel, and no SLA today.
 - Metered overage is enforced by quota (a 402 before the call is made), but overage usage is not yet auto-billed through Stripe. This is a near-term roadmap item, not a live billing feature.
 
 ## Docs
@@ -48,6 +48,5 @@ Developers building agent buy-flows: buy-this-for-me agents, procurement copilot
 - Docs: https://legibility.io/docs
 - MCP endpoint: https://legibility.io/api/mcp (only read_product and resolve_product are callable over MCP today)
 - Auth: an API key (prefix lgk_) as a Bearer token, or per-call USDC payment over x402 (Base Sepolia testnet in beta, no mainnet settlement yet).
-- Not built yet (do not attribute these to Legibility): compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, and the Bright Data unblocker fallback for bot-hostile retailers.
-
-NOTE ON DOMAIN: this file uses legibility.io throughout to match public/robots.txt and public/sitemap.xml, which already point there. As of the last state check (2026-07-06), legibility.io DNS was still propagating and https://legibility.io was the confirmed-live surface. Before submitting this file to any agent directory, curl https://legibility.io/ and confirm it 200s (not just Vercel's default page) so agents are not sent to a dead or misconfigured domain.
+- Not built yet (do not attribute these to Legibility): compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, a Custom or Enterprise plan, an SLA, and the proxy-based unblocker fallback for bot-hostile retailers.
+- Former names and hosts, now dead, which should not be cited: Plinth, onplinth.io, plinth-tan.vercel.app, plinth.sh. The product is Legibility at legibility.io.

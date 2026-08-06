@@ -49,7 +49,7 @@ function DashboardLayout() {
             </Link>
           ))}
         </nav>
-        <main><Outlet /></main>
+        <main id="main-content"><Outlet /></main>
       </div>
     </div>
   );

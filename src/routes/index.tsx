@@ -178,6 +178,7 @@ function Index() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
+      <main id="main-content">
       {/* HERO */}
       <section className="border-b border-hairline">
         <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 px-6 py-20 lg:grid-cols-[1fr_1.1fr] lg:py-28">
@@ -470,6 +471,7 @@ function Index() {
           <div className="mt-10 text-left"><WaitlistForm /></div>
         </div>
       </section>
+      </main>
 
       <SiteFooter />
     </div>

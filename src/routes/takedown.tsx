@@ -21,7 +21,7 @@ function Takedown() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
-      <main className="mx-auto max-w-2xl px-6 py-16">
+      <main id="main-content" className="mx-auto max-w-2xl px-6 py-16">
         <h1 className="font-display text-5xl">Takedown request</h1>
         <p className="mt-4 text-muted-foreground">File a request to remove cached product data. We respond within 24 hours.</p>
         {done ? (

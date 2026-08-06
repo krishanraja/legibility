@@ -19,7 +19,7 @@ function Terms() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
-      <main className="mx-auto max-w-3xl px-6 py-16">
+      <main id="main-content" className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="font-display text-5xl">Terms of service</h1>
         <p className="mt-4 text-sm text-muted-foreground">
           Interim terms, plain language. Final text is under counsel review before paid general

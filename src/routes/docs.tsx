@@ -37,7 +37,7 @@ function DocsLayout() {
             </ul>
           </div>
         </aside>
-        <main className="prose-editorial max-w-3xl"><Outlet /></main>
+        <main id="main-content" className="prose-editorial max-w-3xl"><Outlet /></main>
       </div>
       <SiteFooter />
     </div>

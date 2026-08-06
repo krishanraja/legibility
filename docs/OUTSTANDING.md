@@ -32,10 +32,41 @@ short list of items that need a human action or an external clock. Last updated 
       `https://legibility.io/api/health` returns `status: ok`. `APP_ORIGIN` in
       `src/config/product.ts` is set to `https://legibility.io`.
 
-- [ ] **Redirect the dead `onplinth.io` to `legibility.io`.** The domain still resolves to
-      Vercel but no project claims it, so it serves `DEPLOYMENT_NOT_FOUND`. Add it to the
-      Legibility project as a 301 redirect so the SEO and GEO work done under the old name is
-      not orphaned. Also repoint the Stripe webhook URL to the new origin.
+- [x] **Redirect the dead `onplinth.io` to `legibility.io`.** Done 2026-08-06. It was verified
+      at account level but attached to no project, which is why it served
+      `DEPLOYMENT_NOT_FOUND`. Both `onplinth.io` and `www.onplinth.io` are now on the
+      Legibility project as 308 redirects to `legibility.io`, so nothing under the old name is
+      orphaned. Verified live.
+
+- [x] **Make the apex canonical and remove the duplicate host.** Done 2026-08-06. Vercel had
+      `www.legibility.io` as primary with the apex 308-ing to it, while every piece of
+      metadata (`APP_ORIGIN`, `og:url`, JSON-LD, robots, mcp.json and all 12 sitemap URLs)
+      declared the apex. Every sitemap URL therefore redirected. Flipped: the apex is now
+      primary and `www` redirects to it, so sitemap URLs return 200 directly. Also removed
+      `plinth-tan.vercel.app`, which was still serving a complete third copy of the site under
+      the old brand.
+
+- [x] **Enable leaked password protection.** Done 2026-08-06 via the Supabase Management API.
+      `password_hibp_enabled` is now true and the minimum password length is raised from 6 to 10. The corresponding Supabase security advisor WARN is cleared.
+
+- [ ] **Repoint `PLINTH_EXTRACTOR_URL` at `legibility-worker.vercel.app`.** The worker project
+      already has both `legibility-worker.vercel.app` and `plinth-worker.vercel.app` attached
+      and both serve the same deployment, so the swap is safe. The endpoint path is `/extract`
+      (confirmed by probing: `/extract` returns 401, every other path returns 404), so the new
+      value is `https://legibility-worker.vercel.app/extract` for both production and preview.
+      The env var is marked **sensitive**, so its current value cannot be read back through the
+      API to confirm. Once swapped and redeployed, check `/api/health` still reports
+      `worker: ok`, then detach `plinth-worker.vercel.app`. The worker's own health body still
+      self-identifies as `"service":"plinth-worker"`, which is a change in the worker repo.
+
+- [ ] **Decide how CI reaches preview deployments.** SSO protection is on for
+      `all_except_custom_domains`, so previews require a Vercel login. Phase 3 of
+      `docs/AUTONOMOUS-HARDENING-PLAN.md` runs Playwright, axe and Lighthouse against the
+      preview, which needs either a Protection Bypass for Automation token (recommended: keeps
+      previews private) or disabling SSO protection (not recommended: makes every preview
+      world-readable).
+
+- [ ] **Repoint the Stripe webhook URL** to the new origin.
 
 - [ ] **Counsel review of the interim legal** (`/terms`, `/privacy`) before paid GA.
 

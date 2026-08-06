@@ -97,8 +97,10 @@ and the page says so. Keep that honesty: do not dress a zero up as traction.
 - Plain, editorial, declarative. Short sentences. Prefer a period over an em
   dash.
 - Never use the em dash. Use a period, a comma, parentheses, or a middle dot
-  (·). This rule is mechanical; `rg "—" src/` should return nothing outside
-  JSON code examples, and CI enforces it.
+  (·). This rule is mechanical: CI greps for the character across `src/`,
+  `docs/`, `docs-internal/`, `public/` and the README, and fails the build on a
+  hit. (The character is not written out here, so that this file passes its own
+  rule.)
 - Title separator is the middle dot (·), for example "Legibility · Product data
   for agents".
 - Honest before clever. "Price is a band" beats "real-time pricing". Every

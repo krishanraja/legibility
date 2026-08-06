@@ -83,20 +83,28 @@ means "about 70 percent likely to be correct."
 
 1. **gitleaks** secret scan. Fails the build on any committed secret. Hard
    gate: a leaked key blocks the merge.
-2. **No em dashes in `src/`.** `grep -rn "—" src/` must return nothing. House
-   style, mechanically enforced. Use a period, comma, colon, or "to" for
-   ranges.
+2. **No em dashes.** CI greps for the character across `src/`, `docs/`,
+   `docs-internal/`, `public/` and the README, restricted to text files, and
+   fails on any hit. House style, mechanically enforced. Use a period, comma,
+   colon, or "to" for ranges.
 3. **Typecheck:** `bunx tsc --noEmit`. Hard gate.
-4. **Lint:** `bun run lint`. Currently non-blocking (`continue-on-error`)
-   until the Lovable-origin files get a prettier pass. Do not add new lint
-   debt behind it.
-5. **Build:** `bun run build`. Hard gate.
+4. **Format:** `bun run format:check`. Hard gate. Run `bun run format` to fix.
+5. **Lint:** `bun run lint`. Hard gate. The `continue-on-error` escape hatch was
+   removed once the repo-wide prettier pass landed. Do not reintroduce it.
+6. **Unit tests + coverage:** `bunx vitest run --coverage`. Hard gate. The money
+   paths (`stripe-signature.ts`, `meter.ts`) are held at 100 percent line and
+   branch. Those thresholds are a protected path: lowering one to make a run go
+   green is a guardrail trip, not a fix.
+7. **Build:** `bun run build`. Hard gate.
+8. **GEO artifacts:** `bun scripts/check-geo.ts`. Hard gate. Validates robots.txt
+   group semantics, the sitemap, and that public plan claims match the JSON-LD
+   offers.
 
 Get CI green before asking for review.
 
 ## Before you ship (checklist)
 
-- [ ] No em dashes in copy (`rg "—" src/` returns nothing outside JSON examples).
+- [ ] No em dashes in copy (the CI house-style step passes).
 - [ ] Every new public table has GRANTs and RLS policies in the migration.
 - [ ] Every authed server function chains `requireSupabaseAuth`.
 - [ ] Every new route has its own `head()` with title, description, og:title, og:description.

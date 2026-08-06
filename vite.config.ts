@@ -1,6 +1,7 @@
 // Vercel-targeted TanStack Start config. Lovable toolchain removed (was @lovable.dev/vite-tanstack-config).
 // Plugin set per Vercel's TanStack Start guide: https://vercel.com/docs/frameworks/full-stack/tanstack-start
 // Vercel auto-detects TanStack Start + Nitro and runs on Fluid Compute; no explicit preset needed.
+import { execFileSync } from "node:child_process";
 import { readdirSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
@@ -48,15 +49,43 @@ function sitemapPlugin(origin: string): Plugin {
                 ? "0.7"
                 : "0.6";
       const changefreq = (p: string) => (isLegal(p) ? "monthly" : "weekly");
+
+      // lastmod from the route file's real last commit date.
+      //
+      // Deliberately omitted rather than faked when git is unavailable (shallow clone, no
+      // history, git missing). A lastmod that just says "now" on every build is worse than
+      // none: crawlers learn to distrust it and then ignore it when it is genuine.
+      const lastmodFor = (p: string): string | null => {
+        const base = p === "/" ? "index" : p.slice(1).split("/").join(".");
+        for (const candidate of [`src/routes/${base}.tsx`, `src/routes/${base}.index.tsx`]) {
+          try {
+            const iso = execFileSync("git", ["log", "-1", "--format=%cI", "--", candidate], {
+              cwd: __dirname,
+              encoding: "utf8",
+              stdio: ["ignore", "pipe", "ignore"],
+            }).trim();
+            if (iso) return iso.slice(0, 10);
+          } catch {
+            /* git unavailable or path unknown; fall through and omit */
+          }
+        }
+        return null;
+      };
+
       const urls = [...paths].sort();
       const xml =
         '<?xml version="1.0" encoding="UTF-8"?>\n' +
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
         urls
-          .map(
-            (p) =>
-              `  <url><loc>${origin}${p}</loc><changefreq>${changefreq(p)}</changefreq><priority>${priority(p)}</priority></url>`,
-          )
+          .map((p) => {
+            const lastmod = lastmodFor(p);
+            return (
+              `  <url><loc>${origin}${p}</loc>` +
+              (lastmod ? `<lastmod>${lastmod}</lastmod>` : "") +
+              `<changefreq>${changefreq(p)}</changefreq>` +
+              `<priority>${priority(p)}</priority></url>`
+            );
+          })
           .join("\n") +
         "\n</urlset>\n";
       writeFileSync(resolve(__dirname, "public/sitemap.xml"), xml);

@@ -4,10 +4,12 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { APP_ORIGIN } from "@/config/product";
 
 import appCss from "../styles.css?url";
 import { reportError } from "../lib/error-reporting";
@@ -193,11 +195,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
+/**
+ * Self-referencing canonical URL for the current route.
+ *
+ * Previously only the homepage carried a canonical tag, so every other page had none.
+ * That matters here because the same content is reachable on more than one hostname
+ * (apex, www, and any Vercel deployment alias), and without a canonical each host looks
+ * like a separate copy to a crawler. Emitting it from the shell covers every route.
+ *
+ * Shape matches public/sitemap.xml exactly: "/" keeps its slash, everything else has no
+ * trailing slash, so the canonical and the sitemap never disagree.
+ */
+function useCanonicalHref(): string {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  if (pathname === "/") return `${APP_ORIGIN}/`;
+  return `${APP_ORIGIN}${pathname.replace(/\/+$/, "")}`;
+}
+
 function RootShell({ children }: { children: ReactNode }) {
+  const canonical = useCanonicalHref();
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        <link rel="canonical" href={canonical} />
       </head>
       <body>
         {/* WCAG 2.4.1 Bypass Blocks. Visually hidden until focused by keyboard. */}

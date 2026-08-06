@@ -24,7 +24,9 @@ export const Route = createFileRoute("/")({
           "Agents can decide what to buy. Reading the product page is where they still break. Legibility reads it for them.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://legibility.io/" }],
+    // Canonical is emitted for every route by RootShell in __root.tsx, so it is not
+    // repeated here. A hardcoded homepage-only canonical was the previous behaviour and
+    // left every other page without one.
     // FAQPage structured data: mirrors the on-page FAQ. Google can render it as a rich
     // result and AI answer engines quote it directly when asked about Legibility.
     scripts: [

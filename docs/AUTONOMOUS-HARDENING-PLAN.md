@@ -116,12 +116,14 @@ working blind.** One session, no product code.
 8. **Add the scorecard workflow** with all Tier 1 gates wired, coverage thresholds set to current
    actuals so it passes, then ratcheted upward in later phases.
 
+9. **Subscribe to PR activity** so CI failures wake the session.
+
 **A note on the global coverage number.** The plan originally wrote this as a flat 70 percent.
 That was wrong as a Phase 0 target: the repo started at zero tests, so a 70 percent gate would
 have failed every run until Phase 2 finished, which makes the gate noise rather than signal. What
 is implemented is a **ratchet pinned at the measured actuals**, so coverage can rise and never
 fall, and the number moves up as each phase lands. The 100 percent money-path thresholds are
-absolute and are not subject to this. 9. **Subscribe to PR activity** so CI failures wake the session.
+absolute and are not subject to this.
 
 **Exit criterion:** a push to the branch produces a CI verdict the agent can trust, and a red
 verdict wakes the session automatically.

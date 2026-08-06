@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
 
 // v1 REST: compare_products. Extracts 2 to 5 product URLs (via the worker) and returns a
-// side-by-side matrix plus the price delta. Validates a plk_ key, rate-limits, meters once.
+// side-by-side matrix plus the price delta. Validates a lgk_ key, rate-limits, meters once.
 
 type Envelope = {
   input?: { url?: string };
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/api/v1/compare_products")({
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
-        if (!principal) return json({ error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." }, 401);
+        if (!principal) return json({ error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." }, 401);
 
         const { rateCheck, rateHeaders } = await import("@/integrations/supabase/rate-limit.server");
         const rl = await rateCheck(principal.userId);

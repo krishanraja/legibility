@@ -77,7 +77,7 @@ on trusted scope.
 
 **Shipped and live:** marketing site with an honest hero (the console shows a
 real captured call, not a mock), dashboard (keys, usage, billing, overview),
-auth, single secret API key (`plk_`), all four tools over REST (`read_product`,
+auth, single secret API key (`lgk_`), all four tools over REST (`read_product`,
 `resolve_product`, `compare_products`, `brief_product`), `read_product` and
 `resolve_product` over MCP at `/api/mcp`, the extraction worker with a
 content-validity stage, calibrated confidence, and price bands, per-plan

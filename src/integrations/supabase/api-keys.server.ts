@@ -7,10 +7,10 @@ export function hashKey(key: string): string {
   return createHash("sha256").update(key).digest("hex");
 }
 
-// plk_ + 24 random bytes (base64url). Returned in full ONCE; we persist only the hash.
+// lgk_ + 24 random bytes (base64url). Returned in full ONCE; we persist only the hash.
 export function generateKeyMaterial() {
   const secret = randomBytes(24).toString("base64url");
-  const key = `plk_${secret}`;
+  const key = `lgk_${secret}`;
   return { key, prefix: key.slice(0, 12), last_four: key.slice(-4), key_hash: hashKey(key) };
 }
 
@@ -18,7 +18,7 @@ export function generateKeyMaterial() {
 export async function validateApiKey(
   presented: string | null,
 ): Promise<{ userId: string; keyId: string } | null> {
-  if (!presented || !presented.startsWith("plk_")) return null;
+  if (!presented || !presented.startsWith("lgk_")) return null;
   const key_hash = hashKey(presented);
   const { data, error } = await supabaseAdmin
     .from("api_keys")

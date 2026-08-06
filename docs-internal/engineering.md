@@ -18,7 +18,7 @@
 ```
 agent / MCP client
   -> app on Vercel  (src/routes/api/v1/*, /api/mcp)
-       auth (plk_ key) -> rate limit -> entitlement_check (402 quota/cost fuse)
+       auth (lgk_ key) -> rate limit -> entitlement_check (402 quota/cost fuse)
        -> worker on Vercel  (POST /extract, Bearer PLINTH_EXTRACTOR_TOKEN)
             fetch (browser UA, never throws)
             deterministic extractors: JSON-LD, Shopify, OpenGraph, barcode/GTIN
@@ -74,7 +74,7 @@ docs-internal/          this directory      docs/  public-facing decision record
 
 ## read_product path (representative)
 
-`read_product` validates the `plk_` key, enforces the per-plan rate limit, calls `entitlement_check`
+`read_product` validates the `lgk_` key, enforces the per-plan rate limit, calls `entitlement_check`
 (402 with an upgrade link on `quota_exceeded` / `cost_fuse`, BEFORE any worker cost), proxies
 `{ url | gtin, min_confidence? }` to the worker, and meters the call into `usage_events`. The metering
 row is a calibration observation, not just a billable count: it stamps `confidence`, `product_returned`,

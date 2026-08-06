@@ -49,7 +49,7 @@ response and stored on `product_cache`. It is Legibility's identity handle for a
 product, independent of the source URL or GTIN, and the anchor for outcome
 reporting.
 
-**plk_ key.** Customer API key with `plk_` prefix. sha256-hashed at
+**lgk_ key.** Customer API key with `lgk_` prefix. sha256-hashed at
 rest, shown ONCE at creation.
 
 **Resolve vs read.** `read_product` takes a precise reference (URL or

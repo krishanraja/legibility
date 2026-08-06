@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
 
 // v1 REST: resolve_product. Fuzzy product name -> typed product object (via Exa retrieval + extraction
-// on the worker). Validates a plk_ key, rate-limits, meters. Returns the worker's ProductEnvelope.
+// on the worker). Validates a lgk_ key, rate-limits, meters. Returns the worker's ProductEnvelope.
 
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/api/v1/resolve_product")({
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
         if (!principal) {
-          return json({ error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." }, 401);
+          return json({ error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." }, 401);
         }
 
         const { rateCheck, rateHeaders } = await import("@/integrations/supabase/rate-limit.server");

@@ -48,7 +48,7 @@ export const Route = createFileRoute("/api/v1/brief_product")({
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
-        if (!principal) return json({ error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." }, 401);
+        if (!principal) return json({ error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." }, 401);
 
         const { rateCheck, rateHeaders } = await import("@/integrations/supabase/rate-limit.server");
         const rl = await rateCheck(principal.userId);

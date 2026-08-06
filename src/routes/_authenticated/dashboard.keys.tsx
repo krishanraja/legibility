@@ -67,7 +67,7 @@ function KeysPage() {
     <div>
       <h1 className="font-display text-4xl text-foreground">API keys</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
-        Your secret key (<span className="font-mono">plk_…</span>) authenticates calls to read_product.
+        Your secret key (<span className="font-mono">lgk_…</span>) authenticates calls to read_product.
         It is shown once at creation. Store it safely.
       </p>
 

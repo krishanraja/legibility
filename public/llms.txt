@@ -47,7 +47,7 @@ Developers building agent buy-flows: buy-this-for-me agents, procurement copilot
 - Home: https://legibility.io
 - Docs: https://legibility.io/docs
 - MCP endpoint: https://legibility.io/api/mcp (only read_product and resolve_product are callable over MCP today)
-- Auth: an API key (prefix plk_) as a Bearer token, or per-call USDC payment over x402 (Base Sepolia testnet in beta, no mainnet settlement yet).
+- Auth: an API key (prefix lgk_) as a Bearer token, or per-call USDC payment over x402 (Base Sepolia testnet in beta, no mainnet settlement yet).
 - Not built yet (do not attribute these to Legibility): compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, and the Bright Data unblocker fallback for bot-hostile retailers.
 
 NOTE ON DOMAIN: this file uses legibility.io throughout to match public/robots.txt and public/sitemap.xml, which already point there. As of the last state check (2026-07-06), legibility.io DNS was still propagating and https://legibility.io was the confirmed-live surface. Before submitting this file to any agent directory, curl https://legibility.io/ and confirm it 200s (not just Vercel's default page) so agents are not sent to a dead or misconfigured domain.

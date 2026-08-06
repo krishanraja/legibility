@@ -220,7 +220,7 @@ With that caveat, three things are worth Krish's attention.
 ### Secrets
 
 **No live secret is present in any tracked file.** A scan across tracked content for
-`sk_live_*`, `sk_test_*`, JWT-shaped strings, service-role patterns, and `plk_*` returned
+`sk_live_*`, `sk_test_*`, JWT-shaped strings, service-role patterns, and `lgk_*` returned
 nothing. CI also runs `gitleaks/gitleaks-action@v2` on every push and PR with
 `fetch-depth: 0`, so history is covered.
 

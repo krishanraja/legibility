@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 // MCP server (JSON-RPC 2.0 over HTTP POST). Discovery (initialize / tools/list / ping) is free.
-// tools/call requires EITHER a valid plk_ API key (Bearer) OR a settled x402 payment
+// tools/call requires EITHER a valid lgk_ API key (Bearer) OR a settled x402 payment
 // (X-PAYMENT header, verified + settled on Base Sepolia via a facilitator). Keyed calls are
 // rate-limited and metered; x402 calls are paid on-chain so they skip account metering.
 
@@ -103,7 +103,7 @@ export const Route = createFileRoute("/api/mcp")({
             }
             if (typeof args.min_confidence === "number") payload.min_confidence = args.min_confidence;
 
-            // Auth: a plk_ key OR a settled x402 payment.
+            // Auth: a lgk_ key OR a settled x402 payment.
             const authz = request.headers.get("authorization");
             const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
             const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");

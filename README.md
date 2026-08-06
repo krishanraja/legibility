@@ -43,13 +43,13 @@ consume quota (see Billing).
 
 ## Quickstart
 
-1. Sign in at https://legibility.io and create an API key (`plk_...`) in the dashboard. The
+1. Sign in at https://legibility.io and create an API key (`lgk_...`) in the dashboard. The
    full key is shown once.
 2. Call `read_product`. A GTIN always returns a trusted identity object:
 
    ```bash
    curl -X POST https://legibility.io/api/v1/read_product \
-     -H "authorization: Bearer plk_your_key" \
+     -H "authorization: Bearer lgk_your_key" \
      -H "content-type: application/json" \
      -d '{"gtin":"8076800195057"}'
    ```
@@ -58,7 +58,7 @@ consume quota (see Billing).
 
    ```bash
    curl -X POST https://legibility.io/api/v1/read_product \
-     -H "authorization: Bearer plk_your_key" \
+     -H "authorization: Bearer lgk_your_key" \
      -H "content-type: application/json" \
      -d '{"url":"https://www.allbirds.com/products/mens-wool-runners-natural-grey"}'
    ```
@@ -84,7 +84,7 @@ step (an earlier draft of the docs described one; it was never built).
 
 ## Auth
 
-- **API key:** `Authorization: Bearer plk_...`. Create and revoke in the dashboard. Keys are
+- **API key:** `Authorization: Bearer lgk_...`. Create and revoke in the dashboard. Keys are
   sha256-hashed at rest and shown once.
 - **x402 (agents, no key):** MCP discovery is free. `tools/call` returns HTTP 402 with payment
   requirements; the agent pays in USDC on **Base Sepolia** (testnet), resends with an `X-PAYMENT`

@@ -7,7 +7,7 @@ the North Star counts.
 
 ## Surfaces
 
-- **REST** for developers: `POST /api/v1/<tool>`, auth via `Authorization: Bearer plk_...`.
+- **REST** for developers: `POST /api/v1/<tool>`, auth via `Authorization: Bearer lgk_...`.
 - **MCP** for agents: `POST /api/mcp` (JSON-RPC 2.0). Discovery is free; `tools/call` is paid.
 
 REST exposes `read_product`, `resolve_product`, `compare_products`, `brief_product`, and
@@ -87,7 +87,7 @@ downstream of a real agent acting on a real Legibility answer.
 
 ```
 POST /api/v1/report_outcome
-Authorization: Bearer plk_...
+Authorization: Bearer lgk_...
 { "outcome": "purchased", "legibility_id": "pl_...", "observed_price": 109.99, "observed_currency": "USD", "note": "..." }
 ```
 
@@ -101,7 +101,7 @@ Authorization: Bearer plk_...
 
 Two independent paths. A `tools/call` (or any billed REST tool) needs one of them.
 
-### API key (`plk_`)
+### API key (`lgk_`)
 
 - Keys are sha256-hashed at rest; the prefix and last four are stored for display. The full key is
   shown once at creation.
@@ -171,7 +171,7 @@ JSON error bodies with a stable shape: `{ error, message }`. Codes in use:
 | HTTP | `error`                          | When                                                        |
 | ---- | -------------------------------- | ----------------------------------------------------------- |
 | 400  | `invalid_json`                   | body is not valid JSON                                      |
-| 401  | `unauthorized`                   | missing or invalid `plk_` key                               |
+| 401  | `unauthorized`                   | missing or invalid `lgk_` key                               |
 | 402  | `quota_exceeded` / `cost_fuse`   | free account over its monthly quota or the free cost fuse   |
 | 402  | (x402 `PaymentRequirements`)     | MCP `tools/call` with no key and no settled payment         |
 | 405  | `method_not_allowed`             | wrong HTTP method on a POST-only route (with `Allow` header) |

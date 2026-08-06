@@ -411,7 +411,7 @@ function Index() {
               </div>
               <pre className="mt-5 overflow-x-auto font-mono text-xs leading-relaxed text-foreground">
 {`curl -X POST ${API_BASE}/read_product \\
-  -H "authorization: Bearer plk_…" \\
+  -H "authorization: Bearer lgk_…" \\
   -d '{ "gtin": "${DEMO_GTIN}" }'`}
               </pre>
             </div>

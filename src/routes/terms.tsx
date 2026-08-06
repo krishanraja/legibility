@@ -37,7 +37,7 @@ function Terms() {
 
         <Section n="02" title="Accounts and API keys">
           <p>
-            You are responsible for keeping your secret key (plk_) confidential. Every call made with
+            You are responsible for keeping your secret key (lgk_) confidential. Every call made with
             your key is treated as made by you and is billed to your account. Rotate or revoke a key
             from your dashboard if it is exposed.
           </p>

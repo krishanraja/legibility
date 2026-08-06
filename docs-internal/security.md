@@ -4,9 +4,9 @@
 
 - Email auth via Supabase Auth (project `cgkcplcamsijghalintq`).
 - Sessions managed by Supabase; never persisted server-side.
-- Customer API keys: `plk_` prefix + 32 random bytes. sha256-hashed at
+- Customer API keys: `lgk_` prefix + 32 random bytes. sha256-hashed at
   rest. Shown ONCE at creation. One key per account in v1.
-- Every `/api/v1/*` tool validates the `plk_` key as a Bearer token and
+- Every `/api/v1/*` tool validates the `lgk_` key as a Bearer token and
   returns 401 before any work when it is missing or invalid.
 
 ## Worker auth (fail closed)

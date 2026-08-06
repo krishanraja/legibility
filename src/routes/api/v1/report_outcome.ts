@@ -5,7 +5,7 @@ import { postOnly } from "@/lib/api/http";
 // answer led to a real outcome (the buy succeeded at the stated price, or it did not).
 // This is the ONE label class a competitor cannot crawl, buy, or self-adjudicate,
 // because it exists only downstream of a real agent acting on a real Legibility answer.
-// Keyed by plk_ (the agent's identity), joined to usage via request_id / legibility_id.
+// Keyed by lgk_ (the agent's identity), joined to usage via request_id / legibility_id.
 
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/api/v1/report_outcome")({
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
-        if (!principal) return json({ error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." }, 401);
+        if (!principal) return json({ error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." }, 401);
 
         let body: unknown;
         try {

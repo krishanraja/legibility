@@ -11,7 +11,7 @@
     "endpoint": "https://legibility.io/api/mcp",
     "discovery": "free",
     "auth": [
-      { "type": "bearer_api_key", "prefix": "plk_", "description": "Create a key at https://legibility.io in the dashboard. Required for tools/call unless paying per call over x402." },
+      { "type": "bearer_api_key", "prefix": "lgk_", "description": "Create a key at https://legibility.io in the dashboard. Required for tools/call unless paying per call over x402." },
       { "type": "x402", "network": "base-sepolia", "asset": "USDC", "description": "Per-call payment. tools/call returns HTTP 402 with payment requirements when no valid key or X-PAYMENT header is presented. Testnet only, no mainnet settlement yet." }
     ],
     "tools": [

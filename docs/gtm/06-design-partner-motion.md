@@ -206,7 +206,7 @@ opaque: do not parse it, do not regenerate it, store it exactly as returned.
 
 ### 4.2 The outcome report: the endpoint contract (shipped, live)
 
-`POST /api/v1/report_outcome`. Authenticated with the partner's `plk_` API key
+`POST /api/v1/report_outcome`. Authenticated with the partner's `lgk_` API key
 as a Bearer token (the same key they read with). This channel is intentionally
 wired hand-in-hand per partner rather than left as a passive endpoint; pair
 with them on it.
@@ -239,12 +239,12 @@ invalid. `422 invalid_request` if `outcome` is not in the enum or if neither
 
 ### 4.3 Copy-paste: the read-then-report snippet
 
-Give the partner this. It is the entire integration. Fill `{{plk_key}}`.
+Give the partner this. It is the entire integration. Fill `{{lgk_key}}`.
 
 ```bash
 # 1) Read. Keep request_id and legibility_id from the response.
 curl -s https://legibility.io/api/v1/read_product \
-  -H "authorization: Bearer {{plk_key}}" \
+  -H "authorization: Bearer {{lgk_key}}" \
   -H "content-type: application/json" \
   -d '{"url":"https://{{target_product_url}}"}'
 # -> { "product": {...}, "legibility_id": "pl_...", "request_id": "...",
@@ -254,7 +254,7 @@ curl -s https://legibility.io/api/v1/read_product \
 
 # 3) Report what actually happened.
 curl -s https://legibility.io/api/v1/report_outcome \
-  -H "authorization: Bearer {{plk_key}}" \
+  -H "authorization: Bearer {{lgk_key}}" \
   -H "content-type: application/json" \
   -d '{
         "request_id": "{{request_id_from_read}}",

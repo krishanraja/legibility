@@ -22,7 +22,7 @@ Set these once. Do not run a demo without them.
 | Var | Value | Note |
 |---|---|---|
 | `{{LEGIBILITY_HOST}}` | `https://legibility.io` | If DNS has not propagated, fall back to `https://legibility.io`. Both serve the same prod. |
-| `{{LEGIBILITY_API_KEY}}` | a live `plk_...` key | From the demo account. Keyed calls are metered; use the demo account, not a partner's. |
+| `{{LEGIBILITY_API_KEY}}` | a live `lgk_...` key | From the demo account. Keyed calls are metered; use the demo account, not a partner's. |
 | `{{MCP_URL}}` | `{{LEGIBILITY_HOST}}/api/mcp` | JSON-RPC 2.0. Discovery is free, `tools/call` is paid. |
 | `{{DOCS_URL}}` | `{{LEGIBILITY_HOST}}/docs` | Send after the demo, not during. |
 

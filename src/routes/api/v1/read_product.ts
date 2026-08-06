@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
 
-// v1 REST: read_product. Validates a plk_ API key, proxies {url|gtin} to the Legibility
+// v1 REST: read_product. Validates a lgk_ API key, proxies {url|gtin} to the Legibility
 // extraction worker, meters the call into usage_events, and returns the typed ProductEnvelope.
 
 function json(body: unknown, status: number) {
@@ -25,14 +25,14 @@ export const Route = createFileRoute("/api/v1/read_product")({
           );
         }
 
-        // API-key auth (plk_ as Bearer).
+        // API-key auth (lgk_ as Bearer).
         const authz = request.headers.get("authorization");
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
         if (!principal) {
           return json(
-            { error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." },
+            { error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." },
             401,
           );
         }

@@ -104,7 +104,7 @@ Real HTTP responses from `/api/v1/*`. Error bodies are JSON with at least
 | ---- | ----- | ------------- | ----------- |
 | 200 + `product: null` | (none) | Below the calibrated 0.7 gate | Free, no quota used. Pass `min_confidence` or use a GTIN / structured URL. |
 | 400 | invalid_json | Body was not valid JSON | Fix the request body. |
-| 401 | unauthorized | Missing or bad plk_ key | Send a valid key as a Bearer token. |
+| 401 | unauthorized | Missing or bad lgk_ key | Send a valid key as a Bearer token. |
 | 402 | (quota) | Monthly quota exhausted | Upgrade. The body links `/dashboard/billing`. |
 | 422 | invalid_request | read: not exactly one of `url`/`gtin`. resolve: `name` under 2 chars | Send one reference, or a real name. |
 | 429 | rate_limited | Per-key burst or sustained rate exceeded | Honor `retry-after`. Upgrade for higher limits. |

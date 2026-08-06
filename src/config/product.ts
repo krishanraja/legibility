@@ -12,7 +12,7 @@ export const DEMO_GTIN = "8076800195057";
 
 // The curl shown on the dashboard and in quickstart docs. Must succeed verbatim
 // (with a real key substituted). Never point samples at a domain that does not resolve.
-export const demoCurl = (keyPlaceholder = "plk_your_key") =>
+export const demoCurl = (keyPlaceholder = "lgk_your_key") =>
   `curl -X POST ${API_BASE}/read_product \\
   -H "authorization: Bearer ${keyPlaceholder}" \\
   -H "content-type: application/json" \\

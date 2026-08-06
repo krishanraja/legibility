@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 import { createHmac } from "node:crypto";
 import { mapStatus, REPLAY_WINDOW_SECONDS, verifySignature } from "./stripe-signature";
 
-const SECRET = "whsec_test_2f8a9c1e4b7d";
+// Deliberately does NOT look like a Stripe key. An earlier version of this fixture used a
+// realistic "whsec_" prefix with hex, and gitleaks correctly flagged it as a generic-api-key.
+// HMAC works with any string, so the realism bought nothing and cost a false positive.
+const SECRET = "test-signing-value-not-a-credential";
 const BODY = JSON.stringify({ id: "evt_1", type: "invoice.paid" });
 const NOW_MS = 1_770_000_000_000; // fixed clock, injected; no fake timers needed
 const NOW_S = Math.floor(NOW_MS / 1000);
@@ -45,7 +48,7 @@ describe("verifySignature", () => {
   });
 
   it("rejects a signature computed with the wrong secret", () => {
-    const forged = sign(BODY, NOW_S, "whsec_attacker");
+    const forged = sign(BODY, NOW_S, "a-different-signing-value");
     expect(verifySignature(BODY, forged, SECRET, NOW_MS)).toBe(false);
   });
 

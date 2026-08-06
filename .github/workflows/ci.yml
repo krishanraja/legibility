@@ -57,20 +57,25 @@ jobs:
       - name: Format check
         run: bun run format:check
 
+      # Test tooling is installed additively rather than added to package.json, because the
+      # lockfile could not be regenerated in the authoring environment (bun install fails
+      # there with ConnectionClosed). --no-save keeps bun.lock untouched so the app's own
+      # dependencies stay frozen and reproducible.
+      #
+      # This MUST run before Typecheck. The *.test.ts files import from "vitest", so without
+      # it tsc reports "Cannot find module 'vitest'" and then cascades into implicit-any
+      # errors on every it.each callback, because `it` itself resolves to any.
+      #
+      # TODO: move vitest + @vitest/coverage-v8 into devDependencies and commit the updated
+      # bun.lock from a machine with reliable network, then delete this step.
+      - name: Install test tooling
+        run: bun add --no-save vitest @vitest/coverage-v8
+
       - name: Typecheck
         run: bunx tsc --noEmit
 
       - name: Lint
         run: bun run lint
-
-      # Test tooling is installed additively rather than added to package.json, because the
-      # lockfile could not be regenerated in the authoring environment (bun install fails
-      # there with ConnectionClosed). --no-save keeps bun.lock untouched so the app's own
-      # dependencies stay frozen and reproducible.
-      # TODO: move vitest + @vitest/coverage-v8 into devDependencies and commit the updated
-      # bun.lock from a machine with reliable network, then delete this step.
-      - name: Install test tooling
-        run: bun add --no-save vitest @vitest/coverage-v8
 
       - name: Unit tests with coverage
         run: bunx vitest run --coverage

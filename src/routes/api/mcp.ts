@@ -70,7 +70,7 @@ export const Route = createFileRoute("/api/mcp")({
             return rpc(id, {
               protocolVersion: (params?.protocolVersion as string) ?? PROTOCOL,
               capabilities: { tools: {} },
-              serverInfo: { name: "plinth-mcp", version: "0.3" },
+              serverInfo: { name: "legibility-mcp", version: "0.3" },
             });
           case "notifications/initialized":
           case "initialized":
@@ -113,7 +113,7 @@ export const Route = createFileRoute("/api/mcp")({
             if (!principal) {
               const { paymentRequirements, quote402, settle } = await import("@/lib/api/x402.server");
               const resource = new URL(request.url).toString();
-              const desc = `Plinth ${name}`;
+              const desc = `Legibility ${name}`;
               const xpay = request.headers.get("x-payment");
               if (!xpay) return json402(quote402(resource, desc));
               const s = await settle(xpay, paymentRequirements(resource, desc));

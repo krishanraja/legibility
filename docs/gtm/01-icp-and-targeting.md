@@ -43,7 +43,7 @@ engineers. They already pay for Diffbot, Firecrawl, ScrapingBee, or run their
 own headless/Playwright/Browserless infra, and they need a typed product
 answer with a confidence they can gate on in code.
 
-Why they buy: they hit the same wall Plinth removes, reading the product page
+Why they buy: they hit the same wall Legibility removes, reading the product page
 reliably and knowing when to trust the read. They have a budget line for
 extraction already, so the spend is a swap, not a new category.
 
@@ -55,7 +55,7 @@ because:
 - highest willingness to pay in the research (roughly $200 to $2K/month;
   per-field confidence is table stakes and an audit trail is a hard
   requirement, not a nice-to-have),
-- their traffic lands on domains Plinth can legally and reliably read today
+- their traffic lands on domains Legibility can legally and reliably read today
   (JSON-LD, Shopify, catalogues, supplier sites), and
 - that is the only place `report_outcome` data can accumulate, which is the
   only asset that compounds. See `MOAT.md`.
@@ -78,7 +78,7 @@ resale or pure price-tracking (see disqualifiers).
 **S2. Agent-platform teams shipping MCP tools.** Teams building agent
 frameworks, agent app stores, or vertical agent products who ship or curate
 MCP servers and want a paid, credible product-data tool their users can call.
-They are a distribution wedge (Plinth is an MCP tool they can list) more than a
+They are a distribution wedge (Legibility is an MCP tool they can list) more than a
 direct high-volume buyer. Fit rises sharply if they also build a buy-flow
 themselves (then they are primary).
 
@@ -109,8 +109,8 @@ targets is how the fleet protects the North Star and the trust rate.
 
 | # | Disqualifier | Signal an agent detects | Why it is fatal |
 |---|---|---|---|
-| D1 | Targets are majority Amazon, Walmart, Target, Apple, or other top-tier anti-bot heads | Their example URLs, docs, or product all point at the anti-bot head | Plinth returns a graceful null there, not a trusted object. We would be selling a wall. |
-| D2 | Price-tracker or time-series price-monitoring product | "track price over time", "price history", "price drop alerts", "camelcamelcamel-style" | Lowest WTP ($0.001 to 0.005), live-price legal risk, and the exact segment Plinth refuses on principle |
+| D1 | Targets are majority Amazon, Walmart, Target, Apple, or other top-tier anti-bot heads | Their example URLs, docs, or product all point at the anti-bot head | Legibility returns a graceful null there, not a trusted object. We would be selling a wall. |
+| D2 | Price-tracker or time-series price-monitoring product | "track price over time", "price history", "price drop alerts", "camelcamelcamel-style" | Lowest WTP ($0.001 to 0.005), live-price legal risk, and the exact segment Legibility refuses on principle |
 | D3 | Needs live checkout/order placement, inventory/stock feeds, or a legal price guarantee | "places the order", "real-time inventory", "guaranteed in-stock/price" | Out of v1 scope. Selling it is a promise we cannot keep. |
 | D4 | x402-first tinkerer with no real buy-flow | Toy repo whose whole point is "pay an API with crypto", no product use case, no revenue path | Research explicitly warns off this segment; it never becomes a retained, outcome-reporting account |
 | D5 | No real buy-flow or product-data need at all | Generic LLM wrapper, chatbot, or infra with no physical-product surface | Not the ICP. Zero pull. |
@@ -256,7 +256,7 @@ Caps and tie-breaks:
 ### 7.1 Source-run kickoff (fill the merge fields, then run section 5)
 
 ```
-RUN: build ranked Plinth target list
+RUN: build ranked Legibility target list
 DATE: {{run_date}}
 SOURCES THIS RUN: {{sources}}         # e.g. Smithery, GitHub code search, YC
 TARGET COUNT: {{n_accounts}}          # stop when reached (see section 9)
@@ -288,7 +288,7 @@ PROOF URL TO DEMO ON: {{a reachable target domain of theirs, or a known-good pro
 WEDGE HOOK FOR OUTREACH: {{the one true thing that makes this land, for 02}}
 ```
 
-The `PROOF URL TO DEMO ON` must be a domain Plinth returns a trusted object for
+The `PROOF URL TO DEMO ON` must be a domain Legibility returns a trusted object for
 today (their supplier/Shopify/GTIN target, or a known-good proof URL: LEGO
 Millennium Falcon $849.99, Allbirds $110, Sony WH-1000XM5, Coca-Cola). If their
 only targets are the anti-bot head, that is a D1 signal, recheck section 4.
@@ -353,7 +353,7 @@ Never do to hit a count:
 - Do not downgrade a disqualifier to keep an account.
 - Do not fill the list with x402-first tinkerers (D4) or price-trackers (D2).
   An empty slot is better than a bad target; bad targets calibrate domains
-  Plinth cannot serve and drag the trust rate.
+  Legibility cannot serve and drag the trust rate.
 
 ---
 
@@ -374,7 +374,7 @@ Signals: buy-flow product +3, moat-critical supplier domains +3,
 fit_score: 5, tier A, status WORK, moat_critical true
 proof_url_to_demo: one of their supplier Shopify product URLs (returns today)
 wedge_hook: "you already pay Firecrawl and still hand-gate confidence;
-             Plinth returns a calibrated per-field confidence you can gate on,
+             Legibility returns a calibrated per-field confidence you can gate on,
              and only bills reads over 0.7"
 ```
 
@@ -390,10 +390,10 @@ That account goes to the top of the list and straight into
   it `unknown` and cap the score; do not guess it true.
 - Never score an anti-bot-head-only or price-tracker account above 0. They are
   disqualifiers, not low-fit targets.
-- The `proof_url_to_demo` must be a domain Plinth actually returns a trusted
+- The `proof_url_to_demo` must be a domain Legibility actually returns a trusted
   object for today. If you cannot name one, the account is not ready to work.
 - Voice for any `wedge_hook` or note: direct, concrete, technically credible,
   no hype. Audience is technical founders and senior engineers.
 
-Surfaces: `https://onplinth.io`, docs `/docs`, MCP `/api/mcp`. `plinth.sh` is
+Surfaces: `https://legibility.io`, docs `/docs`, MCP `/api/mcp`. `legibility.sh` is
 dead.

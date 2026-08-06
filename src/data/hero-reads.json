@@ -31,7 +31,7 @@
    "method": "jsonld",
    "confidence": 1,
    "cost_usd": 0.006,
-   "plinth_id": "pl_N1f03XTCv38zwThJhLWmpHsMyx4"
+   "legibility_id": "pl_N1f03XTCv38zwThJhLWmpHsMyx4"
   },
   {
    "tool": "read_product",
@@ -66,7 +66,7 @@
    "method": "jsonld",
    "confidence": 1,
    "cost_usd": 0.008,
-   "plinth_id": "pl_F_VxlG1ku7-UpoTF231Ul1H-w3g"
+   "legibility_id": "pl_F_VxlG1ku7-UpoTF231Ul1H-w3g"
   },
   {
    "tool": "resolve_product",
@@ -89,7 +89,7 @@
    "method": "jsonld",
    "confidence": 1,
    "cost_usd": 0.023,
-   "plinth_id": null
+   "legibility_id": null
   },
   {
    "tool": "read_product",
@@ -118,7 +118,7 @@
    "method": "barcode",
    "confidence": 1,
    "cost_usd": 0.008,
-   "plinth_id": "pl_u62kvz9RZCbJLO8W1YpaeH_PxGg"
+   "legibility_id": "pl_u62kvz9RZCbJLO8W1YpaeH_PxGg"
   }
  ]
 }

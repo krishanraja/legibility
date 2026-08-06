@@ -8,5 +8,5 @@ export function reportError(error: unknown, context: ErrorContext = {}) {
   if (typeof window === "undefined") return;
   const enriched = { route: window.location.pathname, ...context };
   // TODO(observability): Sentry.captureException(error, { extra: enriched })
-  console.error("[plinth] client error", enriched, error);
+  console.error("[legibility] client error", enriched, error);
 }

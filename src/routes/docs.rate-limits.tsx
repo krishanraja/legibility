@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/docs/rate-limits")({
-  head: () => ({ meta: [{ title: "Rate limits · Plinth docs" }] }),
+  head: () => ({ meta: [{ title: "Rate limits · Legibility docs" }] }),
   component: () => (
     <article className="space-y-6">
       <h1 className="font-display text-5xl">Rate limits</h1>

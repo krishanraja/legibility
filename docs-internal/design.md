@@ -39,8 +39,8 @@ breathe; never use hardcoded `<br/>`.
 Two bundled PNG assets, imported directly in the header and footer (these
 are real image imports, not CDN `.asset.json` files):
 
-- `src/assets/plinth-wordmark.png`: the wordmark (header + footer).
-- `src/assets/plinth-icon-and-favicon.png`: the square mark (header lockup).
+- `src/assets/legibility-wordmark.png`: the wordmark (header + footer).
+- `src/assets/legibility-icon-and-favicon.png`: the square mark (header lockup).
 
 Favicon and apple-touch icon are served from `public/` (`/favicon.png`,
 `/apple-touch-icon.png`) and wired in `src/routes/__root.tsx`.
@@ -85,7 +85,7 @@ that does not resolve.
 
 ### Metrics (admin only)
 
-`/dashboard/metrics` is the North Star surface, gated to Plinth admins. It
+`/dashboard/metrics` is the North Star surface, gated to Legibility admins. It
 shows trusted-reads-per-account, the moat metric (golden precision at gate,
 with its Wilson lower bound and calibration version), gate-pass rate by
 method (labelled clearly as gate-pass, NOT correctness), and the kill
@@ -99,7 +99,7 @@ and the page says so. Keep that honesty: do not dress a zero up as traction.
 - Never use the em dash. Use a period, a comma, parentheses, or a middle dot
   (·). This rule is mechanical; `rg "—" src/` should return nothing outside
   JSON code examples, and CI enforces it.
-- Title separator is the middle dot (·), for example "Plinth · Product data
+- Title separator is the middle dot (·), for example "Legibility · Product data
   for agents".
 - Honest before clever. "Price is a band" beats "real-time pricing". Every
   sample and every hero value must be reproducible against the live API.

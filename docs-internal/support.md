@@ -1,8 +1,8 @@
 # Support
 
-Internal support guide. Plinth is live and in private beta on
-https://plinth-tan.vercel.app (the custom domain onplinth.io is being
-pointed at Vercel and DNS is still propagating). Every Plinth call is
+Internal support guide. Legibility is live and in private beta on
+https://legibility.io (the custom domain legibility.io is being
+pointed at Vercel and DNS is still propagating). Every Legibility call is
 synchronous: the caller sends a request and gets the typed product object,
 its confidence, and the per-call cost back in the same response. There is no
 async job, no polling, and no webhook to wait on.
@@ -16,7 +16,7 @@ A read returns a `confidence` that is a calibrated probability. 0.7 means
   `confidence >= 0.7`. This is a trusted read. It is billed and it counts
   against quota.
 - **Below the gate:** `product` is `null` and the HTTP status is still 200.
-  Plinth is saying "I could not stand behind this answer." A null read is
+  Legibility is saying "I could not stand behind this answer." A null read is
   **not billed and does not consume quota**. `billable` is set only when a
   product is returned AND confidence is at least 0.7.
 

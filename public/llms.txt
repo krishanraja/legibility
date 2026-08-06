@@ -1,24 +1,24 @@
-# Plinth
+# Legibility
 
-> Plinth turns a product URL, a barcode (GTIN), or a fuzzy product name into a typed product object an AI agent can trust: calibrated per-field confidence, a price band, the source method, a stable opaque product id, and the exact per-call cost stamped into the response. Available over REST and as an MCP server, payable with an API key or per call in USDC over x402.
+> Legibility turns a product URL, a barcode (GTIN), or a fuzzy product name into a typed product object an AI agent can trust: calibrated per-field confidence, a price band, the source method, a stable opaque product id, and the exact per-call cost stamped into the response. Available over REST and as an MCP server, payable with an API key or per call in USDC over x402.
 
-Plinth exists because agents that buy, compare, or look up physical products all hit the same wall: reading the product page reliably. Plinth is that layer, finished, behind one call. You send a URL, a GTIN, or a name and get back a typed object. You only pay when a read clears the 0.7 trust gate, so null and low-confidence answers are free.
+Legibility exists because agents that buy, compare, or look up physical products all hit the same wall: reading the product page reliably. Legibility is that layer, finished, behind one call. You send a URL, a GTIN, or a name and get back a typed object. You only pay when a read clears the 0.7 trust gate, so null and low-confidence answers are free.
 
-## What Plinth does today (live, verified)
+## What Legibility does today (live, verified)
 
 - read_product: one reference (a product URL or a GTIN barcode) to a typed product object.
 - resolve_product: a fuzzy product name to the canonical typed product object.
 - compare_products: two to five product URLs to a side-by-side matrix plus the price delta. REST only today.
 - brief_product: the typed object plus a short agent-readable summary. REST only today.
-- MCP server at https://onplinth.io/api/mcp. It exposes read_product and resolve_product over JSON-RPC (initialize, tools/list, tools/call). compare_products and brief_product are REST only in v1; they are not yet on the MCP tool list.
-- Every response carries: a calibrated confidence (0.7 gate means about 70 percent likely correct), per-field confidence, a price band with an as_of timestamp and source count, the source method, a stable opaque plinth_id, and the per-call cost in USD.
+- MCP server at https://legibility.io/api/mcp. It exposes read_product and resolve_product over JSON-RPC (initialize, tools/list, tools/call). compare_products and brief_product are REST only in v1; they are not yet on the MCP tool list.
+- Every response carries: a calibrated confidence (0.7 gate means about 70 percent likely correct), per-field confidence, a price band with an as_of timestamp and source count, the source method, a stable opaque legibility_id, and the per-call cost in USD.
 
 Coverage today: Shopify stores (currency resolved through the storefront's own meta.json, so a real price band forms), barcodes (Open Food Facts and UPC databases), and retailers that serve JSON-LD or OpenGraph and do not block a standard server request. Fuzzy-name resolution works when the underlying neural-search account has credit. Bot-hostile retailers that block a datacenter IP (Apple, Nike, Lego, and similar) do not return a trusted object today; a proxy-based fallback for that class of site is built but not yet turned on. A null or below-gate read costs nothing and is not billed. Price is a band, not a live guaranteed price.
 
-## Why Plinth instead of the alternatives
+## Why Legibility instead of the alternatives
 
 - Diffbot returns a typed object but has no per-field confidence, no cost stamped in the response, and no MCP or x402 surface, so an agent cannot discover it and pay on its own.
-- Firecrawl plus an LLM gives you raw content and you write the schema, the confidence rubric, the price-band logic, the cache, the barcode merge, the MCP server, and the x402 settlement yourself. Plinth is that work, finished, behind one call.
+- Firecrawl plus an LLM gives you raw content and you write the schema, the confidence rubric, the price-band logic, the cache, the barcode merge, the MCP server, and the x402 settlement yourself. Legibility is that work, finished, behind one call.
 - Rolling your own means owning all of the above plus a calibrated confidence you can actually gate on. Calibrated confidence and outcome-verified accuracy are the hard part.
 
 ## Pricing
@@ -31,12 +31,12 @@ Coverage today: Shopify stores (currency resolved through the storefront's own m
 
 ## Docs
 
-- Quickstart: https://onplinth.io/docs/quickstart
-- read_product API: https://onplinth.io/docs/api/read-product
-- resolve_product API: https://onplinth.io/docs/api/resolve-product
-- MCP and x402: https://onplinth.io/docs/mcp
-- Rate limits: https://onplinth.io/docs/rate-limits
-- Errors: https://onplinth.io/docs/errors
+- Quickstart: https://legibility.io/docs/quickstart
+- read_product API: https://legibility.io/docs/api/read-product
+- resolve_product API: https://legibility.io/docs/api/resolve-product
+- MCP and x402: https://legibility.io/docs/mcp
+- Rate limits: https://legibility.io/docs/rate-limits
+- Errors: https://legibility.io/docs/errors
 
 ## Who it is for
 
@@ -44,10 +44,10 @@ Developers building agent buy-flows: buy-this-for-me agents, procurement copilot
 
 ## Facts
 
-- Home: https://onplinth.io
-- Docs: https://onplinth.io/docs
-- MCP endpoint: https://onplinth.io/api/mcp (only read_product and resolve_product are callable over MCP today)
+- Home: https://legibility.io
+- Docs: https://legibility.io/docs
+- MCP endpoint: https://legibility.io/api/mcp (only read_product and resolve_product are callable over MCP today)
 - Auth: an API key (prefix plk_) as a Bearer token, or per-call USDC payment over x402 (Base Sepolia testnet in beta, no mainnet settlement yet).
-- Not built yet (do not attribute these to Plinth): compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, and the Bright Data unblocker fallback for bot-hostile retailers.
+- Not built yet (do not attribute these to Legibility): compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, and the Bright Data unblocker fallback for bot-hostile retailers.
 
-NOTE ON DOMAIN: this file uses onplinth.io throughout to match public/robots.txt and public/sitemap.xml, which already point there. As of the last state check (2026-07-06), onplinth.io DNS was still propagating and https://plinth-tan.vercel.app was the confirmed-live surface. Before submitting this file to any agent directory, curl https://onplinth.io/ and confirm it 200s (not just Vercel's default page) so agents are not sent to a dead or misconfigured domain.
+NOTE ON DOMAIN: this file uses legibility.io throughout to match public/robots.txt and public/sitemap.xml, which already point there. As of the last state check (2026-07-06), legibility.io DNS was still propagating and https://legibility.io was the confirmed-live surface. Before submitting this file to any agent directory, curl https://legibility.io/ and confirm it 200s (not just Vercel's default page) so agents are not sent to a dead or misconfigured domain.

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
 
-// v1 REST: read_product. Validates a plk_ API key, proxies {url|gtin} to the Plinth
+// v1 REST: read_product. Validates a plk_ API key, proxies {url|gtin} to the Legibility
 // extraction worker, meters the call into usage_events, and returns the typed ProductEnvelope.
 
 function json(body: unknown, status: number) {

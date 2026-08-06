@@ -11,22 +11,22 @@ import { API_BASE, MCP_URL, DEMO_GTIN } from "@/config/product";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Plinth · Product data for agents" },
+      { title: "Legibility · Product data for agents" },
       {
         name: "description",
         content:
           "Typed product object from a URL, a barcode, or a fuzzy name. Confidence per field, cost stamped in the response, payable by an agent over MCP and x402.",
       },
-      { property: "og:title", content: "Plinth · Product data for agents" },
+      { property: "og:title", content: "Legibility · Product data for agents" },
       {
         property: "og:description",
         content:
-          "Agents can decide what to buy. Reading the product page is where they still break. Plinth reads it for them.",
+          "Agents can decide what to buy. Reading the product page is where they still break. Legibility reads it for them.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://onplinth.io/" }],
+    links: [{ rel: "canonical", href: "https://legibility.io/" }],
     // FAQPage structured data: mirrors the on-page FAQ. Google can render it as a rich
-    // result and AI answer engines quote it directly when asked about Plinth.
+    // result and AI answer engines quote it directly when asked about Legibility.
     scripts: [
       {
         type: "application/ld+json",
@@ -35,11 +35,11 @@ export const Route = createFileRoute("/")({
           "@type": "FAQPage",
           mainEntity: [
             { "@type": "Question", name: "Where does the data come from?", acceptedAnswer: { "@type": "Answer", text: "JSON-LD and OpenGraph first, a Shopify path for Shopify stores, barcode databases for GTINs, and an unblocker for bot-hostile retailers. The source method is on every response." } },
-            { "@type": "Question", name: "Why a confidence score?", acceptedAnswer: { "@type": "Answer", text: "Because product pages lie. Plinth returns a calibrated confidence per field and overall, where the 0.7 gate means about 70 percent likely correct. You decide the threshold, and you only pay for reads that clear the gate." } },
-            { "@type": "Question", name: "Is price live?", acceptedAnswer: { "@type": "Answer", text: "Price is a band with an as_of timestamp and a source count. Plinth does not present a single live number as a guarantee." } },
+            { "@type": "Question", name: "Why a confidence score?", acceptedAnswer: { "@type": "Answer", text: "Because product pages lie. Legibility returns a calibrated confidence per field and overall, where the 0.7 gate means about 70 percent likely correct. You decide the threshold, and you only pay for reads that clear the gate." } },
+            { "@type": "Question", name: "Is price live?", acceptedAnswer: { "@type": "Answer", text: "Price is a band with an as_of timestamp and a source count. Legibility does not present a single live number as a guarantee." } },
             { "@type": "Question", name: "What is x402?", acceptedAnswer: { "@type": "Answer", text: "An open micropayment standard. Agents pay per call in USDC on Base, with no signup and no key rotation. Base Sepolia testnet in beta." } },
             { "@type": "Question", name: "Why not Diffbot?", acceptedAnswer: { "@type": "Answer", text: "Diffbot returns a typed object but does not score confidence per field, does not stamp cost in the response, and has no MCP server or x402 surface, so an agent cannot discover it and pay on its own." } },
-            { "@type": "Question", name: "Why not roll your own with Firecrawl and GPT?", acceptedAnswer: { "@type": "Answer", text: "You can. You also own the schema, the cache policy, the confidence rubric, the price-band semantics, the barcode merge, the MCP server, and the x402 settlement. Plinth is that work, finished, behind one call." } },
+            { "@type": "Question", name: "Why not roll your own with Firecrawl and GPT?", acceptedAnswer: { "@type": "Answer", text: "You can. You also own the schema, the cache policy, the confidence rubric, the price-band semantics, the barcode merge, the MCP server, and the x402 settlement. Legibility is that work, finished, behind one call." } },
           ],
         }),
       },
@@ -79,7 +79,7 @@ function buildLines(r: HeroRead): Line[] {
     lines.push({ text: "  },", delay: 50 });
   }
   lines.push({ text: `  "method":    ${JSON.stringify(r.method)},`, delay: 70 });
-  if (r.plinth_id) lines.push({ text: `  "plinth_id": ${JSON.stringify(r.plinth_id)},`, delay: 55 });
+  if (r.legibility_id) lines.push({ text: `  "legibility_id": ${JSON.stringify(r.legibility_id)},`, delay: 55 });
   lines.push({ text: `  "confidence": ${r.confidence},`, cls: "text-signal", delay: 160 });
   lines.push({ text: `  "cost_usd":   ${r.cost_usd}`, cls: "text-signal", delay: 160 });
   lines.push({ text: "}", delay: 80 });
@@ -190,7 +190,7 @@ function Index() {
               <span className="block italic text-stone mt-3 text-balance max-w-[22ch]">Reading the product page is where they still break.</span>
             </h1>
             <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Plinth reads it for them. One call turns a URL, a barcode, or a fuzzy
+              Legibility reads it for them. One call turns a URL, a barcode, or a fuzzy
               name into a typed product object. Confidence per field, cost stamped
               in the response, payable by an agent.
             </p>
@@ -330,7 +330,7 @@ function Index() {
               <thead className="bg-surface text-left font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">Capability</th>
-                  <th className="px-4 py-3 text-signal">Plinth</th>
+                  <th className="px-4 py-3 text-signal">Legibility</th>
                   <th className="px-4 py-3">Diffbot</th>
                   <th className="px-4 py-3">Zyte</th>
                   <th className="px-4 py-3">Firecrawl + LLM</th>
@@ -444,7 +444,7 @@ function Index() {
               ["Is price live?", "Price is a band with an as_of timestamp and a source count. We do not present a single live number as truth."],
               ["What's x402?", "An open micropayment standard. Agents pay per call in USDC on Base. No signup, no key rotation."],
               ["Why not Diffbot?", "Diffbot returns a typed object. It does not score confidence per field, does not stamp cost in the response, and has no MCP server or x402 surface. An agent cannot discover it and pay on its own."],
-              ["Why not roll your own with Firecrawl + GPT?", "You can. You also own the schema, the cache policy, the confidence rubric, the price-band semantics, the barcode merge, the MCP server, and the x402 settlement. Plinth is that work, finished, behind one call."],
+              ["Why not roll your own with Firecrawl + GPT?", "You can. You also own the schema, the cache policy, the confidence rubric, the price-band semantics, the barcode merge, the MCP server, and the x402 settlement. Legibility is that work, finished, behind one call."],
               ["Can a site request takedown?", <>Yes. <a href="/takedown" className="text-signal underline">File here</a>. We honor it within 24h.</>],
             ].map(([q, a], i) => (
               <details key={i} className="group py-5">

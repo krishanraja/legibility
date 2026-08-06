@@ -11,10 +11,10 @@
 
 ## Worker auth (fail closed)
 
-- The extraction worker (`plinth-worker`) shares `PLINTH_EXTRACTOR_TOKEN`
+- The extraction worker (`legibility-worker`) shares `PLINTH_EXTRACTOR_TOKEN`
   with the app. It refuses to serve without it: on boot, an unset token
   calls `process.exit(1)` (see `worker/src/server.ts`). Local dev must opt
-  in explicitly with `PLINTH_ALLOW_INSECURE_DEV=1`, never silently.
+  in explicitly with `LEGIBILITY_ALLOW_INSECURE_DEV=1`, never silently.
 - `/extract` checks the bearer with a length-guarded constant-time compare
   (`timingSafeEqual`); a bad or absent token returns 401.
 - The app fails closed too: if `PLINTH_EXTRACTOR_URL` / `PLINTH_EXTRACTOR_TOKEN`
@@ -46,7 +46,7 @@ store role on `profiles`.
 
 - Secrets are Vercel environment variables (app and worker projects), stored
   sensitive. Ops copies live in the local gitignored vault
-  (`.claude/secrets/plinth.env`); never inline a secret into a commit, PR, or
+  (`.claude/secrets/legibility.env`); never inline a secret into a commit, PR, or
   synced doc.
 - Read inside server-function handlers (or dynamically imported `*.server.ts`),
   never at module scope of client-imported files.

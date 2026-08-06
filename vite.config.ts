@@ -16,7 +16,7 @@ import tsConfigPaths from "vite-tsconfig-paths";
 // and layout-only routes. Runs on buildStart, so it fires however the build is invoked.
 function sitemapPlugin(origin: string): Plugin {
   return {
-    name: "plinth-sitemap",
+    name: "legibility-sitemap",
     buildStart() {
       const routesDir = resolve(__dirname, "src/routes");
       const files = readdirSync(routesDir).filter((f) => f.endsWith(".tsx"));
@@ -56,6 +56,6 @@ export default defineConfig({
     nitro(),
     viteReact(),
     tailwindcss(),
-    sitemapPlugin("https://onplinth.io"),
+    sitemapPlugin("https://legibility.io"),
   ],
 });

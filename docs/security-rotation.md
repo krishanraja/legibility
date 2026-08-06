@@ -4,7 +4,7 @@ Standing rule: any credential that has ever appeared in a chat transcript, commi
 
 ## Current rotation queue (as of 2026-07-05, founder actions)
 1. Stripe: DELETE both exposed live secret keys in the dashboard (the 2026-06-11 chat-pasted key and any other chat-pasted sk_live). Create a fresh restricted key for the app; put it in Vercel env `STRIPE_SECRET_KEY` (sensitive) only.
-2. Supabase (cgkcplcamsijghalintq): reset the service-role key, then update Vercel env on BOTH projects (plinth, plinth-worker) and `~/.claude/secrets/plinth.env`.
+2. Supabase (cgkcplcamsijghalintq): reset the service-role key, then update Vercel env on BOTH projects (legibility, legibility-worker) and `~/.claude/secrets/legibility.env`.
 3. Railway OAuth client secret: rotate (exposed in an earlier session).
 4. Vercel + GitHub + Supabase access tokens in `~/.claude/secrets/TOKENS.md`: rotate on the TOKENS.md cadence (file is marked exposed since 2026-06-11).
 

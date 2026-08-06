@@ -203,7 +203,7 @@ export type Database = {
           created_at: string
           user_id: string
           request_id: string | null
-          plinth_id: string | null
+          legibility_id: string | null
           outcome: string
           observed_price: number | null
           observed_currency: string | null
@@ -214,7 +214,7 @@ export type Database = {
           created_at?: string
           user_id: string
           request_id?: string | null
-          plinth_id?: string | null
+          legibility_id?: string | null
           outcome: string
           observed_price?: number | null
           observed_currency?: string | null
@@ -225,7 +225,7 @@ export type Database = {
           created_at?: string
           user_id?: string
           request_id?: string | null
-          plinth_id?: string | null
+          legibility_id?: string | null
           outcome?: string
           observed_price?: number | null
           observed_currency?: string | null

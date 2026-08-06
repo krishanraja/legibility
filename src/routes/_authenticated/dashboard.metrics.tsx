@@ -23,7 +23,7 @@ function MetricsPage() {
     return (
       <div>
         <h1 className="font-display text-4xl">Metrics</h1>
-        <p className="mt-3 text-muted-foreground">This surface is available to Plinth admins only.</p>
+        <p className="mt-3 text-muted-foreground">This surface is available to Legibility admins only.</p>
       </div>
     );
   }

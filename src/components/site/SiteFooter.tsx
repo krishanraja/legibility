@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import wordmark from "@/assets/plinth-wordmark.png";
+import wordmark from "@/assets/legibility-wordmark.png";
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-hairline mt-24">
       <div className="mx-auto grid max-w-[1280px] grid-cols-2 gap-10 px-6 py-12 font-mono text-xs sm:grid-cols-4">
         <div>
-          <img src={wordmark} alt="plinth" className="h-6 w-auto" />
+          <img src={wordmark} alt="legibility" className="h-6 w-auto" />
           <p className="mt-3 text-muted-foreground max-w-xs">
             The foundation a product-aware agent stands on.
           </p>

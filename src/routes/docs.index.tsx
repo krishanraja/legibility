@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/docs/")({
   component: () => (
     <article>
-      <h1 className="font-display text-5xl">Plinth docs</h1>
+      <h1 className="font-display text-5xl">Legibility docs</h1>
       <p className="mt-4 text-lg text-muted-foreground">
-        Plinth is a product-data primitive for agents. One call → a typed, sourced,
+        Legibility is a product-data primitive for agents. One call → a typed, sourced,
         confidence-scored, cost-stamped product object.
       </p>
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">

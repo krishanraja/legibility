@@ -1,6 +1,6 @@
-# Plinth GTM Playbook (start here)
+# Legibility GTM Playbook (start here)
 
-This directory is the operating manual for the Plinth agent fleet. It is
+This directory is the operating manual for the Legibility agent fleet. It is
 written to be executed by an agent, not skimmed by a human: every file has
 explicit criteria, decision rules, copy-paste templates with merge fields,
 disqualifiers, and stop conditions. An agent should be able to act from a
@@ -18,8 +18,8 @@ Last reviewed: 2026-07-06.
 ## The one rule (everything else ladders to this)
 
 **Land 2 to 3 procurement and buy-flow design partners who wire outcome
-closure:** they store the opaque `plinth_id` as a foreign key in their own
-database and call `POST /api/v1/report_outcome` when a Plinth answer leads to
+closure:** they store the opaque `legibility_id` as a foreign key in their own
+database and call `POST /api/v1/report_outcome` when a Legibility answer leads to
 a real buy.
 
 That closed-outcome traffic is the only asset that compounds and the only one
@@ -27,7 +27,7 @@ no competitor can clone, buy, or backdate. Landing it, inside the 6 to 12
 month window before a branded competitor bolts a typed product MCP onto
 Firecrawl, Diffbot, or Zyte, is the whole game. Everything else the fleet does
 is top of funnel that feeds it. The full defensibility thesis is in
-`C:/Users/krish/.scratch/audit/plinth/2026-07-04/MOAT.md`.
+`C:/Users/krish/.scratch/audit/legibility/2026-07-04/MOAT.md`.
 
 **North Star:** weekly trusted reads per active account (a trusted read is a
 call that returned a product at confidence >= 0.7). Beta target: 7 or more per
@@ -57,7 +57,7 @@ prospect  ->  personalize  ->  outreach  ->  demo  ->  qualify
 | demo | run the live-read demo script on their own catalog, never mock | `04-demo-and-qualification.md` |
 | qualify | run the gate and disqualifier checklist, produce a verdict | `04-demo-and-qualification.md` |
 | design-partner offer | quote the tier or make the partner offer, handle objections, close | `05-pricing-objections-and-close.md` |
-| onboard | wire `plinth_id` storage and `report_outcome`, verify in the database, set the feedback cadence | `06-design-partner-motion.md` |
+| onboard | wire `legibility_id` storage and `report_outcome`, verify in the database, set the feedback cadence | `06-design-partner-motion.md` |
 | measure | read the North Star, keep the CRM current, run the weekly loop and the kill checks | `07-metrics-crm-and-loop.md` |
 
 ---
@@ -112,6 +112,6 @@ section 6.
 - **Voice.** Direct, concrete, technically credible. No hype, no fluff. The
   reader is a technical founder or a senior engineer building an agent.
 
-Surfaces: live domain `https://onplinth.io` (current prod alias
-`plinth-tan.vercel.app`), docs at `/docs`, MCP at `/api/mcp`. Do not reference
-`plinth.sh`; it is dead.
+Surfaces: live domain `https://legibility.io` (current prod alias
+`legibility.io`), docs at `/docs`, MCP at `/api/mcp`. Do not reference
+`legibility.sh`; it is dead.

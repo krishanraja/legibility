@@ -2,7 +2,7 @@
 
 ## The billing unit: the trusted read
 
-Plinth bills **trusted reads**, not raw calls. A `usage_events` row is
+Legibility bills **trusted reads**, not raw calls. A `usage_events` row is
 `billable = true` only when the response **returned a product AND
 confidence >= 0.7**. Everything else (a null read, or a product below the
 gate) is logged for calibration and metrics but charges nothing and does
@@ -46,7 +46,7 @@ monthly in v1. Free requires **no card**.
   the account may spend. If the account is over its included trusted
   reads with no overage headroom (Free is a hard stop), it returns
   **402** before the worker ever runs, so a null or an over-quota request
-  costs Plinth nothing.
+  costs Legibility nothing.
 - A **free cost fuse** backstops the Free tier: even if quota accounting
   drifted, Free-tier spend is capped so an abusive caller cannot run up
   real COGS. Free is a hard stop, not metered overage.
@@ -100,7 +100,7 @@ Cost structure by path:
   it is a fraction of a cent per read at most.
 - **Cached trusted reads:** near-zero COGS. A cache hit returns the stored
   product with real `field_confidence` (columns `field_confidence`,
-  `calibration_version`, `plinth_id` on `product_cache`) without a fresh
+  `calibration_version`, `legibility_id` on `product_cache`) without a fresh
   fetch, so its margin is close to 100%.
 - **Hard, bot-hostile retailers** (Apple, Nike, Lego): the datacenter IP is
   blocked. A **Bright Data Web Unlocker fallback** exists
@@ -111,7 +111,7 @@ Cost structure by path:
   overage rate a $0.003 success is ~40%, and against the $0.01 Starter
   overage rate it is ~70%. Bundled into an included allotment the effective
   margin sits inside that band. Because it is fallback-only and
-  pay-per-success, it never charges Plinth for a read it did not deliver.
+  pay-per-success, it never charges Legibility for a read it did not deliver.
 - **Name-resolve** (Exa) has a per-query cost and only works when Exa has
   credits.
 

@@ -21,10 +21,10 @@ Set these once. Do not run a demo without them.
 
 | Var | Value | Note |
 |---|---|---|
-| `{{PLINTH_HOST}}` | `https://onplinth.io` | If DNS has not propagated, fall back to `https://plinth-tan.vercel.app`. Both serve the same prod. |
-| `{{PLINTH_API_KEY}}` | a live `plk_...` key | From the demo account. Keyed calls are metered; use the demo account, not a partner's. |
-| `{{MCP_URL}}` | `{{PLINTH_HOST}}/api/mcp` | JSON-RPC 2.0. Discovery is free, `tools/call` is paid. |
-| `{{DOCS_URL}}` | `{{PLINTH_HOST}}/docs` | Send after the demo, not during. |
+| `{{LEGIBILITY_HOST}}` | `https://legibility.io` | If DNS has not propagated, fall back to `https://legibility.io`. Both serve the same prod. |
+| `{{LEGIBILITY_API_KEY}}` | a live `plk_...` key | From the demo account. Keyed calls are metered; use the demo account, not a partner's. |
+| `{{MCP_URL}}` | `{{LEGIBILITY_HOST}}/api/mcp` | JSON-RPC 2.0. Discovery is free, `tools/call` is paid. |
+| `{{DOCS_URL}}` | `{{LEGIBILITY_HOST}}/docs` | Send after the demo, not during. |
 
 Hard rules for this stage (from `00` section 7, do not violate):
 
@@ -53,13 +53,13 @@ during personalization (`02`, `03`) and again to open the live call.
 2. Run `read_product` on each with your demo key:
 
 ```bash
-curl -s -X POST {{PLINTH_HOST}}/api/v1/read_product \
-  -H "Authorization: Bearer {{PLINTH_API_KEY}}" \
+curl -s -X POST {{LEGIBILITY_HOST}}/api/v1/read_product \
+  -H "Authorization: Bearer {{LEGIBILITY_API_KEY}}" \
   -H "Content-Type: application/json" \
   -d '{"url":"{{their_product_url_1}}"}'
 ```
 
-3. Record for each URL: `confidence`, `method`, `price` band, `plinth_id`,
+3. Record for each URL: `confidence`, `method`, `price` band, `legibility_id`,
    `cost_usd`, and whether it cleared the 0.7 gate (`product` present AND
    `confidence >= 0.7`).
 
@@ -75,7 +75,7 @@ curl -s -X POST {{PLINTH_HOST}}/api/v1/read_product \
 
 ### 1.3 Classifying a single miss
 
-A `product: null` with a below-gate `confidence` is not always a Plinth
+A `product: null` with a below-gate `confidence` is not always a Legibility
 failure. Classify before you react:
 
 - Anti-bot head (Apple and a few top-tier sites): expected. Graceful null, no
@@ -94,7 +94,7 @@ Subject: {{prospect_company}} products, already typed
 
 {{first_name}},
 
-Before we talk, here are 3 of your own product pages run through Plinth
+Before we talk, here are 3 of your own product pages run through Legibility
 just now, untouched:
 
 1. {{their_product_url_1}}
@@ -127,8 +127,8 @@ Total time 8 to 12 minutes. Each beat is a single call and one sentence.
 ### Beat 1: their own URL, typed in one call
 
 ```bash
-curl -s -X POST {{PLINTH_HOST}}/api/v1/read_product \
-  -H "Authorization: Bearer {{PLINTH_API_KEY}}" \
+curl -s -X POST {{LEGIBILITY_HOST}}/api/v1/read_product \
+  -H "Authorization: Bearer {{LEGIBILITY_API_KEY}}" \
   -H "Content-Type: application/json" \
   -d '{"url":"{{their_product_url_1}}"}'
 ```
@@ -147,7 +147,7 @@ Representative response (Shopify path):
     "availability": "in_stock",
     "attributes": {}
   },
-  "plinth_id": "pl_9d3a1c...",
+  "legibility_id": "pl_9d3a1c...",
   "field_confidence": { "title": 0.90, "brand": 0.98, "price": 0.98 },
   "confidence": 1.0,
   "method": "jsonld",
@@ -166,8 +166,8 @@ the cost of the call stamped in."
 ### Beat 2: a barcode, no URL needed
 
 ```bash
-curl -s -X POST {{PLINTH_HOST}}/api/v1/read_product \
-  -H "Authorization: Bearer {{PLINTH_API_KEY}}" \
+curl -s -X POST {{LEGIBILITY_HOST}}/api/v1/read_product \
+  -H "Authorization: Bearer {{LEGIBILITY_API_KEY}}" \
   -H "Content-Type: application/json" \
   -d '{"gtin":"5449000000996"}'
 ```
@@ -185,7 +185,7 @@ still trusted on identity):
     "availability": null,
     "attributes": {}
   },
-  "plinth_id": "pl_2f81be...",
+  "legibility_id": "pl_2f81be...",
   "field_confidence": { "title": 0.9, "brand": 0.92, "gtin": 0.99 },
   "confidence": 0.78,
   "method": "gtin",
@@ -201,8 +201,8 @@ identity, because the confidence is per field, not one blunt number."
 ### Beat 3: a fuzzy name, resolved synchronously
 
 ```bash
-curl -s -X POST {{PLINTH_HOST}}/api/v1/resolve_product \
-  -H "Authorization: Bearer {{PLINTH_API_KEY}}" \
+curl -s -X POST {{LEGIBILITY_HOST}}/api/v1/resolve_product \
+  -H "Authorization: Bearer {{LEGIBILITY_API_KEY}}" \
   -H "Content-Type: application/json" \
   -d '{"name":"Sony WH-1000XM5"}'
 ```
@@ -228,7 +228,7 @@ Then a keyed, metered call that returns the same envelope:
 
 ```bash
 curl -s -X POST {{MCP_URL}} \
-  -H "Authorization: Bearer {{PLINTH_API_KEY}}" \
+  -H "Authorization: Bearer {{LEGIBILITY_API_KEY}}" \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"read_product","arguments":{"url":"{{their_product_url_1}}"}}}'
 ```
@@ -250,15 +250,15 @@ Point at three fields in the Beat 1 response and land them:
 - `cost_usd: 0.003`: "The price of the call is in the call. Build-versus-buy
   math is trivial, and you only pay when a read clears 0.7, so nulls and
   low-confidence answers are free and burn no quota."
-- `plinth_id: pl_...`: "An opaque, stable id for this product, never derived
-  from the URL. Store it as a foreign key in your schema. Then when a Plinth
+- `legibility_id: pl_...`: "An opaque, stable id for this product, never derived
+  from the URL. Store it as a foreign key in your schema. Then when a Legibility
   answer leads to a real buy, your agent posts one line back:"
 
 ```bash
-curl -s -X POST {{PLINTH_HOST}}/api/v1/report_outcome \
-  -H "Authorization: Bearer {{PLINTH_API_KEY}}" \
+curl -s -X POST {{LEGIBILITY_HOST}}/api/v1/report_outcome \
+  -H "Authorization: Bearer {{LEGIBILITY_API_KEY}}" \
   -H "Content-Type: application/json" \
-  -d '{"outcome":"purchased","plinth_id":"pl_9d3a1c...","observed_price":110,"observed_currency":"USD"}'
+  -d '{"outcome":"purchased","legibility_id":"pl_9d3a1c...","observed_price":110,"observed_currency":"USD"}'
 ```
 
 Say: "That call is never billed. It is the whole point of the design-partner
@@ -276,7 +276,7 @@ the ask you make if they qualify as a design partner.
 | 2 | `read_product` with `gtin` | No URL needed, per-field confidence | 1 min |
 | 3 | `resolve_product` with `name` | Fuzzy name in, object out, synchronous | 2 min |
 | 4 | MCP `tools/list` then keyed `tools/call` | Agent-native surface, discovery free | 2 min |
-| 5 | Point at confidence, cost, `plinth_id`, `report_outcome` | Trust gate, transparent cost, the moat | 3 min |
+| 5 | Point at confidence, cost, `legibility_id`, `report_outcome` | Trust gate, transparent cost, the moat | 3 min |
 
 ### 2.2 Never do in a demo
 
@@ -338,15 +338,15 @@ work them.
 
 | Disqualifier | Trips when | What to do |
 |---|---|---|
-| D1 anti-bot head | Target domains are majority Amazon, Walmart, Target, Apple, or similar top-tier anti-bot heads | Say it plainly: Plinth cannot serve those reliably today. Send honest-no (`05`). Do not pretend. |
-| D2 price tracker | The use case is price-tracking or time-series price monitoring | Decline on principle: legal risk on live-price claims, willingness to pay too low, it is the segment Plinth refuses. |
+| D1 anti-bot head | Target domains are majority Amazon, Walmart, Target, Apple, or similar top-tier anti-bot heads | Say it plainly: Legibility cannot serve those reliably today. Send honest-no (`05`). Do not pretend. |
+| D2 price tracker | The use case is price-tracking or time-series price monitoring | Decline on principle: legal risk on live-price claims, willingness to pay too low, it is the segment Legibility refuses. |
 | D3 out of scope | They need live checkout / order placement, inventory or stock feeds, or a legal guarantee on price | Out of scope in v1. Do not sell it. Offer to revisit if the roadmap reaches it. |
 
 ### 4.3 Outcome-wireability (the moat check)
 
 This does not gate a paying deal, it gates the design-partner offer. Assess:
 
-- Can they store the opaque `plinth_id` as a foreign key in their own schema?
+- Can they store the opaque `legibility_id` as a foreign key in their own schema?
   (They control their data model.)
 - Can they call `POST /api/v1/report_outcome` on real buys? (They control the
   agent's action path and see purchase outcomes.)
@@ -363,7 +363,7 @@ All three yes plus gates passed: this is a design-partner target. Route to
 Produce this after the demo. It is the handoff artifact to `05` or `06`.
 
 ```
-PLINTH QUALIFICATION VERDICT
+LEGIBILITY QUALIFICATION VERDICT
 
 Prospect: {{prospect_company}} / {{first_name}} ({{role}})
 Domain(s): {{prospect_domain}}, {{supplier_or_longtail_domains}}
@@ -384,7 +384,7 @@ Disqualifiers:
   D3 out of scope ......... {{tripped/clear}}
 
 Outcome-wireability (moat):
-  can store plinth_id ..... {{yes/no}}
+  can store legibility_id ..... {{yes/no}}
   can call report_outcome . {{yes/no}}
   legally-readable domains  {{yes/no}}
 
@@ -418,10 +418,10 @@ NEXT ACTION: {{one concrete step, owner, date}}
   state it as roadmap or best-effort, never as shipped. See `05` for the
   objection matrix.
 - Prospect is majority anti-bot head but insists: still disqualify (D1).
-  Re-targeting them wastes calibration on domains Plinth cannot legally serve,
+  Re-targeting them wastes calibration on domains Legibility cannot legally serve,
   which is a kill signal in `00` section 2.
 - Deal qualifies as a design partner: your next job is `06`, wiring
-  `plinth_id` storage and `report_outcome`. That is the moat igniting and the
+  `legibility_id` storage and `report_outcome`. That is the moat igniting and the
   single most important thing this pipeline exists to produce.
 
 ---

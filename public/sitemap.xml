@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://onplinth.io/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://onplinth.io/docs</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://onplinth.io/docs/api/read-product</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://onplinth.io/docs/api/resolve-product</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://onplinth.io/docs/errors</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://onplinth.io/docs/mcp</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://onplinth.io/docs/quickstart</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://onplinth.io/docs/rate-limits</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://onplinth.io/docs/webhooks</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://onplinth.io/privacy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://onplinth.io/takedown</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
-  <url><loc>https://onplinth.io/terms</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://legibility.io/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://legibility.io/docs</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://legibility.io/docs/api/read-product</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://legibility.io/docs/api/resolve-product</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://legibility.io/docs/errors</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://legibility.io/docs/mcp</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://legibility.io/docs/quickstart</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://legibility.io/docs/rate-limits</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://legibility.io/docs/webhooks</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://legibility.io/privacy</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://legibility.io/takedown</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
+  <url><loc>https://legibility.io/terms</loc><changefreq>monthly</changefreq><priority>0.3</priority></url>
 </urlset>

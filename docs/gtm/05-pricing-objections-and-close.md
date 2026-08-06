@@ -28,7 +28,7 @@ that builds the moat (`00` section 1, `MOAT.md`).
 Is the prospect a moat-critical target?
   = procurement or buy-flow team, on supplier / long-tail / cooperating
     domains (not the anti-bot head), with real buy volume, AND willing in
-    principle to store the plinth_id and wire report_outcome?
+    principle to store the legibility_id and wire report_outcome?
   -> see 01-icp-and-targeting.md for the scored definition.
 
   YES -> make the DESIGN-PARTNER OFFER (section 4). Do not lead with a price.
@@ -85,7 +85,7 @@ about the cap" option, with Starter named as the cheaper start.
 **Copy-paste tier quote (self-serve path):**
 
 ```
-Subject: Plinth pricing for {{company}}
+Subject: Legibility pricing for {{company}}
 
 Hi {{first_name}},
 
@@ -100,7 +100,7 @@ quota, so you only pay for answers your agent could actually act on.
 Start free with no card (1,000 trusted reads/mo) and move up when you cross
 the cap. You will never get a surprise bill: you hit the cap and we talk.
 
-Key + docs: https://onplinth.io/docs
+Key + docs: https://legibility.io/docs
 ```
 
 ---
@@ -108,7 +108,7 @@ Key + docs: https://onplinth.io/docs
 ## 3. The hard-domain premium note (read before quoting heavy unlocker use)
 
 Hard retailers (Nike, Lego, MediaMarkt and similar, served via the Bright
-Data Web Unlocker) cost Plinth about **$0.005 to $0.006 per successful read**,
+Data Web Unlocker) cost Legibility about **$0.005 to $0.006 per successful read**,
 versus near-zero for the deterministic paths (Shopify, JSON-LD, barcodes).
 That real cost is stamped into every response in `cost_usd`, so this stays
 transparent by design. Never hide it.
@@ -136,7 +136,7 @@ Decision rules for hard-domain reads:
 This is the close that matters. For a moat-critical target, do not open with
 a price. Open with the trade: free capacity and founder access, in exchange
 for outcome-closure wiring and feedback. The dollars are secondary to getting
-the `plinth_id` stored and `report_outcome` flowing (`00` sections 1 and 6,
+the `legibility_id` stored and `report_outcome` flowing (`00` sections 1 and 6,
 `MOAT.md` ranks 1 and 2).
 
 ### 4.1 The standard offer (default terms)
@@ -150,10 +150,10 @@ the `plinth_id` stored and `report_outcome` flowing (`00` sections 1 and 6,
 - Roadmap influence and hands-on help wiring outcome closure.
 
 **What we ask (the two non-negotiables plus two soft asks):**
-1. **Store the opaque `plinth_id`** as a foreign key in their own database.
+1. **Store the opaque `legibility_id`** as a foreign key in their own database.
    (Non-negotiable. This is where switching cost forms.)
 2. **Wire `POST /api/v1/report_outcome`** so their agent reports whether a
-   Plinth answer led to a real purchase at the stated price and availability.
+   Legibility answer led to a real purchase at the stated price and availability.
    (Non-negotiable. This is the moat's only unmanufacturable label.)
 3. Regular feedback on misses, a short recurring check-in (default weekly for
    the first month, then every two weeks).
@@ -184,7 +184,7 @@ window to avoid funding a large unlocker bill on our side:
 ### 4.3 Copy-paste design-partner offer
 
 ```
-Subject: Design-partner spot on Plinth for {{company}}
+Subject: Design-partner spot on Legibility for {{company}}
 
 Hi {{first_name}},
 
@@ -203,8 +203,8 @@ What you get:
 - Your target domains at the front of the engineering queue.
 
 What I ask:
-- Store the opaque plinth_id we return as a foreign key in your own database.
-- Wire POST /api/v1/report_outcome so your agent tells us when a Plinth answer
+- Store the opaque legibility_id we return as a foreign key in your own database.
+- Wire POST /api/v1/report_outcome so your agent tells us when a Legibility answer
   led to a real buy at the stated price. That single signal is what makes the
   confidence numbers get better on your domains specifically.
 - A short weekly check-in on any misses for the first month.
@@ -242,7 +242,7 @@ get, and what is the actual work, is: a stable typed schema across sites, a
 per field (not a self-reported number, an actual probability you can gate on),
 the barcode merge, the is-product verifier that refuses 404s and homepages,
 the MCP server, x402, an opaque stable identity, and the cost stamped per
-call. Plinth is that stack finished behind one call, and you only pay when a
+call. Legibility is that stack finished behind one call, and you only pay when a
 read clears the 0.7 gate. The two things that are genuinely hard to reproduce
 are calibrated confidence and outcome closure, and those are exactly what a
 weekend Firecrawl wrapper does not have.
@@ -270,23 +270,23 @@ politely.
 strong. What it does not do: it does not return a **calibrated per-field
 confidence** you can gate on, it does not stamp the per-call cost into the
 response, it has no MCP surface, and it does not accept x402, so an agent
-cannot discover it and pay for it on its own. Plinth is built to be called by
+cannot discover it and pay for it on its own. Legibility is built to be called by
 an agent and to tell that agent how much to trust each field. If you want a
 246M-entity knowledge graph, Diffbot. If you want a typed answer your agent
-can gate on and pay for autonomously, Plinth.
+can gate on and pay for autonomously, Legibility.
 
 **Copy-paste:**
 ```
 Diffbot is a real product and their entity graph is deep. The difference for
 an agent: Diffbot gives you a typed object but not a calibrated confidence
 per field, no per-call cost in the response, no MCP tool, and no way for the
-agent to pay on its own. Plinth is built to be called and trusted by an
+agent to pay on its own. Legibility is built to be called and trusted by an
 agent: confidence you gate on per field, cost stamped in, MCP live at
 /api/mcp. Different job. Happy to show the same URL through both.
 ```
 
 **Stop condition:** if they need a broad entity/knowledge graph across
-non-commerce data, that is Diffbot's job, not Plinth's. Do not oversell.
+non-commerce data, that is Diffbot's job, not Legibility's. Do not oversell.
 
 ### 5.3 "Apple doesn't work" / "it failed on the retailer I care about"
 
@@ -319,11 +319,11 @@ roadmap fix for the anti-bot head.
 
 **Worry:** they think a stale price will break their buy-flow.
 
-**Response:** Plinth returns a price **band** with an `as_of` timestamp and
+**Response:** Legibility returns a price **band** with an `as_of` timestamp and
 the number of sources, not a live spot price, and that is honest by design. A
 band plus a timestamp is a truthful thing to gate on. If you need a guaranteed
 live spot price at the moment of purchase, that is a checkout-time call to the
-merchant, and Plinth does not claim to replace it. For comparison, ranking,
+merchant, and Legibility does not claim to replace it. For comparison, ranking,
 and shortlisting, the band is exactly the right primitive. If they need a
 legal price guarantee, that is a disqualifier.
 
@@ -444,7 +444,7 @@ closure, hold the line and let them start on Free.
 
 **Worry:** social proof, early-stage risk.
 
-**Response:** Be straight: Plinth is early and in private beta, which is
+**Response:** Be straight: Legibility is early and in private beta, which is
 exactly why the design-partner spots exist and why the terms are generous. Do
 not invent customers or logos (hard rule, `00` section 7). Sell the trade and
 the founder access, not a customer list you do not have.
@@ -473,7 +473,7 @@ they are not a beta design partner. Offer Free and revisit later.
   outcome-closure wiring, not given away.
 - **Never extend the free window without the wiring in place.** If a partner
   wants more free time, the ask is: is `report_outcome` flowing and is the
-  `plinth_id` stored? If yes, extending is easy. If no, there is nothing to
+  `legibility_id` stored? If yes, extending is easy. If no, there is nothing to
   extend.
 - **Custom / on-prem / residency: do not name a number.** Escalate to founder.
 - **Never promise roadmap as a term.** Not Apple coverage, not webhooks, not
@@ -488,7 +488,7 @@ Two closing motions, by path.
 **Self-serve close (fits a tier).** The close is "start free, no card, and
 move up when you cross the cap." Lower the activation barrier to zero.
 ```
-Easiest next step: grab a key at https://onplinth.io, no card, 1,000 trusted
+Easiest next step: grab a key at https://legibility.io, no card, 1,000 trusted
 reads a month to prove it on your own URLs. When you cross the cap we move you
 to {{tier}}. Docs and the MCP endpoint are at /docs and /api/mcp. Want me to
 send a 5-line curl that reads {{their_target_domain}} right now?
@@ -499,7 +499,7 @@ a same-day Slack channel. The commitment you are closing is the wiring, not a
 signature.
 ```
 If the trade works for you, say yes and I will open the Slack channel today
-and send the two wiring steps: store the plinth_id, and call report_outcome
+and send the two wiring steps: store the legibility_id, and call report_outcome
 on real buys. Onboarding is about 30 minutes and I will be in the channel
 while you do it. Good to start?
 ```
@@ -513,7 +513,7 @@ conversation without a concrete next action and an owner.
 ## 8. Stop conditions and the honest no
 
 Disqualify cleanly when a disqualifier is true. A fast honest no protects the
-North Star (calls on domains Plinth cannot serve poison the calibration) and
+North Star (calls on domains Legibility cannot serve poison the calibration) and
 protects trust.
 
 **Copy-paste disqualification (hard-domain head):**
@@ -527,7 +527,7 @@ I will run them live. Not the right fit right now.
 
 **Copy-paste disqualification (price-tracking / live-guarantee use case):**
 ```
-Honest fit check: Plinth returns a price band with a timestamp, not a live
+Honest fit check: Legibility returns a price band with a timestamp, not a live
 guaranteed spot price or a time-series price feed, and we deliberately do not
 serve price-monitoring use cases. So this is not the right tool for
 {{use_case}}. If your need is typed product data for a buy or compare flow on
@@ -535,7 +535,7 @@ readable domains, that is exactly us, and I am happy to run a live read.
 ```
 
 Other stop conditions:
-- Prospect will not commit even in principle to storing the `plinth_id` and
+- Prospect will not commit even in principle to storing the `legibility_id` and
   wiring `report_outcome` -> not a design partner. Offer Free/Starter and move
   on.
 - Prospect wants only a cheaper self-serve sticker and no wiring -> hold list
@@ -551,7 +551,7 @@ When a design partner says yes, the deal is not done, the wiring is the deal.
 Hand straight off to `06-design-partner-motion.md` and do not consider the
 partner landed until the two non-negotiables are live:
 
-1. The opaque `plinth_id` is stored as a foreign key in their schema.
+1. The opaque `legibility_id` is stored as a foreign key in their schema.
 2. `POST /api/v1/report_outcome` is firing on real buys.
 
 Onboarding owns: opening the Slack channel, walking the two wiring steps,

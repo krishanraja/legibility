@@ -29,7 +29,7 @@ export function AuthModal({ open, onOpenChange }: { open: boolean; onOpenChange:
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-surface border-hairline sm:max-w-[420px]">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">Sign in to Plinth</DialogTitle>
+          <DialogTitle className="font-display text-2xl">Sign in to Legibility</DialogTitle>
           <DialogDescription className="text-muted-foreground">
             Magic link, no password. New here? Signing in creates your account.
           </DialogDescription>

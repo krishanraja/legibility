@@ -6,7 +6,7 @@
   (`.github/workflows/ci.yml`) runs a `secret-scan` job (gitleaks) plus a `verify`
   job: install, em-dash grep on `src/`, tsc, build, and a non-blocking lint. A
   committed secret fails the build.
-- The **extraction worker** (`plinth-worker`) is a separate Vercel deploy.
+- The **extraction worker** (`legibility-worker`) is a separate Vercel deploy.
 - **Rollback:** promote the previous good deployment in the Vercel dashboard (or `vercel rollback`).
 - **Migrations** apply to Supabase `cgkcplcamsijghalintq` via the Management API / MCP and are
   mirrored into `supabase/migrations/`.
@@ -20,12 +20,12 @@ Two cron jobs run on the `cgkc` Postgres. Both are service-role only.
 
 ### Cache TTL purge
 
-`plinth-cache-purge`, every 30 minutes: `DELETE FROM product_cache WHERE expires_at < now()
+`legibility-cache-purge`, every 30 minutes: `DELETE FROM product_cache WHERE expires_at < now()
 OR takedown = true`. Keeps the table small and enforces takedowns promptly between reads.
 
 ### Daily rollup + kill-floor alert
 
-`plinth-ops-daily`, 06:10 UTC: `compute_ops_daily()` then `check_kill_floor()`.
+`legibility-ops-daily`, 06:10 UTC: `compute_ops_daily()` then `check_kill_floor()`.
 
 - `compute_ops_daily()` upserts one `ops_daily` row per day: `total_calls`, `trusted_reads`,
   `trust_rate` (trusted / total, the gate-pass rate), `error_calls`, `avg_latency_ms`,
@@ -82,7 +82,7 @@ Symptom: a customer reports a wrong `brand` / `model` / `price`.
 ### Stripe webhook gap
 
 This is the INBOUND Stripe webhook (`/api/stripe/webhook`) that tells us about subscription
-events. Plinth does not offer customer-facing outbound webhooks (that is roadmap only).
+events. Legibility does not offer customer-facing outbound webhooks (that is roadmap only).
 
 1. Compare the Stripe dashboard to the local `subscriptions` table.
 2. Replay missing events from the Stripe dashboard, or resend to `/api/stripe/webhook`.

@@ -1,4 +1,4 @@
-# Plinth robots policy. Plinth is agent-native, so AI answer engines and crawlers
+# Legibility robots policy. Legibility is agent-native, so AI answer engines and crawlers
 # are explicitly welcome: we want to be read, quoted, and cited.
 
 User-agent: *
@@ -31,5 +31,5 @@ Allow: /
 User-agent: Bytespider
 Allow: /
 
-Sitemap: https://onplinth.io/sitemap.xml
-# LLM-oriented site summary (GEO): https://onplinth.io/llms.txt
+Sitemap: https://legibility.io/sitemap.xml
+# LLM-oriented site summary (GEO): https://legibility.io/llms.txt

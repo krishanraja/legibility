@@ -5,7 +5,7 @@ function Overview() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-display text-4xl">Welcome to Plinth</h1>
+        <h1 className="font-display text-4xl">Welcome to Legibility</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           One call turns a URL or a barcode into a typed product object with per-field confidence, a
           price band, and the per-call cost stamped in the response.

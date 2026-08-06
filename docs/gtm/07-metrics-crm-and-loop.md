@@ -24,7 +24,7 @@ forward only when its **exit criterion** is met, and the exit criterion of one
 stage is the **entry criterion** of the next. Stages `sourced` through
 `design-partner` are sales-driven and live in the CRM (section 3). Stages
 `activated` and `outcome-reporting` are product-instrumented and are read from
-the Plinth database, joined to the CRM row by `plinth_user_id`. An agent never
+the Legibility database, joined to the CRM row by `legibility_user_id`. An agent never
 hand-sets `activated` or `outcome-reporting`; those flip from the data.
 
 | Stage | Definition (account is here when...) | Entry criterion (what moves it in) | Exit criterion (what moves it on) | Owner agent | Source of truth |
@@ -32,9 +32,9 @@ hand-sets `activated` or `outcome-reporting`; those flip from the data.
 | `sourced` | A candidate account exists with a captured signal, not yet scored against the gates | An agent found an ICP-shaped target (see `01-icp-and-targeting.md`) and wrote a CRM row | Fit score computed and all 3 gates evaluated (section 3 rubric) | sourcing agent | CRM |
 | `qualified` | Passes all 3 qualification gates, hits no disqualifier, score >= 50 | Gates all true, disqualifiers all false, `score >= 50` | A demo is booked or an async live-read proof is sent and opened | qualifier agent | CRM |
 | `demoed` | Has seen a real live read on one of their own target URLs or a proof URL | Demo delivered per `04-demo-and-qualification.md` (never a mock) | Prospect verbally accepts the design-partner offer, or asks for the agreement | outreach agent | CRM |
-| `design-partner` | Accepted the offer, has an account and an API key, has agreed to the two non-negotiables | Offer accepted per `06-design-partner-motion.md`; `plinth_user_id` recorded on the CRM row | First trusted read lands for that `plinth_user_id` (`billable = true`) | partner agent | CRM, joined to Plinth DB |
-| `activated` | Their account has produced at least one trusted read (confidence >= 0.7) | First `usage_events` row with `billable = true` for `plinth_user_id` | First `outcome_reports` row for that account | product-instrumented | Plinth DB (`usage_events`) |
-| `outcome-reporting` | `report_outcome` is flowing on a regular cadence | At least one `outcome_reports` row, then a second in a later week | Stays here; this is the goal state. Regression to no reports for 60 days triggers the kill check | product-instrumented | Plinth DB (`outcome_reports`) |
+| `design-partner` | Accepted the offer, has an account and an API key, has agreed to the two non-negotiables | Offer accepted per `06-design-partner-motion.md`; `legibility_user_id` recorded on the CRM row | First trusted read lands for that `legibility_user_id` (`billable = true`) | partner agent | CRM, joined to Legibility DB |
+| `activated` | Their account has produced at least one trusted read (confidence >= 0.7) | First `usage_events` row with `billable = true` for `legibility_user_id` | First `outcome_reports` row for that account | product-instrumented | Legibility DB (`usage_events`) |
+| `outcome-reporting` | `report_outcome` is flowing on a regular cadence | At least one `outcome_reports` row, then a second in a later week | Stays here; this is the goal state. Regression to no reports for 60 days triggers the kill check | product-instrumented | Legibility DB (`outcome_reports`) |
 
 **Terminal and holding states** (set explicitly, with a reason):
 
@@ -169,8 +169,8 @@ protocols) are checked by hand per section 6.
 Lightweight, one row per prospect account. It lives as an n8n data table in the
 control-center fleet (or a Supabase table in the control-center project, same
 columns). An agent reads it, decides the next action, and writes it back. It is
-separate from the Plinth product database; the join key to product metrics is
-`plinth_user_id`, which stays null until the account signs up.
+separate from the Legibility product database; the join key to product metrics is
+`legibility_user_id`, which stays null until the account signs up.
 
 ### 3.1 Schema
 
@@ -187,7 +187,7 @@ separate from the Plinth product database; the join key to product metrics is
 | `last_touch` | timestamptz + channel | outreach agent | When and how last contacted |
 | `next_action` | text | owner agent | The single next move, decided by 3.3 |
 | `next_action_due` | date | owner agent | When it must happen; drives the daily sweep |
-| `plinth_user_id` | uuid (nullable) | partner agent | Join key to `usage_events` / `outcome_reports`; null until signup |
+| `legibility_user_id` | uuid (nullable) | partner agent | Join key to `usage_events` / `outcome_reports`; null until signup |
 | `disqualify_reason` | text (nullable) | any agent | Required when `stage = disqualified` |
 | `notes` | text | any agent | Append-only log of what happened |
 
@@ -240,7 +240,7 @@ points push it over 50. All three gates must be true to advance past
 | `qualified` | band A or B | Pick wedge (`02-`) and send outreach step 1 (`03-`) | Cadence exhausted, no reply: `parked` |
 | `qualified` | band C | Set `parked`, no touch | Fresh signal raising score to >= 50 |
 | `demoed` | offer not yet accepted | Send the design-partner offer (`06-`) | 2 declines or 14 days silent: `parked` |
-| `design-partner` | `plinth_user_id` set, no trusted read yet | Onboard: help wire `plinth_id` storage + `report_outcome` (`06-`) | 14 days to activation exceeded: founder-touch, then evaluate churn |
+| `design-partner` | `legibility_user_id` set, no trusted read yet | Onboard: help wire `legibility_id` storage + `report_outcome` (`06-`) | 14 days to activation exceeded: founder-touch, then evaluate churn |
 | `activated` | no outcome reports yet | Founder cadence to wire `report_outcome` on real buys | 60 days activated with zero reports: kill check |
 | `outcome-reporting` | reports flowing | Keep the feedback cadence, log misses (section 5) | 60 days no reports: back to kill check |
 | any | past dwell ceiling (2.4) | Re-decide the action or park | See dwell ceilings |
@@ -248,7 +248,7 @@ points push it over 50. All three gates must be true to advance past
 ### 3.4 Copy-paste CRM row template
 
 Create or update via the n8n data-table tool. Fill every `{{merge_field}}`;
-leave `plinth_user_id` empty until signup.
+leave `legibility_user_id` empty until signup.
 
 ```json
 {
@@ -263,7 +263,7 @@ leave `plinth_user_id` empty until signup.
   "last_touch": "{{iso_timestamp}} / {{channel}}",
   "next_action": "{{single_next_move}}",
   "next_action_due": "{{yyyy-mm-dd}}",
-  "plinth_user_id": "{{uuid_or_empty}}",
+  "legibility_user_id": "{{uuid_or_empty}}",
   "disqualify_reason": "{{reason_or_empty}}",
   "notes": "{{iso_timestamp}} {{what_happened}}"
 }
@@ -279,12 +279,12 @@ returns nothing, write `0` or `none`, never a guess. Order is deliberate:
 moat signals first, volume second, kill status third, asks last.
 
 ```md
-PLINTH GTM ROLLUP :: week of {{monday_date}}
+LEGIBILITY GTM ROLLUP :: week of {{monday_date}}
 
 MOAT SIGNALS (priority order)
 - Outcome reports this week: {{reports_this_week}} from {{reporting_accounts}} account(s)
     (prior week: {{reports_prior_week}}). Ignition: {{yes_first_ever | ongoing | none}}
-- Accounts storing plinth_id as a foreign key: {{count}} ({{delta_vs_prior}})
+- Accounts storing legibility_id as a foreign key: {{count}} ({{delta_vs_prior}})
 - New activations this week: {{new_activated}}; median time-to-first-trusted-read: {{ttfr_median}} min
     (target < 3). Activation leak (signed up, never activated): {{never_activated_count}}
 
@@ -328,7 +328,7 @@ anecdote does not become a roadmap) and a destination.
 | Observed | Category | Trigger to escalate | Destination |
 |---|---|---|---|
 | A specific hard domain shows up in target lists and fails to return a trusted object | `hard-domain-gap` | Same domain in the `target_domains` of 3 or more qualified accounts | Product: unlocker/coverage backlog. Never promise it as shipped |
-| Prospects keep needing a field Plinth does not return well (e.g. dimensions, MPN, warranty) | `missing-field` | Same field asked by 3 or more qualified accounts | Product: schema backlog |
+| Prospects keep needing a field Legibility does not return well (e.g. dimensions, MPN, warranty) | `missing-field` | Same field asked by 3 or more qualified accounts | Product: schema backlog |
 | A design partner says a confidence looked wrong (over or under stated) on a real read | `calibration-miss` | Any instance from an activated account, with the URL and returned object | Product: calibration / golden-set. Attach `request_id` and `envelope_hash` |
 | An objection recurs that current messaging does not answer | `positioning-gap` | Same objection in 3 or more demos | Update `02-positioning-and-messaging.md`, not product |
 | A prospect asks for something on the roadmap (webhooks, SDK, mainnet x402, compare/brief over MCP, auto-billed overage) | `roadmap-ask` | Log every instance; escalate at 5 | Product: demand-rank the roadmap. State honestly it is not shipped |
@@ -343,7 +343,7 @@ routes immediately with the `request_id`.
 Copy-paste product-feedback ticket:
 
 ```md
-PLINTH PRODUCT FEEDBACK :: {{category}}
+LEGIBILITY PRODUCT FEEDBACK :: {{category}}
 - Raised by (agent): {{owner_agent}}   Date: {{iso_date}}
 - Accounts affected: {{account_ids}} ({{count}}, threshold {{threshold}})
 - Evidence: {{target_domain_or_field_or_objection}}
@@ -359,7 +359,7 @@ PLINTH PRODUCT FEEDBACK :: {{category}}
 
 **Cadence.**
 - **Daily:** sweep the CRM for rows where `next_action_due <= today`; execute or
-  re-decide each. Refresh `stage` for any account with a `plinth_user_id` by
+  re-decide each. Refresh `stage` for any account with a `legibility_user_id` by
   re-reading `usage_events` (activated?) and `outcome_reports` (reporting?).
 - **Weekly:** run section 2 queries, post the section 4 rollup, run the section
   5 escalation thresholds and open any tickets that crossed them.
@@ -381,9 +381,9 @@ and the MOAT dashboard, restated as fleet-actionable triggers:
    the first design partner is live. The moat is running on manufacturable fuel
    only. Founder-drive the `report_outcome` wiring before sourcing new logos.
 4. **Wrong traffic:** hard-domain share of URL calls above 50% sustained. The
-   fleet is calibrating domains Plinth cannot legally serve. Re-target sourcing
+   fleet is calibrating domains Legibility cannot legally serve. Re-target sourcing
    toward supplier long-tail and structured retail; tighten gate 3.
-5. **Nobody stores the id:** zero accounts with `plinth_id` as a foreign key 90
+5. **Nobody stores the id:** zero accounts with `legibility_id` as a foreign key 90
    days after the id contract is live. Switching cost is not forming; fix
    onboarding in `06-design-partner-motion.md`.
 6. **Competitor ships (manual watch):** a branded competitor (Firecrawl,

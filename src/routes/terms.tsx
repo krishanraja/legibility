@@ -28,7 +28,7 @@ function Terms() {
 
         <Section n="01" title="The service">
           <p>
-            Plinth turns a product URL, a GTIN barcode, or a fuzzy product name into a typed product
+            Legibility turns a product URL, a GTIN barcode, or a fuzzy product name into a typed product
             object: factual attributes, a price expressed as a band, per-field and overall
             confidence, the source method, and the per-call cost. It is offered over a REST API and an
             MCP server.
@@ -47,7 +47,7 @@ function Terms() {
           <p>You agree not to:</p>
           <ul className="list-disc space-y-1 pl-5">
             <li>exceed your plan's rate limits or share a key to circumvent them;</li>
-            <li>use Plinth to bypass authentication, paywalls, CAPTCHAs, or anti-bot controls on any source;</li>
+            <li>use Legibility to bypass authentication, paywalls, CAPTCHAs, or anti-bot controls on any source;</li>
             <li>resell or redistribute the raw cache as a bulk dataset;</li>
             <li>use the service for unlawful purposes or in violation of a source site's terms.</li>
           </ul>
@@ -56,10 +56,10 @@ function Terms() {
 
         <Section n="04" title="Data and intellectual property">
           <p>
-            Plinth extracts publicly available, factual product data (titles, identifiers, specs,
+            Legibility extracts publicly available, factual product data (titles, identifiers, specs,
             availability, and price observations) and caches it to serve future calls. We do not
             provide product images or verbatim creative descriptions. Factual data is not owned by
-            Plinth; you are granted the right to use the returned objects in your application.
+            Legibility; you are granted the right to use the returned objects in your application.
           </p>
         </Section>
 
@@ -100,9 +100,9 @@ function Terms() {
         <Section n="09" title="Warranty, liability, and indemnity">
           <p>
             The service is provided "as is" without warranties of any kind. To the maximum extent
-            permitted by law, Plinth is not liable for indirect or consequential damages, and total
+            permitted by law, Legibility is not liable for indirect or consequential damages, and total
             liability is limited to the fees you paid in the prior three months. You agree to
-            indemnify Plinth for claims arising from your downstream use of the data.
+            indemnify Legibility for claims arising from your downstream use of the data.
           </p>
         </Section>
 
@@ -124,6 +124,6 @@ function Terms() {
 }
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms · Plinth" }] }),
+  head: () => ({ meta: [{ title: "Terms · Legibility" }] }),
   component: Terms,
 });

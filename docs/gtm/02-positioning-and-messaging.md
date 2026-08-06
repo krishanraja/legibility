@@ -1,6 +1,6 @@
 # 02 Positioning and Messaging
 
-This is the phrasing library for the Plinth fleet. Every outreach agent,
+This is the phrasing library for the Legibility fleet. Every outreach agent,
 demo agent, and reply agent pulls language from here so the whole fleet
 speaks with one voice and never contradicts itself. If anything here ever
 conflicts with `00-operating-brief.md`, the operating brief's CANONICAL
@@ -38,7 +38,7 @@ finish enrichment.
 | `{{proof_result}}` | the real returned value (from section 4) | a typed object at $849.99 |
 | `{{signal}}` | the trigger you detected (from section 5) | "hiring an agent engineer" |
 | `{{sender_name}}` | the human or agent identity sending | Krish |
-| `{{docs_link}}` | https://onplinth.io/docs | https://onplinth.io/docs |
+| `{{docs_link}}` | https://legibility.io/docs | https://legibility.io/docs |
 
 ---
 
@@ -47,17 +47,17 @@ finish enrichment.
 **One-liner (use this exact sentence in bios, subject-adjacent lines, and
 the first line of any deck):**
 
-> Plinth turns a product URL, barcode, or fuzzy name into a typed product
+> Legibility turns a product URL, barcode, or fuzzy name into a typed product
 > object your agent can trust: calibrated per-field confidence, a price
 > band, a stable id, and the per-call cost stamped in, over REST and MCP.
 
 **3-sentence pitch (use in outreach bodies and demo intros):**
 
 > If you build an agent that buys, compares, or looks up physical products,
-> you hit the same wall: reading the product page reliably. Plinth is that
+> you hit the same wall: reading the product page reliably. Legibility is that
 > layer, finished, behind one call over REST or MCP. You send a URL, a GTIN,
 > or a fuzzy name and get back a typed object with a calibrated confidence
-> per field, a price band, source method, a stable plinth_id, and the exact
+> per field, a price band, source method, a stable legibility_id, and the exact
 > cost of the call, and you only pay when a read clears the 0.7 trust gate,
 > so nulls and low-confidence answers are free.
 
@@ -67,7 +67,7 @@ the first line of any deck):**
 > calibrated confidence and a price band out, and you only pay when it
 > clears the trust gate.
 
-**The single differentiator, if you get one sentence:** Plinth is the only
+**The single differentiator, if you get one sentence:** Legibility is the only
 option that returns a calibrated confidence you can gate on (0.7 means about
 70% likely correct, measured on a held-out set) and only bills when the read
 clears that gate.
@@ -86,7 +86,7 @@ Who: teams of 1 to 20 engineers building buy-this-for-me agents, procurement
 copilots, and comparison agents. Already paying for Diffbot, Firecrawl,
 ScrapingBee, or running headless/Playwright.
 
-| Their pain | The Plinth wedge | The line to use |
+| Their pain | The Legibility wedge | The line to use |
 |---|---|---|
 | Reading the product page reliably is the wall every buy-flow hits | A finished typed-object layer behind one call | "The product-page read is the part you keep rebuilding. That is the whole of what we ship." |
 | The scraper returns HTML or a blob; you still own schema, parsing, price semantics | Typed object with a price band, source method, and a stable id, done | "You get a typed object, not a page. Title, brand, GTIN, a price band with as_of and n_sources." |
@@ -103,10 +103,10 @@ field-level confidence is table stakes. This is the segment the fleet is
 really hunting. Lead these with the design-partner offer (see
 `06-design-partner-motion.md`).
 
-| Their pain | The Plinth wedge | The line to use |
+| Their pain | The Legibility wedge | The line to use |
 |---|---|---|
 | Procurement needs an audit trail: which source, what confidence, as of when | Source method, calibration_version, and per-field confidence on every read | "Every read is auditable: the method that produced it, the calibration version, per-field confidence, and n_sources on the price." |
-| Supplier pages restructure and your URL-keyed history dies | An opaque, stable plinth_id you store as a foreign key | "You store an opaque plinth_id in your own schema. It survives site restructures. Your history does not reset when a URL changes." |
+| Supplier pages restructure and your URL-keyed history dies | An opaque, stable legibility_id you store as a foreign key | "You store an opaque legibility_id in your own schema. It survives site restructures. Your history does not reset when a URL changes." |
 | No way to prove the agent's answer matched reality at the buy | The outcome-closure channel: report_outcome on real buys | "Call report_outcome when a buy succeeds at the stated price. It is never billed, and it makes every future read on that domain more trustworthy for you." |
 | Field-level confidence is a hard requirement, not a nicety | Calibrated per-field confidence, precision 1.0 at the gate on a held-out split | "Confidence is calibrated, not a coverage proxy. On the held-out golden split, precision at the gate was 1.0 (Wilson low 0.832)." |
 
@@ -115,7 +115,7 @@ really hunting. Lead these with the design-partner offer (see
 Who: stacks shipping MCP servers, looking for paid tools an agent can
 discover and call without a human.
 
-| Their pain | The Plinth wedge | The line to use |
+| Their pain | The Legibility wedge | The line to use |
 |---|---|---|
 | Every paid tool needs a human to sign up and hold a card | MCP server with free discovery, plus x402 agent payment | "Your agent discovers the tools for free over MCP, then pays per call over x402. No human in the loop." |
 | Product-data tools return untyped text an agent cannot reason over | A typed object with a confidence field the agent can branch on | "The agent gets a typed object and a calibrated confidence it can gate on, not a wall of text." |
@@ -129,22 +129,22 @@ it.
 Who: marketplaces, affiliate networks, and comparison sites enriching their
 own catalogue.
 
-| Their pain | The Plinth wedge | The line to use |
+| Their pain | The Legibility wedge | The line to use |
 |---|---|---|
-| Enriching a catalogue means owning extraction, dedupe, and identity | Typed object plus a stable plinth_id for dedupe and joins | "One call gives you a typed object and a stable id you can dedupe and join on." |
-| GTIN and URL both point at the same product but you cannot tie them | Barcode and URL both resolve; plinth_id is the join key | "URL in or barcode in, same plinth_id out for the same product. That is your join key." |
+| Enriching a catalogue means owning extraction, dedupe, and identity | Typed object plus a stable legibility_id for dedupe and joins | "One call gives you a typed object and a stable id you can dedupe and join on." |
+| GTIN and URL both point at the same product but you cannot tie them | Barcode and URL both resolve; legibility_id is the join key | "URL in or barcode in, same legibility_id out for the same product. That is your join key." |
 
 ---
 
-## 3. Plinth vs the field
+## 3. Legibility vs the field
 
 Use this to answer "how are you different from X." State it flat, no hype.
 The honest read: any single row is copyable, and a funded team can rebuild
 the shipped API in a quarter (we say this internally, never to a prospect).
-What compounds is outcome-closure under stored plinth_ids, which is the last
+What compounds is outcome-closure under stored legibility_ids, which is the last
 two rows and is the only thing a competitor cannot backdate.
 
-| Capability | Plinth | Diffbot | Firecrawl + your LLM | DIY (Playwright + hand-rolled) |
+| Capability | Legibility | Diffbot | Firecrawl + your LLM | DIY (Playwright + hand-rolled) |
 |---|---|---|---|---|
 | Typed product object | Yes, one call | Yes (entity graph) | You build the schema | You build the schema |
 | Per-field calibrated confidence | Yes, isotonic fit on a held-out set, gate at 0.7 | No | Self-reported, not calibrated | No |
@@ -153,7 +153,7 @@ two rows and is the only thing a competitor cannot backdate.
 | Price as a band (as_of, n_sources) | Yes | Spot value | You build it | You build it |
 | MCP server (agent-discoverable) | Yes, read + resolve at /api/mcp | No | Firecrawl MCP scrapes pages, not typed product | No |
 | x402 agent micropayment | Yes, Base Sepolia testnet | No | No | No |
-| Opaque stable plinth_id you store | Yes, survives URL restructure | Its own entity ids | No | No |
+| Opaque stable legibility_id you store | Yes, survives URL restructure | Its own entity ids | No | No |
 | Outcome-closure (report_outcome) | Yes, never billed | No | No | No |
 
 Notes an agent can quote:
@@ -162,10 +162,10 @@ Notes an agent can quote:
   no MCP surface, and an agent cannot discover and pay for it on its own.
 - Firecrawl plus your own LLM is a legitimate build. You then own the
   schema, the calibration harness, the price-band semantics, the barcode
-  merge, the is-product check, the MCP server, and the settlement. Plinth is
+  merge, the is-product check, the MCP server, and the settlement. Legibility is
   that stack finished, billed only on trusted reads.
 - Bright Data and Apify sell access to crawlers, a different shape from a
-  typed answer. Teams using them as a data source are a good fit; Plinth
+  typed answer. Teams using them as a data source are a good fit; Legibility
   itself uses a Bright Data Web Unlocker as a fallback for hard retailers.
 
 ---
@@ -222,7 +222,7 @@ Wedge: finished stack, billed only on trusted reads.
 > {{sender_name}}
 
 Stop condition: their targets are majority Amazon, Walmart, Target, or
-Apple. Do not send; Plinth cannot serve those reliably.
+Apple. Do not send; Legibility cannot serve those reliably.
 
 ### Angle 2: They use Diffbot
 
@@ -234,7 +234,7 @@ does not have.
 > {{first_name}}, Diffbot gives you a typed object, which is real. What it
 > does not give you: a calibrated confidence you can gate on per field, the
 > cost stamped in each response, an MCP surface your agent can discover, or
-> a way for the agent to pay per call itself. Plinth does all four, and only
+> a way for the agent to pay per call itself. Legibility does all four, and only
 > bills on reads that clear the 0.7 gate. Live read on {{proof_url}}:
 > {{proof_result}}.
 
@@ -248,7 +248,7 @@ product is an autonomous agent stack.
 
 Wedge: an agent-discoverable, agent-payable typed product tool.
 
-> {{first_name}}, {{their_product}} can call Plinth as an MCP tool: your
+> {{first_name}}, {{their_product}} can call Legibility as an MCP tool: your
 > agent discovers read_product and resolve_product for free, then pays per
 > call over x402, no human signup. It gets a typed object with a calibrated
 > confidence it can branch on. MCP is live at /api/mcp. One honest note:
@@ -267,8 +267,8 @@ Wedge: audit trail, stable identity, and outcome-closure. Lead toward the
 design-partner offer.
 
 > {{first_name}}, for a procurement flow the read has to be auditable: which
-> source, what confidence, as of when. Plinth returns exactly that, plus an
-> opaque plinth_id you store in your own schema so your product history
+> source, what confidence, as of when. Legibility returns exactly that, plus an
+> opaque legibility_id you store in your own schema so your product history
 > survives supplier site restructures. And you can call report_outcome when
 > a buy succeeds at the stated price, which is never billed and makes every
 > future read on that domain more trustworthy for you. This is the kind of
@@ -303,7 +303,7 @@ number, or a wrong product; or "we cannot trust the extractor."
 Wedge: calibrated per-field confidence to gate on.
 
 > {{first_name}}, the fix for a hallucinated product field is a confidence
-> you can actually gate on. Plinth returns a calibrated per-field confidence,
+> you can actually gate on. Legibility returns a calibrated per-field confidence,
 > 0.7 means about 70% likely correct, measured on a held-out golden set
 > where precision at the gate was 1.0. Gate hard on the fields that matter,
 > drop the rest. You only pay when a read clears the gate. Live read on

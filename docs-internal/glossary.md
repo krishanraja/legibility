@@ -1,11 +1,11 @@
 # Glossary
 
 **Agent.** A program that reasons and acts without a human in the loop
-for each step. Plinth treats agents as first-class callers: discoverable
+for each step. Legibility treats agents as first-class callers: discoverable
 via MCP, paying via x402.
 
 **Band price.** Price returned as `{ low, high, currency, as_of, n_sources }`
-instead of a single number. Plinth refuses to present a single scraped
+instead of a single number. Legibility refuses to present a single scraped
 price as truth. Shopify currency is read from `/meta.json` so a band forms
 instead of dropping.
 
@@ -19,7 +19,7 @@ cost fuse.
 **Cache (product_cache).** Server-side store of typed product objects,
 keyed by normalised input. Entries with overall confidence < 0.7 are NOT
 written. A cache hit returns real per-field confidence (the `field_confidence`
-column), plus the stored `plinth_id` and `calibration_version`. TTL: 7 days
+column), plus the stored `legibility_id` and `calibration_version`. TTL: 7 days
 default, 1 hour for volatile fields.
 
 **Calibration.** Confidence is passed through an isotonic calibration map
@@ -36,16 +36,16 @@ deterministic-first with an optional Haiku verifier behind
 category page scores near zero instead of passing on field coverage.
 
 **GTIN.** Global Trade Item Number. The 8/12/13/14-digit barcode.
-Plinth's `read_product` accepts `gtin` instead of `url`.
+Legibility's `read_product` accepts `gtin` instead of `url`.
 
 **MCP.** Model Context Protocol. A discovery and call protocol for
-LLM-driven agents. Plinth exposes `read_product` and `resolve_product`
+LLM-driven agents. Legibility exposes `read_product` and `resolve_product`
 over MCP at `/api/mcp`.
 
-**plinth_id.** An opaque, stable identifier minted for each trusted product
+**legibility_id.** An opaque, stable identifier minted for each trusted product
 (a product returned at confidence >= 0.7). The same input for the same
-product returns the same `plinth_id` across reads. It is returned in the
-response and stored on `product_cache`. It is Plinth's identity handle for a
+product returns the same `legibility_id` across reads. It is returned in the
+response and stored on `product_cache`. It is Legibility's identity handle for a
 product, independent of the source URL or GTIN, and the anchor for outcome
 reporting.
 
@@ -61,7 +61,7 @@ Exa has credits.
 
 **Schema.org superset.** Our product object is a strict superset of
 schema.org Product. We add `confidence`, `field_confidence`, `source`,
-`cost_usd`, a `plinth_id`, and a band-shaped `price`.
+`cost_usd`, a `legibility_id`, and a band-shaped `price`.
 
 **Stamped cost.** The `cost_usd` field returned in every response.
 Lets an agent budget and decide whether to keep calling.
@@ -76,7 +76,7 @@ a trusted read: it is free and does not consume quota.
 If a piece of copy or a product decision does not ladder to a wedge,
 ask why we're shipping it.
 
-**x402.** Open HTTP 402 micropayment standard. Plinth accepts USDC on
+**x402.** Open HTTP 402 micropayment standard. Legibility accepts USDC on
 Base. The live surface runs on Base Sepolia (testnet): the verify-and-settle
 flow is proven there, but there is no live mainnet settlement yet. Mainnet is
 roadmap.

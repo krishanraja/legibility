@@ -1,7 +1,7 @@
 {
   "_meta": {
     "captured_at": "2026-07-06T17:17:47.001Z",
-    "captured_from": "live plinth-worker POST /extract, verbatim response",
+    "captured_from": "live legibility-worker POST /extract, verbatim response",
     "input": { "url": "https://www.lego.com/en-us/product/millennium-falcon-75192" },
     "note": "The hero renders ONLY from this real captured envelope (LEGO Millennium Falcon, read live from the product URL). Refresh via scripts/capture-hero.mjs; never hand-edit values."
   },
@@ -19,7 +19,7 @@
     "confidence": 1,
     "method": "jsonld",
     "cost_usd": 0.006,
-    "plinth_id": "pl_N1f03XTCv38zwThJhLWmpHsMyx4",
+    "legibility_id": "pl_N1f03XTCv38zwThJhLWmpHsMyx4",
     "as_of": "2026-07-06T17:17:47.001Z"
   }
 }

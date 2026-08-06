@@ -1,9 +1,9 @@
-# Plinth · Internal Project Documentation
+# Legibility · Internal Project Documentation
 
 You are an AI agent (or human) picking this project up cold. Read this file
 first, then jump to the role document that matches your task.
 
-## What Plinth is
+## What Legibility is
 
 A typed product-data primitive for software agents. One call turns a URL,
 a GTIN, or a fuzzy name into a typed product object with per-field
@@ -13,8 +13,8 @@ human signup.
 
 **Status (2026-06-21): live and in private beta.** All four tools, key
 auth, metering, rate limiting, the dashboard, Stripe billing, and x402
-settlement on Base Sepolia are deployed. App at https://plinth-tan.vercel.app
-(custom domain `onplinth.io` provisioning). The developer-facing front door
+settlement on Base Sepolia are deployed. App at https://legibility.io
+(custom domain `legibility.io` provisioning). The developer-facing front door
 is the repo-root [README.md](../README.md).
 
 ## The five wedges (memorise these)

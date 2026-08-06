@@ -87,6 +87,6 @@ function Privacy() {
 }
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({ meta: [{ title: "Privacy · Plinth" }] }),
+  head: () => ({ meta: [{ title: "Privacy · Legibility" }] }),
   component: Privacy,
 });

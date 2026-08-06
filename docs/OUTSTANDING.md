@@ -1,4 +1,4 @@
-# Plinth: outstanding checklist
+# Legibility: outstanding checklist
 
 The 2026-07 fix run is complete and verified. The engine now works (it returns real trusted objects
 and separates products from non-products at measured precision), billing runs on the trusted-read
@@ -28,7 +28,7 @@ short list of items that need a human action or an external clock. Last updated 
       the agent to drive, or authorize one refunded live charge as a canary. Auto-overage-to-Stripe
       stays off until this passes.
 
-- [ ] **Point `onplinth.io` at Vercel.** The domain is being pointed at Vercel and DNS is
+- [ ] **Point `legibility.io` at Vercel.** The domain is being pointed at Vercel and DNS is
       propagating. At Namecheap, either set Custom DNS nameservers to `ns1.vercel-dns.com` /
       `ns2.vercel-dns.com`, or set records `A @ 76.76.21.21` and `CNAME www cname.vercel-dns.com`.
       Once it resolves, the agent flips `APP_ORIGIN` in `src/config/product.ts` (one place), repoints
@@ -46,13 +46,13 @@ short list of items that need a human action or an external clock. Last updated 
       from a faucet, and the agent runs the buyer client once.
 
 - [ ] **Design partners.** The moat is outcome-closing traffic: agents reporting, via
-      `POST /api/v1/report_outcome`, that a Plinth answer led to a real buy. Line up 2 to 3
+      `POST /api/v1/report_outcome`, that a Legibility answer led to a real buy. Line up 2 to 3
       procurement or catalogue design partners so real outcomes start compounding into the golden
       set and `trust_rate_by_method`. This is a commercial action, not an engineering one.
 
 ## Agent will do automatically when unblocked
 
-- [ ] **Repoint to `onplinth.io`** the moment DNS resolves to Vercel (see above).
+- [ ] **Repoint to `legibility.io`** the moment DNS resolves to Vercel (see above).
 - [ ] **Enable metered overage** once the Stripe live canary passes.
 - [ ] **Turn on the Bright Data fallback path** once the account, payment method, and zone exist.
 - [ ] **Update the Vercel env** if any further key rotations happen (paste the new key).
@@ -77,7 +77,7 @@ short list of items that need a human action or an external clock. Last updated 
   `confidence >= 0.7`; nulls and below-gate reads cost nothing and do not consume quota. Free =
   1,000 trusted reads / mo, hard stop, no card. Starter $29 / 5,000, Growth $199 / 50,000. Monthly
   quota enforced by the `entitlement_check` RPC (`402` before the worker call) plus a free cost fuse.
-- **Trust instrumentation and moat seeds.** Opaque `plinth_id` minted per trusted product and stable
+- **Trust instrumentation and moat seeds.** Opaque `legibility_id` minted per trusted product and stable
   across reads; every call stamped with confidence / method / domain / envelope hash /
   `calibration_version`; `outcome_reports` table + `POST /api/v1/report_outcome`; `golden_eval_runs`
   records precision at the gate; `product_cache` returns real `field_confidence` on hits.

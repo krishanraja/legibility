@@ -2,10 +2,10 @@
 
 ## Positioning statement
 
-For developers building agent buy-flows, Plinth is the product-data
+For developers building agent buy-flows, Legibility is the product-data
 primitive that turns a URL, GTIN, or product name into a typed product
 object with a **calibrated** confidence per field, a price band, a stable
-`plinth_id`, and the per-call cost in the response, and that an autonomous
+`legibility_id`, and the per-call cost in the response, and that an autonomous
 agent can discover and pay for over MCP and x402, without a human signup.
 
 ## Messaging hierarchy
@@ -56,10 +56,10 @@ og:url match the route, never the homepage.
 
 ## Launch checklist
 
-- [ ] `onplinth.io` DNS pointed at Vercel and resolving (propagating now;
-      today the live surface is `plinth-tan.vercel.app`). Never reference
-      `plinth.sh`, which is dead.
-- [ ] `APP_ORIGIN` flipped to `onplinth.io` in `src/config/product.ts` once
+- [ ] `legibility.io` DNS pointed at Vercel and resolving (propagating now;
+      today the live surface is `legibility.io`). Never reference
+      `legibility.sh`, which is dead.
+- [ ] `APP_ORIGIN` flipped to `legibility.io` in `src/config/product.ts` once
       DNS resolves.
 - [ ] Owner email + support@ alias.
 - [ ] x402 wallet set in `X402_RECIPIENT`; note settlement is testnet until

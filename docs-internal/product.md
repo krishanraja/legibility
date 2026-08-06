@@ -1,7 +1,7 @@
 # Product
 
 ## Vision
-Plinth is the product-data primitive for the agent era. When an agent has
+Legibility is the product-data primitive for the agent era. When an agent has
 decided to buy, find, compare, or summarise a physical good, it should be
 able to ask one API a typed question and get a typed answer, with a
 calibrated confidence it can reason about and a cost it can pay for itself.
@@ -37,7 +37,7 @@ to at least one of them.
 - Image generation, copy rewriting, marketing assets.
 - A scraper-as-a-service for non-product pages.
 
-## Scope: what Plinth trusts today (A-reduced)
+## Scope: what Legibility trusts today (A-reduced)
 
 Trusted coverage is the set of inputs the engine can return a calibrated,
 gate-clearing object for. As shipped, that is structured data plus verified
@@ -68,7 +68,7 @@ on trusted scope.
 2. **Instant repeat read from cache.** The same input read again returns from
    `product_cache` at a tenth of the cost, with real per-field confidence on
    the hit. The cache now stores and returns `field_confidence`, alongside the
-   stable `plinth_id` and `calibration_version`.
+   stable `legibility_id` and `calibration_version`.
 3. **The agent pays for itself.** An agent hits a 402, settles over x402, and
    gets the answer with no human signup. Proven on Base Sepolia (testnet). A
    recorded live mainnet settlement is roadmap, not shipped.
@@ -90,12 +90,12 @@ pages.
 resolved object in the same call. There is no async job id and no
 `GET /v1/resolutions/{id}`. That endpoint never existed.
 
-**Instrumentation and moat (live):** an opaque `plinth_id` is minted per
+**Instrumentation and moat (live):** an opaque `legibility_id` is minted per
 trusted product and is stable across reads (returned in the response and
 stored on `product_cache`); every call is stamped with
 `confidence` / `method` / `domain` / `envelope_hash` / `calibration_version`;
 an `outcome_reports` table plus `POST /api/v1/report_outcome` lets an agent
-report when a Plinth answer led to a real buy; `golden_eval_runs` records
+report when a Legibility answer led to a real buy; `golden_eval_runs` records
 precision at the gate; the `northstar_weekly` and `trust_rate_by_method`
 RPCs and an admin `/dashboard/metrics` page read the North Star; `ops_daily`
 monitoring plus a kill-floor alert at a 0.60 trust rate run on `pg_cron`.
@@ -111,7 +111,7 @@ zone), and regional caches.
 paid-GA flip, a live Stripe canary to prove the subscription-activation
 webhook and metered overage end to end, an Exa credit top-up for name-resolve,
 the Base Sepolia faucet for a recorded live x402 settlement, and the
-`onplinth.io` DNS cutover.
+`legibility.io` DNS cutover.
 
 ## Success metrics
 
@@ -141,9 +141,9 @@ The North Star and stop conditions are the decision record in
 
 ## Domain
 
-The live surface today is https://plinth-tan.vercel.app. The intended domain
-`onplinth.io` is being pointed at Vercel and is propagating. Do not reference
-`plinth.sh`. It is dead.
+The live surface today is https://legibility.io. The intended domain
+`legibility.io` is being pointed at Vercel and is propagating. Do not reference
+`legibility.sh`. It is dead.
 
 ---
 Last reviewed: 2026-07-06.

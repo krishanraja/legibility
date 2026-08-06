@@ -1,6 +1,6 @@
 # 08 SEO and GEO
 
-How Plinth gets found, both by classic search (SEO) and by AI answer engines
+How Legibility gets found, both by classic search (SEO) and by AI answer engines
 (GEO, generative engine optimization). For an agent-native developer tool this
 is GEO-first: the buyers (developers building agents) increasingly ask an LLM
 "what is the best product data API for my agent" before they ever open Google,
@@ -33,12 +33,12 @@ weeks, not by a config file.
 
 | Asset | State | Where | Check |
 |---|---|---|---|
-| robots.txt | shipped | `public/robots.txt` | `curl https://onplinth.io/robots.txt` 200, explicitly allows GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended, etc, points to the sitemap |
+| robots.txt | shipped | `public/robots.txt` | `curl https://legibility.io/robots.txt` 200, explicitly allows GPTBot, ClaudeBot, PerplexityBot, OAI-SearchBot, Google-Extended, etc, points to the sitemap |
 | sitemap.xml | shipped, AUTO-GENERATED | `vite.config.ts` sitemapPlugin writes `public/sitemap.xml` from the route files on every build | `curl .../sitemap.xml` 200; add a public page route and it appears automatically, no manual edit |
 | llms.txt | shipped | `public/llms.txt` | `curl .../llms.txt` 200, the curated LLM summary (GEO keystone) |
 | JSON-LD Organization + WebSite + SoftwareApplication | shipped | `src/routes/__root.tsx` head | view-source has `application/ld+json` with the offers |
 | JSON-LD FAQPage | shipped | `src/routes/index.tsx` head | view-source has the FAQPage graph |
-| Canonical (absolute, self-referential) | shipped on home | per-route `head.links` | home canonical is `https://onplinth.io/`, not `/` |
+| Canonical (absolute, self-referential) | shipped on home | per-route `head.links` | home canonical is `https://legibility.io/`, not `/` |
 | OpenGraph + Twitter image | shipped | `public/og.png` + head | share preview renders the branded card |
 | Server-rendered content | already true (TanStack Start SSR) | n/a | `curl .../` raw HTML contains the headline, pricing, and FAQ text |
 
@@ -87,19 +87,19 @@ GEO is won by being present, structured, and citable in the sources models read.
    for this. Keep adding Q-and-A shaped, factual content. Avoid hype adjectives:
    models drop them.
 2. llms.txt as the canonical machine summary. Maintain it religiously. It is the
-   fastest path to a model describing Plinth correctly.
+   fastest path to a model describing Legibility correctly.
 3. Be in the corpora models cite. Models cite docs sites, GitHub, comparison
    articles, and registries far more than a marketing homepage. So the highest-GEO
    actions are: ship great docs (done), get listed in MCP registries (section 5),
    publish comparison content (section 4), and earn third-party mentions.
-4. Named, unambiguous entity. Always "Plinth" plus "product data API for agents"
+4. Named, unambiguous entity. Always "Legibility" plus "product data API for agents"
    or "typed product data for agents" in the same breath, so the model binds the
    name to the category. Consistent across the site, llms.txt, and every listing.
 5. Freshness and specificity. Real numbers (0.7 gate, $29/$199, 1,000 free reads,
    the LEGO $849.99 read) get quoted. Vague claims do not.
 6. Prompt-test monthly. Ask ChatGPT, Claude, Perplexity, and Google AI Overviews:
    "what is the best product data API for an AI agent", "Diffbot alternative for
-   agents", "how do I get product data into my agent". Log whether Plinth is named
+   agents", "how do I get product data into my agent". Log whether Legibility is named
    and whether the description is accurate. This is the real GEO scoreboard. Route
    corrections (wrong facts, missing mention) into the next content cycle.
 
@@ -111,18 +111,18 @@ These pages win both the "alternative" search queries and the LLM comparison
 answers, and they are exactly what a technical buyer reads before switching.
 Build them as honest, specific, side-by-side pages (not hit pieces):
 
-- Plinth vs Diffbot (for agents): typed object yes/yes, per-field calibrated
+- Legibility vs Diffbot (for agents): typed object yes/yes, per-field calibrated
   confidence yes/no, cost stamped in response yes/no, MCP server yes/no, x402
   yes/no, price as a band yes/no, agent-callable and self-pay yes/no.
-- Plinth vs Firecrawl plus an LLM: raw content plus you-build-the-schema vs a
+- Legibility vs Firecrawl plus an LLM: raw content plus you-build-the-schema vs a
   finished typed object with calibrated confidence and a cache.
-- Plinth vs rolling your own: the list of things you own (schema, cache, confidence
+- Legibility vs rolling your own: the list of things you own (schema, cache, confidence
   rubric, price-band logic, barcode merge, MCP, x402) vs one call.
 - "The best product data APIs for AI agents (2026)": an honest roundup that
-  includes Diffbot, Firecrawl, ScrapingBee, and Plinth, with a table. Roundups
+  includes Diffbot, Firecrawl, ScrapingBee, and Legibility, with a table. Roundups
   that include competitors get cited by LLMs precisely because they look neutral.
 
-Each page: a factual table, one real Plinth read as proof, the honest scope line
+Each page: a factual table, one real Legibility read as proof, the honest scope line
 (what works today, what is best-effort), and a clear CTA. No em dashes. Reuse the
 vs-the-field content from `02-positioning-and-messaging.md` so it stays consistent.
 
@@ -135,14 +135,14 @@ distribution channel and a citation source.
 
 | Channel | Action | Done condition |
 |---|---|---|
-| MCP registries | List the Plinth MCP server on Smithery, Glama, mcp.so, and PulseMCP with the tool descriptions, the onplinth.io URL, and a one-key or no-key trial note | Plinth appears in a search for "product" or "shopping" on each |
+| MCP registries | List the Legibility MCP server on Smithery, Glama, mcp.so, and PulseMCP with the tool descriptions, the legibility.io URL, and a one-key or no-key trial note | Legibility appears in a search for "product" or "shopping" on each |
 | AI tool directories | Submit to agent/AI tool aggregators (there's an AI tool for that, Futurepedia-style lists, dev tool directories) | listed with the correct one-liner |
 | GitHub | A public repo or a well-formed README/gist with the MCP config and quickstart, topics: mcp, ai-agents, product-data | discoverable under those topics |
-| Framework docs and awesome-lists | PRs adding Plinth to relevant "awesome MCP" and agent-tooling lists | merged |
+| Framework docs and awesome-lists | PRs adding Legibility to relevant "awesome MCP" and agent-tooling lists | merged |
 | Dev communities | Genuinely helpful answers where product-data pain shows up (agent framework Discords, relevant forums), leading with a real read, never spam | value-first, per `03-outreach-sequences.md` community rules |
 | Launch surfaces | A considered launch (Product Hunt, HN Show, relevant newsletters) once there is a design partner story | one strong launch, not a drip |
 
-Rule: consistency. Same one-liner (from `00`), same URL (onplinth.io), same
+Rule: consistency. Same one-liner (from `00`), same URL (legibility.io), same
 category phrase everywhere, so every listing reinforces the same entity for the
 models.
 
@@ -152,7 +152,7 @@ models.
 
 | Metric | Source | Cadence |
 |---|---|---|
-| GEO scoreboard: is Plinth named and described correctly by ChatGPT/Claude/Perplexity/AI Overviews on the target queries | manual prompt tests (section 3.6), logged | monthly |
+| GEO scoreboard: is Legibility named and described correctly by ChatGPT/Claude/Perplexity/AI Overviews on the target queries | manual prompt tests (section 3.6), logged | monthly |
 | Organic + referral signups and their source | signup source field, `07-metrics-crm-and-loop.md` | weekly |
 | Search impressions and clicks by query | Google Search Console, Bing Webmaster | weekly once verified |
 | Registry and directory referral traffic | UTM on listing links | weekly |

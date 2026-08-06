@@ -15,7 +15,7 @@ update this file in the same change.
 | `subscriptions`      | Owner to plan, status, period, Stripe ids                                  | Owner read; service_role writes                                            |
 | `api_keys`           | Hashed key (sha256), prefix, last_four, name, last_used_at, revoked_at     | Owner read; insert/revoke via server fn                                    |
 | `usage_events`       | Per-call meter + calibration observation (see columns below)               | Owner read; service_role inserts                                           |
-| `product_cache`      | Typed product superset, ttl, confidence, field_confidence, plinth_id       | Service-role only; never read directly from the client                     |
+| `product_cache`      | Typed product superset, ttl, confidence, field_confidence, legibility_id       | Service-role only; never read directly from the client                     |
 | `outcome_reports`    | Downstream outcome-closure labels (the moat label channel)                 | Owner insert/read own via `auth.uid() = user_id`                           |
 | `golden_eval_runs`   | Recorded pre-release eval (precision at gate, adversarial, recall, ECE)    | Service-role only, no policies                                             |
 | `ops_daily`          | Daily usage rollup (trust rate, errors, latency, cost, active accounts)    | Service-role only                                                          |
@@ -59,7 +59,7 @@ Every keyed call writes one row. Beyond the meter fields (`tool`, `endpoint`, `s
 - `field_confidence` (JSONB): per-field calibrated confidence, returned on cache hits so a repeat
   read is not thinner than the first.
 - `calibration_version`: keeps a cached confidence auditable across recalibrations.
-- `plinth_id`: opaque minted product identity (`pl_...`), stable across re-reads, **never derived**
+- `legibility_id`: opaque minted product identity (`pl_...`), stable across re-reads, **never derived**
   from URL or GTIN. Unique index on non-null values. This is the moat anchor: customers store it as
   a foreign key, and longitudinal history accumulates under it.
 
@@ -121,7 +121,7 @@ The `product` JSONB stored per row (the object the worker returns, cached only f
 }
 ```
 
-Confidence, field confidence, calibration version, and the minted `plinth_id` live in their own
+Confidence, field confidence, calibration version, and the minted `legibility_id` live in their own
 columns (above), not inside the `product` blob. The cache key is the normalised input (URL, GTIN, or
 canonical fuzzy hash). Only trusted products (`confidence >= 0.7`) are written; below-gate reads are
 not cached.

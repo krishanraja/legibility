@@ -27,7 +27,7 @@ agent / MCP client
             content-validity stage (isproduct.ts): deterministic-first + Haiku verifier
             confidence.ts (raw score) -> calibrate.ts (calibrated probability) -> 0.7 gate
        <- typed ProductEnvelope
-       meter into usage_events (billable + calibration stamps), mint/return plinth_id
+       meter into usage_events (billable + calibration stamps), mint/return legibility_id
 ```
 
 The app never extracts; it proxies to the worker over HTTPS with `PLINTH_EXTRACTOR_TOKEN`. Keeping
@@ -83,7 +83,7 @@ row is a calibration observation, not just a billable count: it stamps `confiden
 
 ## External worker (the engine)
 
-A separate deploy (`krishanraja/plinth-worker`, Vercel, Node). `worker/src/`:
+A separate deploy (`krishanraja/legibility-worker`, Vercel, Node). `worker/src/`:
 
 - **`server.ts`** exposes `POST /extract` (Bearer `PLINTH_EXTRACTOR_TOKEN`, constant-time check,
   fails closed without the token) and `GET /health`.
@@ -131,8 +131,8 @@ the A-reduced coverage scope (structured data + verified OpenGraph; bot-hard ret
 - `X402_RECIPIENT` -- the Base Sepolia (testnet) payee. `X402_FACILITATOR`, `X402_NETWORK`,
   `X402_ASSET`, `X402_PRICE_ATOMIC` are optional (sane Base Sepolia defaults live in `x402.server.ts`).
 - `APP_ORIGIN` (in `src/config/product.ts`) / `APP_BASE_URL` -- absolute base for redirect and quota
-  links. Point at `https://onplinth.io` once DNS resolves; today the live surface is
-  `plinth-tan.vercel.app`.
+  links. Point at `https://legibility.io` once DNS resolves; today the live surface is
+  `legibility.io`.
 - Supabase URL + publishable key (`VITE_*`) for the client; service role for server-only admin.
 
 Worker env: `PLINTH_EXTRACTOR_TOKEN`, `EXA_API_KEY` (resolve), `BROWSERLESS_API_KEY` (render),

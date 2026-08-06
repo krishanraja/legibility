@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 
 export const Route = createFileRoute("/docs")({
-  head: () => ({ meta: [{ title: "Docs · Plinth" }, { name: "description", content: "Plinth API and MCP server documentation." }] }),
+  head: () => ({ meta: [{ title: "Docs · Legibility" }, { name: "description", content: "Legibility API and MCP server documentation." }] }),
   component: DocsLayout,
 });
 

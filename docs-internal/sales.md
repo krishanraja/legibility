@@ -1,10 +1,10 @@
 # Sales
 
-## What Plinth actually returns (say this straight)
+## What Legibility actually returns (say this straight)
 
 A URL, GTIN, or fuzzy product name in; a **typed product object with a
 calibrated confidence per field, a price band, the source method, an
-opaque `plinth_id`, and the per-call cost** out. Confidence is a
+opaque `legibility_id`, and the per-call cost** out. Confidence is a
 calibrated probability, so the 0.7 gate means "about 70% likely correct."
 Four tools ship today: `read_product`, `resolve_product` (synchronous,
 takes `{name}`), `compare_products`, and `brief_product`. An MCP server is
@@ -97,7 +97,7 @@ not a Starter feature.
 
 1. `curl read_product` on a **real Shopify product URL or a GTIN** (a store
    that returns today, e.g. an Allbirds product) -> typed object, calibrated
-   confidence per field, price band, method, `plinth_id`, and cost. This is
+   confidence per field, price band, method, `legibility_id`, and cost. This is
    the same call the live hero shows.
 2. Same call to the MCP server (`/api/mcp`) with no key -> **402** with
    payment instructions.
@@ -105,7 +105,7 @@ not a Starter feature.
    testnet; card is the default path.)
 4. `resolve_product` with `{name: "Sony WH-1000XM5"}` -> resolves
    synchronously to a typed object (works when Exa has credits).
-5. Show the dashboard: one trusted read, one cost line, the `plinth_id`,
+5. Show the dashboard: one trusted read, one cost line, the `legibility_id`,
    and that a null read cost nothing.
 6. Show docs (`/docs/api/read-product` and `/docs/mcp`).
 

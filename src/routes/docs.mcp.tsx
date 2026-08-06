@@ -5,7 +5,7 @@ export const Route = createFileRoute("/docs/mcp")({
     <article className="space-y-6">
       <h1 className="font-display text-5xl">MCP server + x402</h1>
       <p className="text-lg text-muted-foreground">
-        Plinth exposes the same tools over the Model Context Protocol. Agents discover the server,
+        Legibility exposes the same tools over the Model Context Protocol. Agents discover the server,
         call <span className="font-mono">read_product</span>, and pay per call in USDC on Base.
       </p>
       <h2 className="font-display text-2xl mt-6">Endpoint</h2>
@@ -27,7 +27,7 @@ Accept: application/json, text/event-stream`}
     "network": "base-sepolia",
     "maxAmountRequired": "10000",   // 0.01 USDC (6 decimals)
     "asset": "USDC",
-    "payTo": "0x… (the Plinth recipient)"
+    "payTo": "0x… (the Legibility recipient)"
   }]
 }`}
       </pre>

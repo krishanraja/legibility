@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
 
-// v1 REST: read_product. Validates a plk_ API key, proxies {url|gtin} to the Plinth
+// v1 REST: read_product. Validates a lgk_ API key, proxies {url|gtin} to the Legibility
 // extraction worker, meters the call into usage_events, and returns the typed ProductEnvelope.
 
 function json(body: unknown, status: number) {
@@ -20,37 +20,52 @@ export const Route = createFileRoute("/api/v1/read_product")({
         const WORKER_TOKEN = process.env.PLINTH_EXTRACTOR_TOKEN;
         if (!WORKER_URL || !WORKER_TOKEN) {
           return json(
-            { error: "external_worker_not_configured", message: "read_product is temporarily unavailable." },
+            {
+              error: "external_worker_not_configured",
+              message: "read_product is temporarily unavailable.",
+            },
             503,
           );
         }
 
-        // API-key auth (plk_ as Bearer).
+        // API-key auth (lgk_ as Bearer).
         const authz = request.headers.get("authorization");
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
         if (!principal) {
           return json(
-            { error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." },
+            { error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." },
             401,
           );
         }
 
         // Per-plan rate limit (60s window).
-        const { rateCheck, rateHeaders } = await import("@/integrations/supabase/rate-limit.server");
+        const { rateCheck, rateHeaders } =
+          await import("@/integrations/supabase/rate-limit.server");
         const rl = await rateCheck(principal.userId);
         const rlh = rateHeaders(rl);
         if (!rl.allowed) {
           return new Response(
-            JSON.stringify({ error: "rate_limited", message: "Rate limit exceeded. Slow down or upgrade your plan." }),
-            { status: 429, headers: { ...rlh, "retry-after": String(rl.reset), "content-type": "application/json" } },
+            JSON.stringify({
+              error: "rate_limited",
+              message: "Rate limit exceeded. Slow down or upgrade your plan.",
+            }),
+            {
+              status: 429,
+              headers: {
+                ...rlh,
+                "retry-after": String(rl.reset),
+                "content-type": "application/json",
+              },
+            },
           );
         }
 
         // Monthly quota + cost fuse (P2.4). Blocks BEFORE the worker call so a free
         // account cannot run unbounded real-cost extractions.
-        const { entitlementCheck, quotaBlockedBody } = await import("@/integrations/supabase/entitlement.server");
+        const { entitlementCheck, quotaBlockedBody } =
+          await import("@/integrations/supabase/entitlement.server");
         const ent = await entitlementCheck(principal.userId);
         if (!ent.allowed) {
           const { APP_ORIGIN } = await import("@/config/product");
@@ -67,7 +82,10 @@ export const Route = createFileRoute("/api/v1/read_product")({
         const hasUrl = typeof b.url === "string" && b.url.length > 0;
         const hasGtin = typeof b.gtin === "string" && b.gtin.length > 0;
         if (hasUrl === hasGtin) {
-          return json({ error: "invalid_request", message: "Provide exactly one of: url, gtin." }, 422);
+          return json(
+            { error: "invalid_request", message: "Provide exactly one of: url, gtin." },
+            422,
+          );
         }
         const payload: Record<string, unknown> = {};
         if (hasUrl) payload.url = b.url;
@@ -83,7 +101,10 @@ export const Route = createFileRoute("/api/v1/read_product")({
         try {
           const res = await fetch(WORKER_URL, {
             method: "POST",
-            headers: { "content-type": "application/json", authorization: `Bearer ${WORKER_TOKEN}` },
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${WORKER_TOKEN}`,
+            },
             body: JSON.stringify(payload),
             signal: AbortSignal.timeout(25000),
           });
@@ -128,7 +149,10 @@ export const Route = createFileRoute("/api/v1/read_product")({
           /* metering best-effort */
         }
 
-        return new Response(text, { status, headers: { ...rlh, "content-type": "application/json" } });
+        return new Response(text, {
+          status,
+          headers: { ...rlh, "content-type": "application/json" },
+        });
       },
     },
   },

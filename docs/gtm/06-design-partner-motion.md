@@ -2,12 +2,12 @@
 
 This is why the whole GTM exists. Everything in files 01 to 05 is top of
 funnel. This file is the funnel's floor: it turns a qualified prospect into a
-retained partner who stores the opaque `plinth_id` in their own database and
-calls `POST /api/v1/report_outcome` when a Plinth answer leads to a real buy.
+retained partner who stores the opaque `legibility_id` in their own database and
+calls `POST /api/v1/report_outcome` when a Legibility answer leads to a real buy.
 That closed-outcome traffic is the only asset that compounds and the only one
 no competitor can clone, buy, or backdate. Read `00-operating-brief.md` first;
 its CANONICAL FACTS win any conflict. The full defensibility argument is in
-`C:/Users/krish/.scratch/audit/plinth/2026-07-04/MOAT.md`.
+`C:/Users/krish/.scratch/audit/legibility/2026-07-04/MOAT.md`.
 
 Last reviewed: 2026-07-06.
 
@@ -15,7 +15,7 @@ Last reviewed: 2026-07-06.
 
 ## 0. The one paragraph an agent must internalize
 
-As shipped, Plinth is a clean API a funded team rebuilds in a quarter. Three
+As shipped, Legibility is a clean API a funded team rebuilds in a quarter. Three
 assets make it un-cloneable, and all three are worth exactly zero at zero
 users: an outcome-closed calibration flywheel, opaque product identities
 carrying history inside customers' own databases, and a demand-weighted private
@@ -23,7 +23,7 @@ eval corpus. They start their clocks at the first retained, outcome-reporting
 account and not one day earlier. The single decisive label class is outcome
 closure: did the agent's buy actually succeed at the stated price and
 availability. That label exists only downstream of a real agent acting on a
-real Plinth answer, so no competitor can crawl it, purchase it, or
+real Legibility answer, so no competitor can crawl it, purchase it, or
 self-adjudicate it at any budget. Landing 2 to 3 partners who report it, inside
 the 6 to 12 month window before a branded competitor ships a typed product MCP,
 is the whole game. This file is how the fleet does that.
@@ -34,7 +34,7 @@ is the whole game. This file is how the fleet does that.
 
 A design partner is not just a paying customer. A paying Starter or Growth
 customer is revenue. A design partner is a moat seed: an account whose traffic
-lands on domains Plinth can legally read, that acts on Plinth answers in
+lands on domains Legibility can legally read, that acts on Legibility answers in
 production, and that agrees to close the loop by reporting outcomes. Most good
 paid prospects are NOT design partners, and that is fine. Do not spend
 concierge time (founder Slack, priority domain work, discounted headroom) on an
@@ -45,17 +45,18 @@ account that cannot or will not report outcomes on legally readable domains.
 Score every candidate. The three REQUIRED rows are pass/fail gates. The
 scored rows break ties and set effort.
 
-| Dimension | Type | Test | Points |
-|---|---|---|---|
-| Use case is procurement / buy-flow | REQUIRED | They buy, procure, or compare real physical products and an agent acts on the answer (a buy, a PO, a shortlist a human executes). Not a dashboard, not analytics. | pass/fail |
-| Domain mix is legally readable | REQUIRED | Majority of their real target domains are Shopify, JSON-LD retailers, cooperating catalogues, supplier long-tail, or barcodes. NOT majority Amazon/Walmart/Target/Apple anti-bot head. | pass/fail |
-| Real production volume with downstream action | REQUIRED | They are (or within 2 weeks will be) calling in production, and real buys or matches happen downstream, so outcomes exist to report. A toy integration has nothing to close. | pass/fail |
-| Can integrate within ~2 weeks | scored | A named engineer with bandwidth to store `plinth_id` and wire `report_outcome`. | 0 to 3 |
-| WTP and audit-trail need | scored | Already pays for extraction/scraping/headless; procurement audit trail is a real requirement (corpus band $200 to 2K/mo). | 0 to 3 |
-| Founder-reachable contact | scored | A named human who will join a private Slack and do a weekly 15-minute check-in. | 0 to 3 |
-| Volume weight | scored | Expected trusted reads/week (higher demand-weighted volume = more label fuel). | 0 to 3 |
+| Dimension                                     | Type     | Test                                                                                                                                                                                   | Points    |
+| --------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| Use case is procurement / buy-flow            | REQUIRED | They buy, procure, or compare real physical products and an agent acts on the answer (a buy, a PO, a shortlist a human executes). Not a dashboard, not analytics.                      | pass/fail |
+| Domain mix is legally readable                | REQUIRED | Majority of their real target domains are Shopify, JSON-LD retailers, cooperating catalogues, supplier long-tail, or barcodes. NOT majority Amazon/Walmart/Target/Apple anti-bot head. | pass/fail |
+| Real production volume with downstream action | REQUIRED | They are (or within 2 weeks will be) calling in production, and real buys or matches happen downstream, so outcomes exist to report. A toy integration has nothing to close.           | pass/fail |
+| Can integrate within ~2 weeks                 | scored   | A named engineer with bandwidth to store `legibility_id` and wire `report_outcome`.                                                                                                    | 0 to 3    |
+| WTP and audit-trail need                      | scored   | Already pays for extraction/scraping/headless; procurement audit trail is a real requirement (corpus band $200 to 2K/mo).                                                              | 0 to 3    |
+| Founder-reachable contact                     | scored   | A named human who will join a private Slack and do a weekly 15-minute check-in.                                                                                                        | 0 to 3    |
+| Volume weight                                 | scored   | Expected trusted reads/week (higher demand-weighted volume = more label fuel).                                                                                                         | 0 to 3    |
 
 **Decision rule.**
+
 - All 3 REQUIRED = pass AND scored total >= 7 of 12: make the design-partner
   offer (section 3). Open a CRM record tagged `design_partner_candidate`.
 - All 3 REQUIRED = pass AND scored total 4 to 6: make the offer only if the
@@ -71,7 +72,7 @@ These are stricter than the general disqualifiers in `00` because a partner
 carries concierge cost.
 
 1. Target domains are majority anti-bot head (Amazon, Walmart, Target, Apple).
-   The flywheel would calibrate domains Plinth cannot legally serve. Kill.
+   The flywheel would calibrate domains Legibility cannot legally serve. Kill.
 2. Price-tracker or time-series price-monitoring use case. Wrong segment, low
    WTP, legal risk, and it never produces a `purchased` outcome. Kill.
 3. No downstream action on the answer (pure enrichment into a dashboard a human
@@ -109,10 +110,10 @@ cleanly on the first ones.
 
 Two non-negotiables (no design partnership without both):
 
-1. **Store the opaque `plinth_id` as a foreign key** in their own database,
+1. **Store the opaque `legibility_id` as a foreign key** in their own database,
    attached to whatever product row or buy record they already keep.
 2. **Wire `POST /api/v1/report_outcome`** so their agent reports whether a
-   Plinth answer led to a real outcome (buy succeeded at the stated price, or
+   Legibility answer led to a real outcome (buy succeeded at the stated price, or
    it did not).
 
 Two soft asks (wanted, not required to start):
@@ -134,12 +135,12 @@ Send after a successful live demo (`04-demo-and-qualification.md`) and a
 scorecard pass. Fill every `{{merge_field}}`. Sweep for em dashes before send.
 
 ```
-Subject: Plinth design partner slot for {{partner_name}}
+Subject: Legibility design partner slot for {{partner_name}}
 
 {{contact_first_name}},
 
 Based on the read we ran on {{proof_url}} ({{proof_result_summary}}), your
-targets are in the slice Plinth serves well today: {{target_domains}}.
+targets are in the slice Legibility serves well today: {{target_domains}}.
 
 I want to offer you a design-partner slot. What you get:
 
@@ -151,10 +152,10 @@ I want to offer you a design-partner slot. What you get:
 
 What I ask, and it is the whole point of the partnership:
 
-1. Store the plinth_id we return on each trusted read as a foreign key on your
+1. Store the legibility_id we return on each trusted read as a foreign key on your
    side. It is opaque and stable, so it survives the retailer restructuring
    their URLs. One column.
-2. When your agent acts on a Plinth answer, call POST /api/v1/report_outcome to
+2. When your agent acts on a Legibility answer, call POST /api/v1/report_outcome to
    tell us whether the buy went through at the price we reported. That single
    signal is what makes every future answer on your domains more accurate. It
    is roughly ten lines of code and I will pair with you on it.
@@ -173,12 +174,12 @@ outcomes this week.
 ## 4. Integration onboarding runbook
 
 Goal of onboarding: within 2 weeks of yes, the partner is (a) storing
-`plinth_id` and (b) POSTing `report_outcome` on real actions. Drive to those
+`legibility_id` and (b) POSTing `report_outcome` on real actions. Drive to those
 two events. Nothing else in onboarding matters as much.
 
-### 4.1 The `plinth_id`: what it is, why they store it
+### 4.1 The `legibility_id`: what it is, why they store it
 
-Every trusted read (confidence >= 0.7) returns an opaque `plinth_id` in the
+Every trusted read (confidence >= 0.7) returns an opaque `legibility_id` in the
 envelope, shaped `pl_` followed by a random base64url token (for example
 `pl_9Fk2Qw7hR3xN...`, 20 random bytes). It is minted at the first trusted read for a
 product and reused for every subsequent read of the same product, including
@@ -186,8 +187,9 @@ after the retailer changes the URL. It is never derived from the URL or the
 GTIN, so a competitor cannot reconstruct or forge it.
 
 Why the partner stores it:
+
 - It is a stable join and dedupe key that outlives URL churn (the audit's
-  Allbirds soft-redirect is the failure mode a URL key hits and `plinth_id`
+  Allbirds soft-redirect is the failure mode a URL key hits and `legibility_id`
   does not).
 - It is the anchor the outcome report joins to, so the loop can attribute a buy
   back to the exact resolved product.
@@ -198,63 +200,63 @@ Why the partner stores it:
 Integration is one column. Concrete instruction to the partner:
 
 ```
-Add a nullable text column, e.g. plinth_id, to the table where you already keep
+Add a nullable text column, e.g. legibility_id, to the table where you already keep
 the product you resolved (your product/offer/line-item row). On each trusted
-read, write the plinth_id from the response into that column. Treat it as
+read, write the legibility_id from the response into that column. Treat it as
 opaque: do not parse it, do not regenerate it, store it exactly as returned.
 ```
 
 ### 4.2 The outcome report: the endpoint contract (shipped, live)
 
-`POST /api/v1/report_outcome`. Authenticated with the partner's `plk_` API key
+`POST /api/v1/report_outcome`. Authenticated with the partner's `lgk_` API key
 as a Bearer token (the same key they read with). This channel is intentionally
 wired hand-in-hand per partner rather than left as a passive endpoint; pair
 with them on it.
 
 Request body:
 
-| Field | Type | Required | Notes |
-|---|---|---|---|
-| `outcome` | string | yes | One of the enum below. |
-| `request_id` | string | one of these two | The `request_id` returned on the original read. Preferred: it joins straight to the exact call in `usage_events`. |
-| `plinth_id` | string | one of these two | The `pl_...` id from the read. Use when the agent no longer has the request_id but kept the product id. |
-| `observed_price` | number | no | The price the agent actually saw at action time. Feeds price-band drift. |
-| `observed_currency` | string | no | ISO currency for `observed_price`. |
-| `note` | string | no | Free text, truncated to 500 chars. |
+| Field               | Type   | Required         | Notes                                                                                                             |
+| ------------------- | ------ | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `outcome`           | string | yes              | One of the enum below.                                                                                            |
+| `request_id`        | string | one of these two | The `request_id` returned on the original read. Preferred: it joins straight to the exact call in `usage_events`. |
+| `legibility_id`     | string | one of these two | The `pl_...` id from the read. Use when the agent no longer has the request_id but kept the product id.           |
+| `observed_price`    | number | no               | The price the agent actually saw at action time. Feeds price-band drift.                                          |
+| `observed_currency` | string | no               | ISO currency for `observed_price`.                                                                                |
+| `note`              | string | no               | Free text, truncated to 500 chars.                                                                                |
 
 Outcome enum (exact shipped values, use these verbatim):
 
-| Value | Meaning | Closure label |
-|---|---|---|
-| `purchased` | The buy completed at the stated price/availability. | positive (Plinth was right) |
-| `price_matched` | Price Plinth reported matched what the agent saw, even without a purchase. | positive |
-| `price_mismatch` | Price differed from the reported band. | negative (stale/wrong) |
-| `out_of_stock` | Item was unavailable when the agent acted. | negative (availability miss) |
-| `wrong_product` | Resolved product was not the intended item. | negative (resolution miss) |
-| `other` | Anything else; use `note`. | triage |
+| Value            | Meaning                                                                        | Closure label                   |
+| ---------------- | ------------------------------------------------------------------------------ | ------------------------------- |
+| `purchased`      | The buy completed at the stated price/availability.                            | positive (Legibility was right) |
+| `price_matched`  | Price Legibility reported matched what the agent saw, even without a purchase. | positive                        |
+| `price_mismatch` | Price differed from the reported band.                                         | negative (stale/wrong)          |
+| `out_of_stock`   | Item was unavailable when the agent acted.                                     | negative (availability miss)    |
+| `wrong_product`  | Resolved product was not the intended item.                                    | negative (resolution miss)      |
+| `other`          | Anything else; use `note`.                                                     | triage                          |
 
 Responses: `202 {"received": true}` on success. `401` if the key is missing or
 invalid. `422 invalid_request` if `outcome` is not in the enum or if neither
-`request_id` nor `plinth_id` is present. `400 invalid_json` on a bad body.
+`request_id` nor `legibility_id` is present. `400 invalid_json` on a bad body.
 
 ### 4.3 Copy-paste: the read-then-report snippet
 
-Give the partner this. It is the entire integration. Fill `{{plk_key}}`.
+Give the partner this. It is the entire integration. Fill `{{lgk_key}}`.
 
 ```bash
-# 1) Read. Keep request_id and plinth_id from the response.
-curl -s https://onplinth.io/api/v1/read_product \
-  -H "authorization: Bearer {{plk_key}}" \
+# 1) Read. Keep request_id and legibility_id from the response.
+curl -s https://legibility.io/api/v1/read_product \
+  -H "authorization: Bearer {{lgk_key}}" \
   -H "content-type: application/json" \
   -d '{"url":"https://{{target_product_url}}"}'
-# -> { "product": {...}, "plinth_id": "pl_...", "request_id": "...",
+# -> { "product": {...}, "legibility_id": "pl_...", "request_id": "...",
 #      "field_confidence": {...}, "cost_usd": ... }
 
 # 2) Act on it (your agent buys / matches / shortlists).
 
 # 3) Report what actually happened.
-curl -s https://onplinth.io/api/v1/report_outcome \
-  -H "authorization: Bearer {{plk_key}}" \
+curl -s https://legibility.io/api/v1/report_outcome \
+  -H "authorization: Bearer {{lgk_key}}" \
   -H "content-type: application/json" \
   -d '{
         "request_id": "{{request_id_from_read}}",
@@ -268,10 +270,10 @@ curl -s https://onplinth.io/api/v1/report_outcome \
 Pseudocode for the agent loop, provider-agnostic:
 
 ```
-resp   = plinth.read_product(url)
-store(offer_id, plinth_id = resp.plinth_id)      # ask 1: store the id
+resp   = legibility.read_product(url)
+store(offer_id, legibility_id = resp.legibility_id)      # ask 1: store the id
 result = agent.act_on(resp.product)              # buy / match / shortlist
-plinth.report_outcome(                           # ask 2: close the loop
+legibility.report_outcome(                           # ask 2: close the loop
   request_id     = resp.request_id,
   outcome        = map(result),                  # purchased | price_mismatch | ...
   observed_price = result.price_paid,
@@ -280,6 +282,7 @@ plinth.report_outcome(                           # ask 2: close the loop
 ```
 
 Mapping the partner's result to the enum (give them this rule):
+
 - Buy went through at the quoted price -> `purchased`.
 - Did not buy, but the price we quoted was right at action time -> `price_matched`.
 - Price was off -> `price_mismatch` with `observed_price`.
@@ -298,7 +301,7 @@ reported over Slack. Run these against the app Supabase project
 --     Confirms at least one outcome report has landed for this partner.
 select count(*) as reports,
        count(*) filter (where request_id is not null) as joined_to_read,
-       count(*) filter (where plinth_id  is not null) as has_plinth_id
+       count(*) filter (where legibility_id  is not null) as has_legibility_id
 from outcome_reports
 where user_id = '{{partner_user_id}}';
 
@@ -374,7 +377,7 @@ where user_id = '{{partner_user_id}}'
 ### 5.3 The check-in agenda (paste into the Slack thread)
 
 ```
-Weekly Plinth check-in, {{partner_name}}, week of {{date}}
+Weekly Legibility check-in, {{partner_name}}, week of {{date}}
 
 1. Volume: {{trusted_reads}} trusted reads this week ({{total_calls}} calls).
 2. Closure: {{positive}} good, {{negative}} misses, miss rate {{miss_rate}}.
@@ -393,10 +396,10 @@ section 2). Calibration, drift history, identity joins, and even per-domain
 reliability curves are all manufacturable in weeks by a funded team using
 purchased labels, Common Crawl, and cross-source self-adjudication. Exactly one
 label class is not: outcome closure. "The buy succeeded at the stated price and
-availability" exists only downstream of a real agent acting on a real Plinth
+availability" exists only downstream of a real agent acting on a real Legibility
 answer. It cannot be crawled (it is not on any page), cannot be bought (no
 vendor sells your customers' buy results), and cannot be self-adjudicated (an
-agent that could verify the outcome without buying did not need Plinth).
+agent that could verify the outcome without buying did not need Legibility).
 
 The compounding is the point. Each `report_outcome` on a legally readable
 domain becomes a per-domain, per-method reliability prior that makes every
@@ -414,14 +417,14 @@ lines of `report_outcome`. The moat is our reason, not their pitch.
 
 ## 7. Success criteria (the only scoreboard that counts)
 
-| Milestone | Definition | Verify |
-|---|---|---|
-| Seed 1 | >= 1 partner storing `plinth_id` as a FK AND reporting outcomes on a regular cadence. | `outcome_reports` has rows across >= 2 distinct weeks for one `user_id`; partner confirms the id column exists. |
-| Ignition | Outcome reports flowing weekly, misses feeding golden-set updates and a calibration refit. | `golden_eval_runs` gains a new `calibration_version` fed by partner-sourced misses. |
-| Seed 2 to 3 | 2 to 3 partners each storing ids and reporting outcomes weekly. | 2 to 3 distinct `user_id`s each with multi-week `outcome_reports`. |
+| Milestone   | Definition                                                                                 | Verify                                                                                                          |
+| ----------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| Seed 1      | >= 1 partner storing `legibility_id` as a FK AND reporting outcomes on a regular cadence.  | `outcome_reports` has rows across >= 2 distinct weeks for one `user_id`; partner confirms the id column exists. |
+| Ignition    | Outcome reports flowing weekly, misses feeding golden-set updates and a calibration refit. | `golden_eval_runs` gains a new `calibration_version` fed by partner-sourced misses.                             |
+| Seed 2 to 3 | 2 to 3 partners each storing ids and reporting outcomes weekly.                            | 2 to 3 distinct `user_id`s each with multi-week `outcome_reports`.                                              |
 
 Winning signal priority (from `00`, do not reorder): (1) outcome reports
-flowing, (2) `plinth_id` stored by partners, (3) fast first-trusted-read
+flowing, (2) `legibility_id` stored by partners, (3) fast first-trusted-read
 activation, (4) weekly trusted reads trending to 7+. Seed 1 is the single most
 important outcome the fleet can produce. Until Seed 1 exists, the moat is a
 plan, not an asset.
@@ -433,14 +436,14 @@ plan, not an asset.
 Any one of these is a strategy meeting, not a footnote. Wire the SQL ones into
 the weekly loop and `07-metrics-crm-and-loop.md`.
 
-| Condition | Signal | Action |
-|---|---|---|
-| Onboarding stalls | 14 days after yes, not both (id stored AND >= 1 joined outcome report). | Escalate to founder. One pairing session. If still stalled at 21 days, downgrade to normal paid and stop concierge spend. |
-| Loop dies | A live partner logs `trusted_reads > 0` but `reports = 0` for 2 consecutive weeks. | Founder Slack, debug the `report_outcome` call. This is the moat leaking. Highest priority. |
-| No ignition | Zero outcome reports across ALL partners for 2 consecutive months after the first partner went live. | KILL CHECK (MOAT dashboard row 5). The moat is running on manufacturable fuel only. Re-examine partner selection and the ask. |
-| Nobody stores ids | 0 accounts with `plinth_id` as a FK 90 days after the id contract shipped. | KILL CHECK (row 6). Identity gravity is not forming. Rework onboarding. |
-| Wrong domains | A partner's query mix is > 50% anti-bot head. | The flywheel is calibrating unservable domains (dashboard row 4). Re-scope the partner's targets or exit them. |
-| Trust floor breached | `trust_rate_by_method` gate-pass below 0.60, or golden precision-at-gate below floor. | Engine failing (row 2). Freeze volume growth, escalate to engineering. |
+| Condition            | Signal                                                                                               | Action                                                                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Onboarding stalls    | 14 days after yes, not both (id stored AND >= 1 joined outcome report).                              | Escalate to founder. One pairing session. If still stalled at 21 days, downgrade to normal paid and stop concierge spend.     |
+| Loop dies            | A live partner logs `trusted_reads > 0` but `reports = 0` for 2 consecutive weeks.                   | Founder Slack, debug the `report_outcome` call. This is the moat leaking. Highest priority.                                   |
+| No ignition          | Zero outcome reports across ALL partners for 2 consecutive months after the first partner went live. | KILL CHECK (MOAT dashboard row 5). The moat is running on manufacturable fuel only. Re-examine partner selection and the ask. |
+| Nobody stores ids    | 0 accounts with `legibility_id` as a FK 90 days after the id contract shipped.                       | KILL CHECK (row 6). Identity gravity is not forming. Rework onboarding.                                                       |
+| Wrong domains        | A partner's query mix is > 50% anti-bot head.                                                        | The flywheel is calibrating unservable domains (dashboard row 4). Re-scope the partner's targets or exit them.                |
+| Trust floor breached | `trust_rate_by_method` gate-pass below 0.60, or golden precision-at-gate below floor.                | Engine failing (row 2). Freeze volume growth, escalate to engineering.                                                        |
 
 ---
 
@@ -457,7 +460,7 @@ the top, do not lower the bar on the two non-negotiables.
   all 3 REQUIRED gates passed on each (section 1).
 - Run >= 8 live-read demos on the prospects' real target URLs (never mocked).
 - Send >= 3 design-partner offers (section 3.3) to scorecard passes.
-- Target exit: 1 partner has said yes and is in onboarding, storing `plinth_id`.
+- Target exit: 1 partner has said yes and is in onboarding, storing `legibility_id`.
 - Weekly fleet metric: candidates added, demos run, offers sent, yes count.
 
 ### Days 31 to 60: ignite Seed 1, land Seed 2 into onboarding

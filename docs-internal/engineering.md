@@ -18,7 +18,7 @@
 ```
 agent / MCP client
   -> app on Vercel  (src/routes/api/v1/*, /api/mcp)
-       auth (plk_ key) -> rate limit -> entitlement_check (402 quota/cost fuse)
+       auth (lgk_ key) -> rate limit -> entitlement_check (402 quota/cost fuse)
        -> worker on Vercel  (POST /extract, Bearer PLINTH_EXTRACTOR_TOKEN)
             fetch (browser UA, never throws)
             deterministic extractors: JSON-LD, Shopify, OpenGraph, barcode/GTIN
@@ -27,7 +27,7 @@ agent / MCP client
             content-validity stage (isproduct.ts): deterministic-first + Haiku verifier
             confidence.ts (raw score) -> calibrate.ts (calibrated probability) -> 0.7 gate
        <- typed ProductEnvelope
-       meter into usage_events (billable + calibration stamps), mint/return plinth_id
+       meter into usage_events (billable + calibration stamps), mint/return legibility_id
 ```
 
 The app never extracts; it proxies to the worker over HTTPS with `PLINTH_EXTRACTOR_TOKEN`. Keeping
@@ -74,7 +74,7 @@ docs-internal/          this directory      docs/  public-facing decision record
 
 ## read_product path (representative)
 
-`read_product` validates the `plk_` key, enforces the per-plan rate limit, calls `entitlement_check`
+`read_product` validates the `lgk_` key, enforces the per-plan rate limit, calls `entitlement_check`
 (402 with an upgrade link on `quota_exceeded` / `cost_fuse`, BEFORE any worker cost), proxies
 `{ url | gtin, min_confidence? }` to the worker, and meters the call into `usage_events`. The metering
 row is a calibration observation, not just a billable count: it stamps `confidence`, `product_returned`,
@@ -83,7 +83,7 @@ row is a calibration observation, not just a billable count: it stamps `confiden
 
 ## External worker (the engine)
 
-A separate deploy (`krishanraja/plinth-worker`, Vercel, Node). `worker/src/`:
+A separate deploy (`krishanraja/legibility-worker`, Vercel, Node). `worker/src/`:
 
 - **`server.ts`** exposes `POST /extract` (Bearer `PLINTH_EXTRACTOR_TOKEN`, constant-time check,
   fails closed without the token) and `GET /health`.
@@ -131,8 +131,8 @@ the A-reduced coverage scope (structured data + verified OpenGraph; bot-hard ret
 - `X402_RECIPIENT` -- the Base Sepolia (testnet) payee. `X402_FACILITATOR`, `X402_NETWORK`,
   `X402_ASSET`, `X402_PRICE_ATOMIC` are optional (sane Base Sepolia defaults live in `x402.server.ts`).
 - `APP_ORIGIN` (in `src/config/product.ts`) / `APP_BASE_URL` -- absolute base for redirect and quota
-  links. Point at `https://onplinth.io` once DNS resolves; today the live surface is
-  `plinth-tan.vercel.app`.
+  links. Point at `https://legibility.io` once DNS resolves; today the live surface is
+  `legibility.io`.
 - Supabase URL + publishable key (`VITE_*`) for the client; service role for server-only admin.
 
 Worker env: `PLINTH_EXTRACTOR_TOKEN`, `EXA_API_KEY` (resolve), `BROWSERLESS_API_KEY` (render),
@@ -155,4 +155,5 @@ Vercel deploys `main` automatically. Migrations are applied to `cgkc` via the Su
 MCP and mirrored into `supabase/migrations/`.
 
 ---
+
 Last reviewed: 2026-07-06.

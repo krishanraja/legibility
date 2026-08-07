@@ -32,11 +32,15 @@ function UsagePage() {
   return (
     <div>
       <h1 className="font-display text-4xl">Usage</h1>
-      <p className="mt-3 text-muted-foreground">Calls, cost, cached vs live. This billing period.</p>
+      <p className="mt-3 text-muted-foreground">
+        Calls, cost, cached vs live. This billing period.
+      </p>
       <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
         {cells.map(([k, v]) => (
           <div key={k} className="rounded-md border border-hairline bg-surface p-5">
-            <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">{k}</div>
+            <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+              {k}
+            </div>
             <div className="mt-2 font-display text-3xl">{v}</div>
           </div>
         ))}

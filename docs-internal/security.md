@@ -4,17 +4,17 @@
 
 - Email auth via Supabase Auth (project `cgkcplcamsijghalintq`).
 - Sessions managed by Supabase; never persisted server-side.
-- Customer API keys: `plk_` prefix + 32 random bytes. sha256-hashed at
+- Customer API keys: `lgk_` prefix + 32 random bytes. sha256-hashed at
   rest. Shown ONCE at creation. One key per account in v1.
-- Every `/api/v1/*` tool validates the `plk_` key as a Bearer token and
+- Every `/api/v1/*` tool validates the `lgk_` key as a Bearer token and
   returns 401 before any work when it is missing or invalid.
 
 ## Worker auth (fail closed)
 
-- The extraction worker (`plinth-worker`) shares `PLINTH_EXTRACTOR_TOKEN`
+- The extraction worker (`legibility-worker`) shares `PLINTH_EXTRACTOR_TOKEN`
   with the app. It refuses to serve without it: on boot, an unset token
   calls `process.exit(1)` (see `worker/src/server.ts`). Local dev must opt
-  in explicitly with `PLINTH_ALLOW_INSECURE_DEV=1`, never silently.
+  in explicitly with `LEGIBILITY_ALLOW_INSECURE_DEV=1`, never silently.
 - `/extract` checks the bearer with a length-guarded constant-time compare
   (`timingSafeEqual`); a bad or absent token returns 401.
 - The app fails closed too: if `PLINTH_EXTRACTOR_URL` / `PLINTH_EXTRACTOR_TOKEN`
@@ -46,7 +46,7 @@ store role on `profiles`.
 
 - Secrets are Vercel environment variables (app and worker projects), stored
   sensitive. Ops copies live in the local gitignored vault
-  (`.claude/secrets/plinth.env`); never inline a secret into a commit, PR, or
+  (`.claude/secrets/legibility.env`); never inline a secret into a commit, PR, or
   synced doc.
 - Read inside server-function handlers (or dynamically imported `*.server.ts`),
   never at module scope of client-imported files.
@@ -85,7 +85,7 @@ then the app, so the fail-closed sequence never opens a gap.
   unbounded real-cost extractions.
 - Billing unit is the trusted read: a null or low-confidence result is not billed
   and does not consume quota (`usage_events.billable = product returned AND
-  confidence >= 0.7`), so abuse that only produces misses cannot cost the customer
+confidence >= 0.7`), so abuse that only produces misses cannot cost the customer
   and is bounded by the free cost fuse.
 - Takedown blocklist enforced at extraction time (see `legal-trust.md`).
 - No bulk endpoints, no result pagination in v1.
@@ -107,4 +107,5 @@ memory (managed via the security tool). Update both when posture
 changes.
 
 ---
+
 Last reviewed: 2026-07-06.

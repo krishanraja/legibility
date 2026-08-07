@@ -5,7 +5,10 @@
 function methodNotAllowed(allow: string) {
   return () =>
     new Response(
-      JSON.stringify({ error: "method_not_allowed", message: `This endpoint accepts ${allow} only.` }),
+      JSON.stringify({
+        error: "method_not_allowed",
+        message: `This endpoint accepts ${allow} only.`,
+      }),
       { status: 405, headers: { "content-type": "application/json", allow } },
     );
 }

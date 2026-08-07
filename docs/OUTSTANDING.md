@@ -1,4 +1,4 @@
-# Plinth: outstanding checklist
+# Legibility: outstanding checklist
 
 The 2026-07 fix run is complete and verified. The engine now works (it returns real trusted objects
 and separates products from non-products at measured precision), billing runs on the trusted-read
@@ -28,11 +28,57 @@ short list of items that need a human action or an external clock. Last updated 
       the agent to drive, or authorize one refunded live charge as a canary. Auto-overage-to-Stripe
       stays off until this passes.
 
-- [ ] **Point `onplinth.io` at Vercel.** The domain is being pointed at Vercel and DNS is
-      propagating. At Namecheap, either set Custom DNS nameservers to `ns1.vercel-dns.com` /
-      `ns2.vercel-dns.com`, or set records `A @ 76.76.21.21` and `CNAME www cname.vercel-dns.com`.
-      Once it resolves, the agent flips `APP_ORIGIN` in `src/config/product.ts` (one place), repoints
-      the Stripe webhook URL, redeploys, and verifies. Everything on Vercel's side is provisioned.
+- [x] **Point `legibility.io` at Vercel.** Done. DNS is delegated, SSL is issued, and
+      `https://legibility.io/api/health` returns `status: ok`. `APP_ORIGIN` in
+      `src/config/product.ts` is set to `https://legibility.io`.
+
+- [x] **Redirect the dead `onplinth.io` to `legibility.io`.** Done 2026-08-06. It was verified
+      at account level but attached to no project, which is why it served
+      `DEPLOYMENT_NOT_FOUND`. Both `onplinth.io` and `www.onplinth.io` are now on the
+      Legibility project as 308 redirects to `legibility.io`, so nothing under the old name is
+      orphaned. Verified live.
+
+- [x] **Make the apex canonical and remove the duplicate host.** Done 2026-08-06. Vercel had
+      `www.legibility.io` as primary with the apex 308-ing to it, while every piece of
+      metadata (`APP_ORIGIN`, `og:url`, JSON-LD, robots, mcp.json and all 12 sitemap URLs)
+      declared the apex. Every sitemap URL therefore redirected. Flipped: the apex is now
+      primary and `www` redirects to it, so sitemap URLs return 200 directly. Also removed
+      `plinth-tan.vercel.app`, which was still serving a complete third copy of the site under
+      the old brand.
+
+- [x] **Enable leaked password protection.** Done 2026-08-06 via the Supabase Management API.
+      `password_hibp_enabled` is now true and the minimum password length is raised from 6 to 10. The corresponding Supabase security advisor WARN is cleared.
+
+- [x] **Repoint `PLINTH_EXTRACTOR_URL` at `legibility-worker.vercel.app`.** Done 2026-08-07 for
+      both production and preview. The value is now
+      `https://legibility-worker.vercel.app/extract`. The path was confirmed by probing rather
+      than assumed: `/extract` returns 401 (exists, needs the bearer token) and every other
+      path returns 404. The env var is marked **sensitive**, so its previous value could not be
+      read back to diff against; the swap was safe regardless because the worker project has
+      both `legibility-worker.vercel.app` and `plinth-worker.vercel.app` attached and both
+      serve the same deployment.
+
+      **Takes effect on the next production deploy** (the merge of PR #28). After that, confirm
+      `/api/health` still reports `worker: ok`, then detach `plinth-worker.vercel.app` from the
+      worker project.
+
+- [ ] **Rename the worker service string.** Its health body still self-identifies as
+      `{"service":"plinth-worker"}` on both hosts. That lives in the worker repo, which is not
+      part of this one.
+
+- [x] **Generated a Protection Bypass for Automation secret** (2026-08-07), scope
+      `automation-bypass`, so CI can reach preview deployments without disabling SSO. Previews
+      stay private: SSO protection remains on for `all_except_custom_domains`.
+
+- [ ] **Add the bypass secret to GitHub Actions secrets.** Needs a human, because the value is
+      a credential and should not pass through a chat transcript. Copy it from Vercel:
+      **Project Settings, Deployment Protection, Protection Bypass for Automation**. Add it to
+      the repo as `VERCEL_AUTOMATION_BYPASS_SECRET`
+      (Settings, Secrets and variables, Actions). Phase 3 then reaches previews by sending
+      `x-vercel-protection-bypass: <secret>` (and optionally
+      `x-vercel-set-bypass-cookie: true`) on every Playwright, axe and Lighthouse request.
+
+- [ ] **Repoint the Stripe webhook URL** to the new origin.
 
 - [ ] **Counsel review of the interim legal** (`/terms`, `/privacy`) before paid GA.
 
@@ -46,13 +92,13 @@ short list of items that need a human action or an external clock. Last updated 
       from a faucet, and the agent runs the buyer client once.
 
 - [ ] **Design partners.** The moat is outcome-closing traffic: agents reporting, via
-      `POST /api/v1/report_outcome`, that a Plinth answer led to a real buy. Line up 2 to 3
+      `POST /api/v1/report_outcome`, that a Legibility answer led to a real buy. Line up 2 to 3
       procurement or catalogue design partners so real outcomes start compounding into the golden
       set and `trust_rate_by_method`. This is a commercial action, not an engineering one.
 
 ## Agent will do automatically when unblocked
 
-- [ ] **Repoint to `onplinth.io`** the moment DNS resolves to Vercel (see above).
+- [ ] **Repoint to `legibility.io`** the moment DNS resolves to Vercel (see above).
 - [ ] **Enable metered overage** once the Stripe live canary passes.
 - [ ] **Turn on the Bright Data fallback path** once the account, payment method, and zone exist.
 - [ ] **Update the Vercel env** if any further key rotations happen (paste the new key).
@@ -77,7 +123,7 @@ short list of items that need a human action or an external clock. Last updated 
   `confidence >= 0.7`; nulls and below-gate reads cost nothing and do not consume quota. Free =
   1,000 trusted reads / mo, hard stop, no card. Starter $29 / 5,000, Growth $199 / 50,000. Monthly
   quota enforced by the `entitlement_check` RPC (`402` before the worker call) plus a free cost fuse.
-- **Trust instrumentation and moat seeds.** Opaque `plinth_id` minted per trusted product and stable
+- **Trust instrumentation and moat seeds.** Opaque `legibility_id` minted per trusted product and stable
   across reads; every call stamped with confidence / method / domain / envelope hash /
   `calibration_version`; `outcome_reports` table + `POST /api/v1/report_outcome`; `golden_eval_runs`
   records precision at the gate; `product_cache` returns real `field_confidence` on hits.

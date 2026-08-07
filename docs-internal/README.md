@@ -1,9 +1,9 @@
-# Plinth · Internal Project Documentation
+# Legibility · Internal Project Documentation
 
 You are an AI agent (or human) picking this project up cold. Read this file
 first, then jump to the role document that matches your task.
 
-## What Plinth is
+## What Legibility is
 
 A typed product-data primitive for software agents. One call turns a URL,
 a GTIN, or a fuzzy name into a typed product object with per-field
@@ -13,8 +13,8 @@ human signup.
 
 **Status (2026-06-21): live and in private beta.** All four tools, key
 auth, metering, rate limiting, the dashboard, Stripe billing, and x402
-settlement on Base Sepolia are deployed. App at https://plinth-tan.vercel.app
-(custom domain `onplinth.io` provisioning). The developer-facing front door
+settlement on Base Sepolia are deployed. App at https://legibility.io
+(custom domain `legibility.io` provisioning). The developer-facing front door
 is the repo-root [README.md](../README.md).
 
 ## The five wedges (memorise these)
@@ -29,22 +29,22 @@ If you change any of these, update this file AND `docs-internal/product.md`.
 
 ## Routing table
 
-| You are working on...                     | Read                                |
-| ----------------------------------------- | ----------------------------------- |
-| Product strategy, roadmap, positioning    | [product.md](./product.md)          |
-| Code, schema, server functions, routes    | [engineering.md](./engineering.md)  |
-| Tables, RLS, retention                    | [data-model.md](./data-model.md)    |
-| REST, MCP, x402, webhooks, rate limits    | [api.md](./api.md)                  |
-| Visual system, voice, logo usage          | [design.md](./design.md)            |
-| Selling, ICP, objections                  | [sales.md](./sales.md)              |
-| Launch, channels, messaging               | [marketing.md](./marketing.md)      |
-| Runbooks, incidents, rotations            | [ops.md](./ops.md)                  |
-| Customer support, common tickets          | [support.md](./support.md)          |
-| TOS, privacy, takedown, PII, custody      | [legal-trust.md](./legal-trust.md)  |
-| Plans, overage, Stripe, x402 settlement   | [finance-billing.md](./finance-billing.md) |
-| Auth, RLS posture, secrets, abuse         | [security.md](./security.md)        |
-| Branching, commit style, ship checklist   | [contributing.md](./contributing.md) |
-| Definitions of any unfamiliar term        | [glossary.md](./glossary.md)        |
+| You are working on...                   | Read                                       |
+| --------------------------------------- | ------------------------------------------ |
+| Product strategy, roadmap, positioning  | [product.md](./product.md)                 |
+| Code, schema, server functions, routes  | [engineering.md](./engineering.md)         |
+| Tables, RLS, retention                  | [data-model.md](./data-model.md)           |
+| REST, MCP, x402, webhooks, rate limits  | [api.md](./api.md)                         |
+| Visual system, voice, logo usage        | [design.md](./design.md)                   |
+| Selling, ICP, objections                | [sales.md](./sales.md)                     |
+| Launch, channels, messaging             | [marketing.md](./marketing.md)             |
+| Runbooks, incidents, rotations          | [ops.md](./ops.md)                         |
+| Customer support, common tickets        | [support.md](./support.md)                 |
+| TOS, privacy, takedown, PII, custody    | [legal-trust.md](./legal-trust.md)         |
+| Plans, overage, Stripe, x402 settlement | [finance-billing.md](./finance-billing.md) |
+| Auth, RLS posture, secrets, abuse       | [security.md](./security.md)               |
+| Branching, commit style, ship checklist | [contributing.md](./contributing.md)       |
+| Definitions of any unfamiliar term      | [glossary.md](./glossary.md)               |
 
 ## Public docs
 
@@ -59,4 +59,5 @@ This README is the load-bearing index. When you change a load-bearing
 rule here (or in any role doc), update this README in the same pass.
 
 ---
+
 Last reviewed: 2026-06-21. If this is wrong, fix it and update the affected role doc.

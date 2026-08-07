@@ -1,17 +1,17 @@
-# Plinth
+# Legibility
 
 Typed product data for software agents. One call turns a product URL, a GTIN barcode, or a fuzzy
 product name into a typed product object with per-field confidence, a price expressed as a band,
 the source method, and the per-call cost stamped in the response. It is exposed over both REST and
 MCP, and payable either with an API key or per call in USDC over x402.
 
-**Status: live.** App at https://plinth-tan.vercel.app (the custom domain `onplinth.io` is being
-pointed at Vercel; DNS is propagating, so `plinth-tan.vercel.app` is the live surface today). All
-four tools, key auth, trusted-read metering, per-plan quota, the dashboard, Stripe billing, and the
-MCP server are deployed. x402 runs on Base Sepolia (testnet; no live on-chain settlement yet).
-Private beta. The old `plinth.sh` host does not exist: use the URLs above.
+**Status: live.** App at https://legibility.io (DNS delegated to Vercel, SSL issued, serving
+today). All four tools, key auth, trusted-read metering, per-plan quota, the dashboard, Stripe
+billing, and the MCP server are deployed. x402 runs on Base Sepolia (testnet; no live on-chain
+settlement yet). Private beta. The former hosts `onplinth.io`, `plinth-tan.vercel.app` and
+`plinth.sh` are dead: use the URL above.
 
-## Why Plinth (the five wedges)
+## Why Legibility (the five wedges)
 
 1. **MCP-native, with x402 micropayments.** The same tools an agent can discover over MCP, payable
    in USDC on Base (Sepolia testnet in beta) per call, with no human signup.
@@ -24,7 +24,7 @@ Private beta. The old `plinth.sh` host does not exist: use the URLs above.
 
 ## Honest scope (what returns a trusted object today)
 
-Plinth's trusted coverage is **structured and verified data**, not "any URL":
+Legibility's trusted coverage is **structured and verified data**, not "any URL":
 
 - **JSON-LD** `schema.org/Product` that actually serves to a browser request.
 - **Shopify** storefronts (currency resolved via `/meta.json`, so the price band forms).
@@ -43,13 +43,13 @@ consume quota (see Billing).
 
 ## Quickstart
 
-1. Sign in at https://plinth-tan.vercel.app and create an API key (`plk_...`) in the dashboard. The
+1. Sign in at https://legibility.io and create an API key (`lgk_...`) in the dashboard. The
    full key is shown once.
 2. Call `read_product`. A GTIN always returns a trusted identity object:
 
    ```bash
-   curl -X POST https://plinth-tan.vercel.app/api/v1/read_product \
-     -H "authorization: Bearer plk_your_key" \
+   curl -X POST https://legibility.io/api/v1/read_product \
+     -H "authorization: Bearer lgk_your_key" \
      -H "content-type: application/json" \
      -d '{"gtin":"8076800195057"}'
    ```
@@ -57,24 +57,24 @@ consume quota (see Billing).
    A structured-data or Shopify URL works the same way:
 
    ```bash
-   curl -X POST https://plinth-tan.vercel.app/api/v1/read_product \
-     -H "authorization: Bearer plk_your_key" \
+   curl -X POST https://legibility.io/api/v1/read_product \
+     -H "authorization: Bearer lgk_your_key" \
      -H "content-type: application/json" \
      -d '{"url":"https://www.allbirds.com/products/mens-wool-runners-natural-grey"}'
    ```
 
 3. You get back a typed product, `field_confidence`, an overall `confidence` (the calibrated
-   probability), a `plinth_id` (a stable opaque id for that trusted product), a price band, the
+   probability), a `legibility_id` (a stable opaque id for that trusted product), a price band, the
    `method`, the `calibration_version`, and `cost_usd`.
 
 ## Tools
 
-| Tool               | Input                       | Returns                                                          |
-| ------------------ | --------------------------- | --------------------------------------------------------------- |
-| `read_product`     | `url` XOR `gtin`            | typed product, per-field + overall confidence, price band, cost |
+| Tool               | Input                       | Returns                                                                             |
+| ------------------ | --------------------------- | ----------------------------------------------------------------------------------- |
+| `read_product`     | `url` XOR `gtin`            | typed product, per-field + overall confidence, price band, cost                     |
 | `resolve_product`  | `name`                      | best-match product via neural search (Exa) then extraction, in one synchronous call |
-| `compare_products` | `urls` (2 to 5)             | side-by-side matrix plus the price delta                        |
-| `brief_product`    | `url` XOR `gtin` XOR `name` | typed product plus a short agent-readable brief                 |
+| `compare_products` | `urls` (2 to 5)             | side-by-side matrix plus the price delta                                            |
+| `brief_product`    | `url` XOR `gtin` XOR `name` | typed product plus a short agent-readable brief                                     |
 
 REST: `POST /api/v1/<tool>`. MCP: `POST /api/mcp` exposes `read_product` and `resolve_product`.
 
@@ -84,7 +84,7 @@ step (an earlier draft of the docs described one; it was never built).
 
 ## Auth
 
-- **API key:** `Authorization: Bearer plk_...`. Create and revoke in the dashboard. Keys are
+- **API key:** `Authorization: Bearer lgk_...`. Create and revoke in the dashboard. Keys are
   sha256-hashed at rest and shown once.
 - **x402 (agents, no key):** MCP discovery is free. `tools/call` returns HTTP 402 with payment
   requirements; the agent pays in USDC on **Base Sepolia** (testnet), resends with an `X-PAYMENT`
@@ -97,11 +97,11 @@ step (an earlier draft of the docs described one; it was never built).
 The billing unit is a **trusted read**: a call is billable only when it returns a product **and**
 `confidence >= 0.7`. A `null` or below-gate read charges nothing and does not consume quota.
 
-| Plan    | Price     | Trusted reads / mo | Overage        | Card |
-| ------- | --------- | ------------------ | -------------- | ---- |
+| Plan    | Price     | Trusted reads / mo | Overage         | Card         |
+| ------- | --------- | ------------------ | --------------- | ------------ |
 | Free    | $0        | 1,000              | none, hard stop | not required |
-| Starter | $29 / mo  | 5,000              | $0.01 / read   | required |
-| Growth  | $199 / mo | 50,000             | $0.005 / read  | required |
+| Starter | $29 / mo  | 5,000              | $0.01 / read    | required     |
+| Growth  | $199 / mo | 50,000             | $0.005 / read   | required     |
 
 Quota is enforced by the `entitlement_check` RPC, which returns `402` **before** the worker call is
 made (a free-tier cost fuse backs this up), so the free tier is a genuine hard stop, not an invoice
@@ -118,11 +118,11 @@ at `/dashboard/billing`.
   (`worker/src/calibrate.ts` + `calibration.json`) fit on a held-out golden split, so the number is a
   probability, not a coverage proxy. On that split: precision at the gate 1.0 (Wilson lower bound
   0.832), adversarial rejection 1.0, GTIN recall 1.0, zero crashes.
-- **Stable identity.** Every trusted product mints an opaque `plinth_id` that is stable across reads
+- **Stable identity.** Every trusted product mints an opaque `legibility_id` that is stable across reads
   and returned in the response and stored in `product_cache`.
 - **Every call is an observation.** Each call is stamped with its confidence, method, domain,
   envelope hash, and `calibration_version`.
-- **Outcome closure.** Agents can report whether a Plinth answer led to a real buy via
+- **Outcome closure.** Agents can report whether a Legibility answer led to a real buy via
   `POST /api/v1/report_outcome` (rows land in `outcome_reports`).
 - **North Star + metrics.** `northstar_weekly` and `trust_rate_by_method` RPCs, an admin
   `/dashboard/metrics` page, and a daily `ops_daily` rollup with a kill-floor alert are all live.
@@ -132,12 +132,12 @@ at `/dashboard/billing`.
 
 - **This repo:** the TanStack Start app (marketing site, dashboard, REST `/api/v1/*`, MCP
   `/api/mcp`, Stripe billing). Deployed on Vercel (Node / Fluid Compute functions).
-- **Extraction worker:** a separate deploy (`krishanraja/plinth-worker`) that does the real
+- **Extraction worker:** a separate deploy (`krishanraja/legibility-worker`) that does the real
   extraction (JSON-LD, OpenGraph, Shopify, barcode) with a browser User-Agent, runs the
   content-validity check, and scores calibrated confidence. `extractProduct` never throws: a hard
   domain returns a null envelope, not an error. The app proxies tool calls to it.
 - **Data:** Supabase (project `cgkcplcamsijghalintq`): keys, usage, plans, subscriptions, cache
-  (`product_cache` carries `field_confidence`, `calibration_version`, and `plinth_id`), plus the
+  (`product_cache` carries `field_confidence`, `calibration_version`, and `legibility_id`), plus the
   instrumentation tables (`outcome_reports`, `golden_eval_runs`) and the metrics RPCs.
 - **Health:** `GET /api/health`.
 

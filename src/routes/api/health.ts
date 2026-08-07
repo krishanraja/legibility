@@ -14,7 +14,9 @@ export const Route = createFileRoute("/api/health")({
         let workerOk = false;
         try {
           const u = new URL(process.env.PLINTH_EXTRACTOR_URL ?? "");
-          const res = await fetch(`${u.protocol}//${u.host}/health`, { signal: AbortSignal.timeout(8000) });
+          const res = await fetch(`${u.protocol}//${u.host}/health`, {
+            signal: AbortSignal.timeout(8000),
+          });
           workerOk = res.ok;
         } catch {
           /* worker unreachable */
@@ -22,13 +24,19 @@ export const Route = createFileRoute("/api/health")({
         checks.worker = workerOk ? "ok" : "down";
         checks.billing = process.env.STRIPE_SECRET_KEY ? "configured" : "off";
         const recipient = process.env.X402_RECIPIENT;
-        checks.x402 = recipient && recipient !== "0x0000000000000000000000000000000000000000" ? "configured" : "off";
+        checks.x402 =
+          recipient && recipient !== "0x0000000000000000000000000000000000000000"
+            ? "configured"
+            : "off";
 
         const ok = workerOk;
-        return new Response(JSON.stringify({ status: ok ? "ok" : "degraded", checks, ts: new Date().toISOString() }), {
-          status: ok ? 200 : 503,
-          headers: { "content-type": "application/json", "cache-control": "no-store" },
-        });
+        return new Response(
+          JSON.stringify({ status: ok ? "ok" : "degraded", checks, ts: new Date().toISOString() }),
+          {
+            status: ok ? 200 : 503,
+            headers: { "content-type": "application/json", "cache-control": "no-store" },
+          },
+        );
       },
     },
   },

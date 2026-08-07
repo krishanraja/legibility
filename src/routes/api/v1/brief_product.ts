@@ -11,10 +11,19 @@ type Product = {
   availability?: string;
   attributes?: Record<string, string | number | boolean>;
 };
-type Envelope = { product?: Product | null; confidence?: number; method?: string; cost_usd?: number; cached?: boolean };
+type Envelope = {
+  product?: Product | null;
+  confidence?: number;
+  method?: string;
+  cost_usd?: number;
+  cached?: boolean;
+};
 
 function json(body: unknown, status: number, extra?: Record<string, string>) {
-  return new Response(JSON.stringify(body), { status, headers: { ...(extra ?? {}), "content-type": "application/json" } });
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...(extra ?? {}), "content-type": "application/json" },
+  });
 }
 
 function composeBrief(e: Envelope): string {
@@ -23,14 +32,19 @@ function composeBrief(e: Envelope): string {
   const parts: string[] = [];
   parts.push(`${p.title}${p.brand ? ` by ${p.brand}` : ""}.`);
   if (p.price) {
-    const range = p.price.low === p.price.high ? `${p.price.low}` : `${p.price.low} to ${p.price.high}`;
-    parts.push(`Price ${range} ${p.price.currency} (${p.price.n_sources} source${p.price.n_sources === 1 ? "" : "s"}).`);
+    const range =
+      p.price.low === p.price.high ? `${p.price.low}` : `${p.price.low} to ${p.price.high}`;
+    parts.push(
+      `Price ${range} ${p.price.currency} (${p.price.n_sources} source${p.price.n_sources === 1 ? "" : "s"}).`,
+    );
   } else {
     parts.push("No defensible price band.");
   }
-  if (p.availability && p.availability !== "unknown") parts.push(`Availability: ${p.availability.replace(/_/g, " ")}.`);
+  if (p.availability && p.availability !== "unknown")
+    parts.push(`Availability: ${p.availability.replace(/_/g, " ")}.`);
   const attrs = p.attributes ? Object.entries(p.attributes).slice(0, 5) : [];
-  if (attrs.length) parts.push(`Key attributes: ${attrs.map(([k, v]) => `${k}: ${v}`).join("; ")}.`);
+  if (attrs.length)
+    parts.push(`Key attributes: ${attrs.map(([k, v]) => `${k}: ${v}`).join("; ")}.`);
   parts.push(`Overall confidence ${e.confidence ?? 0} (source: ${e.method ?? "unknown"}).`);
   return parts.join(" ");
 }
@@ -42,20 +56,31 @@ export const Route = createFileRoute("/api/v1/brief_product")({
       POST: async ({ request }) => {
         const WORKER_URL = process.env.PLINTH_EXTRACTOR_URL;
         const WORKER_TOKEN = process.env.PLINTH_EXTRACTOR_TOKEN;
-        if (!WORKER_URL || !WORKER_TOKEN) return json({ error: "external_worker_not_configured" }, 503);
+        if (!WORKER_URL || !WORKER_TOKEN)
+          return json({ error: "external_worker_not_configured" }, 503);
 
         const authz = request.headers.get("authorization");
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
         const principal = await validateApiKey(presented);
-        if (!principal) return json({ error: "unauthorized", message: "Provide a valid plk_ API key as a Bearer token." }, 401);
+        if (!principal)
+          return json(
+            { error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." },
+            401,
+          );
 
-        const { rateCheck, rateHeaders } = await import("@/integrations/supabase/rate-limit.server");
+        const { rateCheck, rateHeaders } =
+          await import("@/integrations/supabase/rate-limit.server");
         const rl = await rateCheck(principal.userId);
         const rlh = rateHeaders(rl);
-        if (!rl.allowed) return json({ error: "rate_limited", message: "Rate limit exceeded." }, 429, { ...rlh, "retry-after": String(rl.reset) });
+        if (!rl.allowed)
+          return json({ error: "rate_limited", message: "Rate limit exceeded." }, 429, {
+            ...rlh,
+            "retry-after": String(rl.reset),
+          });
 
-        const { entitlementCheck, quotaBlockedBody } = await import("@/integrations/supabase/entitlement.server");
+        const { entitlementCheck, quotaBlockedBody } =
+          await import("@/integrations/supabase/entitlement.server");
         const ent = await entitlementCheck(principal.userId);
         if (!ent.allowed) {
           const { APP_ORIGIN } = await import("@/config/product");
@@ -69,9 +94,15 @@ export const Route = createFileRoute("/api/v1/brief_product")({
           return json({ error: "invalid_json" }, 400);
         }
         const b = (body ?? {}) as Record<string, unknown>;
-        const provided = (["url", "gtin", "name"] as const).filter((k) => typeof b[k] === "string" && (b[k] as string).length > 0);
+        const provided = (["url", "gtin", "name"] as const).filter(
+          (k) => typeof b[k] === "string" && (b[k] as string).length > 0,
+        );
         if (provided.length !== 1) {
-          return json({ error: "invalid_request", message: "Provide exactly one of: url, gtin, name." }, 422, rlh);
+          return json(
+            { error: "invalid_request", message: "Provide exactly one of: url, gtin, name." },
+            422,
+            rlh,
+          );
         }
         const payload: Record<string, unknown> = { [provided[0]]: b[provided[0]] };
         if (typeof b.min_confidence === "number") payload.min_confidence = b.min_confidence;
@@ -82,7 +113,10 @@ export const Route = createFileRoute("/api/v1/brief_product")({
         try {
           const res = await fetch(WORKER_URL, {
             method: "POST",
-            headers: { "content-type": "application/json", authorization: `Bearer ${WORKER_TOKEN}` },
+            headers: {
+              "content-type": "application/json",
+              authorization: `Bearer ${WORKER_TOKEN}`,
+            },
             body: JSON.stringify(payload),
             signal: AbortSignal.timeout(30000),
           });
@@ -115,7 +149,10 @@ export const Route = createFileRoute("/api/v1/brief_product")({
               envelope_hash: stamp.envelope_hash,
               calibration_version: stamp.calibration_version,
             }),
-            supabaseAdmin.from("api_keys").update({ last_used_at: new Date().toISOString() }).eq("id", principal.keyId),
+            supabaseAdmin
+              .from("api_keys")
+              .update({ last_used_at: new Date().toISOString() })
+              .eq("id", principal.keyId),
           ]);
         } catch {
           /* metering best-effort */

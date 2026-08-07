@@ -1,34 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { mapStatus, verifySignature } from "@/lib/api/stripe-signature";
 
 /* eslint-disable @typescript-eslint/no-explicit-any -- Stripe webhook event payloads are dynamic untyped JSON */
 
 // Stripe webhook. Verifies the signature manually (no SDK), then mirrors subscriptions + invoices.
-
-function verifySignature(payload: string, header: string | null, secret: string): boolean {
-  if (!header) return false;
-  const parts = Object.fromEntries(header.split(",").map((p) => p.split("=") as [string, string]));
-  const t = parts["t"];
-  const v1 = parts["v1"];
-  if (!t || !v1) return false;
-  // Reject events older than 5 minutes (replay protection).
-  const age = Math.abs(Math.floor(Date.now() / 1000) - Number(t));
-  if (!Number.isFinite(age) || age > 300) return false;
-  const expected = createHmac("sha256", secret).update(`${t}.${payload}`).digest("hex");
-  try {
-    return timingSafeEqual(Buffer.from(expected), Buffer.from(v1));
-  } catch {
-    return false;
-  }
-}
-
-const SUB_STATUS = new Set(["trialing", "active", "past_due", "canceled", "incomplete"]);
-function mapStatus(s: string): string {
-  if (SUB_STATUS.has(s)) return s;
-  if (s === "unpaid") return "past_due";
-  return "canceled";
-}
+// Signature verification and status mapping live in @/lib/api/stripe-signature so they are
+// unit-testable without importing this route.
 
 type AdminClient = Awaited<typeof import("@/integrations/supabase/client.server")>["supabaseAdmin"];
 
@@ -36,22 +14,37 @@ async function upsertSubscription(admin: AdminClient, userId: string, sub: Recor
   const priceId = sub.items?.data?.[0]?.price?.id as string | undefined;
   let planId = "free";
   if (priceId) {
-    const { data: plan } = await admin.from("plans").select("id").eq("stripe_price_id", priceId).maybeSingle();
+    const { data: plan, error } = await admin
+      .from("plans")
+      .select("id")
+      .eq("stripe_price_id", priceId)
+      .maybeSingle();
+    // Never silently fall back to "free" on a lookup failure: that downgrades a paying
+    // customer. Throw so the handler returns 5xx and Stripe redelivers.
+    if (error) throw new Error(`plans lookup failed for price ${priceId}: ${error.message}`);
     if (plan?.id) planId = plan.id;
   }
-  await admin.from("subscriptions").upsert(
+  const { error: upsertError } = await admin.from("subscriptions").upsert(
     {
       user_id: userId,
       plan_id: planId,
       status: mapStatus(String(sub.status)),
       stripe_customer_id: sub.customer ?? null,
       stripe_subscription_id: sub.id ?? null,
-      current_period_start: sub.current_period_start ? new Date(sub.current_period_start * 1000).toISOString() : null,
-      current_period_end: sub.current_period_end ? new Date(sub.current_period_end * 1000).toISOString() : null,
+      current_period_start: sub.current_period_start
+        ? new Date(sub.current_period_start * 1000).toISOString()
+        : null,
+      current_period_end: sub.current_period_end
+        ? new Date(sub.current_period_end * 1000).toISOString()
+        : null,
       cancel_at_period_end: Boolean(sub.cancel_at_period_end),
     },
     { onConflict: "user_id" },
   );
+  // supabase-js resolves with { error } rather than throwing, so an unchecked call
+  // fails silently. Surface it.
+  if (upsertError)
+    throw new Error(`subscriptions upsert failed for ${userId}: ${upsertError.message}`);
 }
 
 export const Route = createFileRoute("/api/stripe/webhook")({
@@ -99,13 +92,18 @@ export const Route = createFileRoute("/api/stripe/webhook")({
             }
             case "invoice.paid":
             case "invoice.payment_failed": {
-              const { data: sub } = await supabaseAdmin
+              const { data: sub, error: lookupError } = await supabaseAdmin
                 .from("subscriptions")
                 .select("user_id")
                 .eq("stripe_customer_id", obj.customer)
                 .maybeSingle();
+              if (lookupError) {
+                throw new Error(
+                  `subscription lookup failed for customer ${obj.customer}: ${lookupError.message}`,
+                );
+              }
               if (sub?.user_id) {
-                await supabaseAdmin.from("invoices").upsert(
+                const { error: invoiceError } = await supabaseAdmin.from("invoices").upsert(
                   {
                     user_id: sub.user_id,
                     stripe_invoice_id: obj.id,
@@ -114,17 +112,31 @@ export const Route = createFileRoute("/api/stripe/webhook")({
                     status: (obj.status as string) ?? "open",
                     hosted_url: (obj.hosted_invoice_url as string) ?? null,
                     pdf_url: (obj.invoice_pdf as string) ?? null,
-                    period_start: obj.period_start ? new Date(obj.period_start * 1000).toISOString() : null,
-                    period_end: obj.period_end ? new Date(obj.period_end * 1000).toISOString() : null,
+                    period_start: obj.period_start
+                      ? new Date(obj.period_start * 1000).toISOString()
+                      : null,
+                    period_end: obj.period_end
+                      ? new Date(obj.period_end * 1000).toISOString()
+                      : null,
                   },
                   { onConflict: "stripe_invoice_id" },
                 );
+                if (invoiceError) {
+                  throw new Error(`invoice upsert failed for ${obj.id}: ${invoiceError.message}`);
+                }
               }
               break;
             }
           }
         } catch (e) {
+          // Returning 200 here would tell Stripe the event was handled and stop redelivery,
+          // permanently losing a subscription or invoice on a transient DB failure. Return
+          // 500 so Stripe retries on its own backoff schedule.
           console.error("[stripe webhook]", e);
+          return new Response(JSON.stringify({ error: "handler_failed" }), {
+            status: 500,
+            headers: { "content-type": "application/json" },
+          });
         }
         return new Response(JSON.stringify({ received: true }), {
           status: 200,

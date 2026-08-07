@@ -1,5 +1,12 @@
 name: CI
 
+# Scorecard for docs/AUTONOMOUS-HARDENING-PLAN.md Tier 1.
+# Every step here is a gate: it exits 0 or non-zero, and nothing is subjective.
+#
+# PROTECTED PATH. Weakening a gate to make a run go green (removing a step, adding
+# continue-on-error, lowering a coverage threshold) is a guardrail trip, not a fix.
+# If a gate fails, the assumption is that the code is wrong.
+
 on:
   pull_request:
   push:
@@ -21,6 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: the sitemap plugin derives <lastmod> from each route file's last
+          # commit date. A shallow clone would make it omit lastmod entirely.
+          fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
         with:
@@ -29,19 +40,51 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: No em dashes in src (house style)
+      # Cheap checks first, so an obvious failure does not wait on a build.
+
+      - name: House style (no em dashes in prose or code)
         run: |
-          if grep -rn "—" src/; then
-            echo "::error::Em dash found in src/. House style: use a period, comma, colon, or 'to' for ranges."
+          # Text files only: the old rule recursed into src/assets PNGs and routeTree.gen.ts.
+          if grep -rn --binary-files=without-match \
+               --include="*.ts" --include="*.tsx" --include="*.md" \
+               --include="*.txt" --include="*.json" --include="*.css" --include="*.yml" \
+               --exclude="routeTree.gen.ts" \
+               "—" src/ docs/ docs-internal/ public/ README.md; then
+            echo "::error::Em dash found. House style: use a period, comma, colon, or 'to' for ranges."
             exit 1
           fi
+
+      - name: Format check
+        run: bun run format:check
+
+      # Test tooling is installed additively rather than added to package.json, because the
+      # lockfile could not be regenerated in the authoring environment (bun install fails
+      # there with ConnectionClosed). --no-save keeps bun.lock untouched so the app's own
+      # dependencies stay frozen and reproducible.
+      #
+      # This MUST run before Typecheck. The *.test.ts files import from "vitest", so without
+      # it tsc reports "Cannot find module 'vitest'" and then cascades into implicit-any
+      # errors on every it.each callback, because `it` itself resolves to any.
+      #
+      # TODO: move vitest + @vitest/coverage-v8 into devDependencies and commit the updated
+      # bun.lock from a machine with reliable network, then delete this step.
+      - name: Install test tooling
+        run: bun add --no-save vitest @vitest/coverage-v8
 
       - name: Typecheck
         run: bunx tsc --noEmit
 
-      - name: Lint (non-blocking until a prettier-format pass on Lovable-origin files)
+      - name: Lint
         run: bun run lint
-        continue-on-error: true
+
+      - name: Unit tests with coverage
+        run: bunx vitest run --coverage
 
       - name: Build
         run: bun run build
+
+      # Static GEO checks. These need no network and no secrets, so they belong in Tier 1.
+      # The live-surface checks (sitemap URLs resolving, llms.txt claims matching the
+      # database) are Tier 2 and run against the Vercel preview once Phase 3 lands.
+      - name: GEO artifacts
+        run: bun scripts/check-geo.ts

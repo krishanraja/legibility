@@ -10,16 +10,16 @@ accent, not as the dominant voice.
 
 Defined as `oklch` in `src/styles.css`. Use the token, never a hex.
 
-| Token              | Role                                |
-| ------------------ | ----------------------------------- |
-| `--background`     | Cream page background               |
-| `--surface`        | Slightly raised panel               |
-| `--foreground`     | Deep navy text                      |
-| `--muted-foreground` | Secondary text                    |
-| `--signal`         | Terracotta accent (CTAs, highlights)|
-| `--verified`       | Cool green (rare; payment states)   |
-| `--hairline`       | Border colour                       |
-| `--stone`          | Italic editorial text               |
+| Token                | Role                                 |
+| -------------------- | ------------------------------------ |
+| `--background`       | Cream page background                |
+| `--surface`          | Slightly raised panel                |
+| `--foreground`       | Deep navy text                       |
+| `--muted-foreground` | Secondary text                       |
+| `--signal`           | Terracotta accent (CTAs, highlights) |
+| `--verified`         | Cool green (rare; payment states)    |
+| `--hairline`         | Border colour                        |
+| `--stone`            | Italic editorial text                |
 
 Never hardcode `text-white`, `bg-black`, or bracket hex utilities.
 
@@ -39,8 +39,8 @@ breathe; never use hardcoded `<br/>`.
 Two bundled PNG assets, imported directly in the header and footer (these
 are real image imports, not CDN `.asset.json` files):
 
-- `src/assets/plinth-wordmark.png`: the wordmark (header + footer).
-- `src/assets/plinth-icon-and-favicon.png`: the square mark (header lockup).
+- `src/assets/legibility-wordmark.png`: the wordmark (header + footer).
+- `src/assets/legibility-icon-and-favicon.png`: the square mark (header lockup).
 
 Favicon and apple-touch icon are served from `public/` (`/favicon.png`,
 `/apple-touch-icon.png`) and wired in `src/routes/__root.tsx`.
@@ -85,7 +85,7 @@ that does not resolve.
 
 ### Metrics (admin only)
 
-`/dashboard/metrics` is the North Star surface, gated to Plinth admins. It
+`/dashboard/metrics` is the North Star surface, gated to Legibility admins. It
 shows trusted-reads-per-account, the moat metric (golden precision at gate,
 with its Wilson lower bound and calibration version), gate-pass rate by
 method (labelled clearly as gate-pass, NOT correctness), and the kill
@@ -97,22 +97,25 @@ and the page says so. Keep that honesty: do not dress a zero up as traction.
 - Plain, editorial, declarative. Short sentences. Prefer a period over an em
   dash.
 - Never use the em dash. Use a period, a comma, parentheses, or a middle dot
-  (·). This rule is mechanical; `rg "—" src/` should return nothing outside
-  JSON code examples, and CI enforces it.
-- Title separator is the middle dot (·), for example "Plinth · Product data
+  (·). This rule is mechanical: CI greps for the character across `src/`,
+  `docs/`, `docs-internal/`, `public/` and the README, and fails the build on a
+  hit. (The character is not written out here, so that this file passes its own
+  rule.)
+- Title separator is the middle dot (·), for example "Legibility · Product data
   for agents".
 - Honest before clever. "Price is a band" beats "real-time pricing". Every
   sample and every hero value must be reproducible against the live API.
 
 ### On-brand vs off-brand
 
-| Off-brand                                              | On-brand                                                |
-| ------------------------------------------------------ | ------------------------------------------------------- |
-| "AI-powered next-gen product intelligence."            | "Typed product object, confidence per field."           |
-| "Real-time pricing across the entire web."             | "Price as a band, with as_of and n_sources."            |
-| "Unleash your agents with our seamless API!"           | "Agents can discover the MCP server and pay per call."  |
-| "Trusted by leading enterprises."                      | (omit; use a real customer logo or nothing)             |
-| A hero object richer than the engine returns.          | The exact captured call, private-beta caveat and all.   |
+| Off-brand                                     | On-brand                                               |
+| --------------------------------------------- | ------------------------------------------------------ |
+| "AI-powered next-gen product intelligence."   | "Typed product object, confidence per field."          |
+| "Real-time pricing across the entire web."    | "Price as a band, with as_of and n_sources."           |
+| "Unleash your agents with our seamless API!"  | "Agents can discover the MCP server and pay per call." |
+| "Trusted by leading enterprises."             | (omit; use a real customer logo or nothing)            |
+| A hero object richer than the engine returns. | The exact captured call, private-beta caveat and all.  |
 
 ---
+
 Last reviewed: 2026-07-06.

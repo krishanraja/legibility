@@ -1,5 +1,5 @@
 // x402 (HTTP 402) settlement on Base Sepolia via a facilitator (Coinbase x402 v1 schema).
-// Lets an autonomous agent pay per call in USDC instead of holding a plk_ API key.
+// Lets an autonomous agent pay per call in USDC instead of holding a lgk_ API key.
 
 const FACILITATOR = process.env.X402_FACILITATOR ?? "https://x402.org/facilitator";
 const NETWORK = process.env.X402_NETWORK ?? "base-sepolia";
@@ -40,7 +40,7 @@ export function paymentRequirements(resource: string, description: string): Paym
 export function quote402(resource: string, description: string, extra?: Record<string, unknown>) {
   return {
     x402Version: 1,
-    error: "Payment required: provide a plk_ API key (Bearer) or a settled X-PAYMENT header.",
+    error: "Payment required: provide a lgk_ API key (Bearer) or a settled X-PAYMENT header.",
     accepts: [paymentRequirements(resource, description)],
     ...(extra ?? {}),
   };
@@ -63,7 +63,14 @@ export async function settle(
 
   let verify: { isValid?: boolean; invalidReason?: string } | null = null;
   try {
-    verify = await (await fetch(`${FACILITATOR}/verify`, { method: "POST", headers, body, signal: AbortSignal.timeout(15000) })).json();
+    verify = await (
+      await fetch(`${FACILITATOR}/verify`, {
+        method: "POST",
+        headers,
+        body,
+        signal: AbortSignal.timeout(15000),
+      })
+    ).json();
   } catch {
     return { ok: false, reason: "facilitator verify unreachable" };
   }
@@ -71,7 +78,14 @@ export async function settle(
 
   let settled: { success?: boolean; errorReason?: string } | null = null;
   try {
-    settled = await (await fetch(`${FACILITATOR}/settle`, { method: "POST", headers, body, signal: AbortSignal.timeout(30000) })).json();
+    settled = await (
+      await fetch(`${FACILITATOR}/settle`, {
+        method: "POST",
+        headers,
+        body,
+        signal: AbortSignal.timeout(30000),
+      })
+    ).json();
   } catch {
     return { ok: false, reason: "facilitator settle unreachable" };
   }

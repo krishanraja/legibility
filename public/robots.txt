@@ -1,35 +1,31 @@
-# Plinth robots policy. Plinth is agent-native, so AI answer engines and crawlers
+# Legibility robots policy. Legibility is agent-native, so AI answer engines and crawlers
 # are explicitly welcome: we want to be read, quoted, and cited.
+#
+# NOTE ON GROUPING: robots.txt groups are NOT additive. A crawler obeys only the most
+# specific group that matches its token, so a named group must repeat every rule it needs.
+# The AI crawlers below are therefore declared as ONE group (consecutive User-agent lines
+# share the rules that follow) and carry their own Disallow.
 
 User-agent: *
 Allow: /
 Disallow: /dashboard
 
-# AI answer engines and training/search crawlers (GEO): explicitly allowed.
+# AI answer engines and training/search crawlers (GEO): explicitly allowed, same
+# dashboard exclusion as everyone else.
 User-agent: GPTBot
-Allow: /
 User-agent: OAI-SearchBot
-Allow: /
 User-agent: ChatGPT-User
-Allow: /
 User-agent: ClaudeBot
-Allow: /
 User-agent: Claude-Web
-Allow: /
 User-agent: anthropic-ai
-Allow: /
 User-agent: PerplexityBot
-Allow: /
 User-agent: Perplexity-User
-Allow: /
 User-agent: Google-Extended
-Allow: /
 User-agent: Applebot-Extended
-Allow: /
 User-agent: CCBot
-Allow: /
 User-agent: Bytespider
 Allow: /
+Disallow: /dashboard
 
-Sitemap: https://onplinth.io/sitemap.xml
-# LLM-oriented site summary (GEO): https://onplinth.io/llms.txt
+Sitemap: https://legibility.io/sitemap.xml
+# LLM-oriented site summary (GEO): https://legibility.io/llms.txt

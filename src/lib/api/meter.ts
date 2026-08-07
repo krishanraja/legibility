@@ -50,7 +50,8 @@ export function stampFromResponse(text: string, input: MeterInput): EnvelopeStam
     billable: productReturned === true && (confidence ?? 0) >= BILLABLE_GATE,
     domain,
     envelope_hash: createHash("sha256").update(text).digest("hex"),
-    calibration_version: typeof env?.calibration_version === "string" ? env.calibration_version : null,
+    calibration_version:
+      typeof env?.calibration_version === "string" ? env.calibration_version : null,
     cost_usd: typeof env?.cost_usd === "number" ? env.cost_usd : 0,
     cached: Boolean(env?.cached),
   };

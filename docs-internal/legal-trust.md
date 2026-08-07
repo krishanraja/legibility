@@ -76,13 +76,13 @@ best-effort."
 - We do not store buyer PII.
 - The product cache is keyed on public references (URLs and GTINs) and contains
   public product metadata, plus per-field confidence, the calibration version, and
-  the opaque `plinth_id`. No request-body content beyond the cache key.
+  the opaque `legibility_id`. No request-body content beyond the cache key.
 - `usage_events` stores the API key id, the tool name, cost, latency, and the
   calibration-observation stamps (confidence, method/domain, `envelope_hash`,
   `calibration_version`, `request_id`, whether a product was returned, and the
   `billable` flag). Never the request body content beyond what is needed for cache
   lookup.
-- `outcome_reports` (agents optionally reporting whether a Plinth answer led to a
+- `outcome_reports` (agents optionally reporting whether a Legibility answer led to a
   real purchase) is owner-scoped and stores only the outcome, an observed price /
   currency, and a note; no buyer identity.
 - User account data: email (auth), display name, company name (optional).
@@ -96,7 +96,7 @@ means roughly "70% likely correct". It is still a model output, not a guarantee.
 Price is returned as a band with `as_of` and `n_sources`; we do not represent any
 single price as live or transactional.
 
-Customer-facing language: "Plinth's product data is best-effort and should not be
+Customer-facing language: "Legibility's product data is best-effort and should not be
 relied on for transactional pricing or regulatory purposes without independent
 verification."
 
@@ -113,8 +113,7 @@ pool, lend, or rehypothecate received USDC.
 Supabase (project `cgkcplcamsijghalintq`) hosts the primary database; the app and the
 extractor worker both run on Vercel. The worker is deployable per region; v1 runs in a
 single region. Customers with residency requirements should be quoted on the Custom
-plan. The intended domain `onplinth.io` is being pointed at Vercel (DNS propagating);
-the live surface today is `plinth-tan.vercel.app`.
+plan. The live surface today is `legibility.io`, delegated to Vercel with SSL issued.
 
 ## Audit
 
@@ -122,4 +121,5 @@ The `audit_log` table records: takedowns received and applied, key
 revocations, admin actions, refund issuances. Retention: 7 years.
 
 ---
+
 Last reviewed: 2026-07-06.

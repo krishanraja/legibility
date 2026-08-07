@@ -1,6 +1,6 @@
-# Plinth GTM Playbook (start here)
+# Legibility GTM Playbook (start here)
 
-This directory is the operating manual for the Plinth agent fleet. It is
+This directory is the operating manual for the Legibility agent fleet. It is
 written to be executed by an agent, not skimmed by a human: every file has
 explicit criteria, decision rules, copy-paste templates with merge fields,
 disqualifiers, and stop conditions. An agent should be able to act from a
@@ -18,8 +18,8 @@ Last reviewed: 2026-07-06.
 ## The one rule (everything else ladders to this)
 
 **Land 2 to 3 procurement and buy-flow design partners who wire outcome
-closure:** they store the opaque `plinth_id` as a foreign key in their own
-database and call `POST /api/v1/report_outcome` when a Plinth answer leads to
+closure:** they store the opaque `legibility_id` as a foreign key in their own
+database and call `POST /api/v1/report_outcome` when a Legibility answer leads to
 a real buy.
 
 That closed-outcome traffic is the only asset that compounds and the only one
@@ -27,7 +27,7 @@ no competitor can clone, buy, or backdate. Landing it, inside the 6 to 12
 month window before a branded competitor bolts a typed product MCP onto
 Firecrawl, Diffbot, or Zyte, is the whole game. Everything else the fleet does
 is top of funnel that feeds it. The full defensibility thesis is in
-`C:/Users/krish/.scratch/audit/plinth/2026-07-04/MOAT.md`.
+`C:/Users/krish/.scratch/audit/legibility/2026-07-04/MOAT.md`.
 
 **North Star:** weekly trusted reads per active account (a trusted read is a
 call that returned a product at confidence >= 0.7). Beta target: 7 or more per
@@ -49,32 +49,32 @@ prospect  ->  personalize  ->  outreach  ->  demo  ->  qualify
    ->  design-partner offer  ->  onboard  ->  measure
 ```
 
-| Stage | What happens | Read this |
-|---|---|---|
-| prospect | find and score ICP-fit targets, apply the gates and disqualifiers, emit a ranked list | `01-icp-and-targeting.md` |
-| personalize | pick the wedge, the angle, and the proof read for this specific target | `02-positioning-and-messaging.md` |
-| outreach | send copy-paste templates with merge fields, obey cadence and stop conditions | `03-outreach-sequences.md` |
-| demo | run the live-read demo script on their own catalog, never mock | `04-demo-and-qualification.md` |
-| qualify | run the gate and disqualifier checklist, produce a verdict | `04-demo-and-qualification.md` |
-| design-partner offer | quote the tier or make the partner offer, handle objections, close | `05-pricing-objections-and-close.md` |
-| onboard | wire `plinth_id` storage and `report_outcome`, verify in the database, set the feedback cadence | `06-design-partner-motion.md` |
-| measure | read the North Star, keep the CRM current, run the weekly loop and the kill checks | `07-metrics-crm-and-loop.md` |
+| Stage                | What happens                                                                                        | Read this                            |
+| -------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| prospect             | find and score ICP-fit targets, apply the gates and disqualifiers, emit a ranked list               | `01-icp-and-targeting.md`            |
+| personalize          | pick the wedge, the angle, and the proof read for this specific target                              | `02-positioning-and-messaging.md`    |
+| outreach             | send copy-paste templates with merge fields, obey cadence and stop conditions                       | `03-outreach-sequences.md`           |
+| demo                 | run the live-read demo script on their own catalog, never mock                                      | `04-demo-and-qualification.md`       |
+| qualify              | run the gate and disqualifier checklist, produce a verdict                                          | `04-demo-and-qualification.md`       |
+| design-partner offer | quote the tier or make the partner offer, handle objections, close                                  | `05-pricing-objections-and-close.md` |
+| onboard              | wire `legibility_id` storage and `report_outcome`, verify in the database, set the feedback cadence | `06-design-partner-motion.md`        |
+| measure              | read the North Star, keep the CRM current, run the weekly loop and the kill checks                  | `07-metrics-crm-and-loop.md`         |
 
 ---
 
 ## Which doc for which task
 
-| If your task is... | Go to |
-|---|---|
-| Understand the mission, the North Star, and what is true today | `00-operating-brief.md` (read first, it is the source of truth) |
-| Build a ranked target list from cold, or score one account | `01-icp-and-targeting.md` |
-| Pick the one-liner, the pitch, the wedge, or the right proof read | `02-positioning-and-messaging.md` |
-| Write and send a cold email, LinkedIn, or community message | `03-outreach-sequences.md` |
-| Run a live demo, ask discovery questions, or produce a qualification verdict | `04-demo-and-qualification.md` |
-| Quote a price, answer an objection, or close a deal | `05-pricing-objections-and-close.md` |
-| Make the design-partner offer, onboard a partner, or run the weekly loop | `06-design-partner-motion.md` |
-| Track metrics, maintain the CRM, write the weekly rollup, or run a kill check | `07-metrics-crm-and-loop.md` |
-| Confirm a specific fact, number, price, or scope limit before you send | `00-operating-brief.md`, CANONICAL FACTS block |
+| If your task is...                                                            | Go to                                                           |
+| ----------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Understand the mission, the North Star, and what is true today                | `00-operating-brief.md` (read first, it is the source of truth) |
+| Build a ranked target list from cold, or score one account                    | `01-icp-and-targeting.md`                                       |
+| Pick the one-liner, the pitch, the wedge, or the right proof read             | `02-positioning-and-messaging.md`                               |
+| Write and send a cold email, LinkedIn, or community message                   | `03-outreach-sequences.md`                                      |
+| Run a live demo, ask discovery questions, or produce a qualification verdict  | `04-demo-and-qualification.md`                                  |
+| Quote a price, answer an objection, or close a deal                           | `05-pricing-objections-and-close.md`                            |
+| Make the design-partner offer, onboard a partner, or run the weekly loop      | `06-design-partner-motion.md`                                   |
+| Track metrics, maintain the CRM, write the weekly rollup, or run a kill check | `07-metrics-crm-and-loop.md`                                    |
+| Confirm a specific fact, number, price, or scope limit before you send        | `00-operating-brief.md`, CANONICAL FACTS block                  |
 
 ---
 
@@ -112,6 +112,5 @@ section 6.
 - **Voice.** Direct, concrete, technically credible. No hype, no fluff. The
   reader is a technical founder or a senior engineer building an agent.
 
-Surfaces: live domain `https://onplinth.io` (current prod alias
-`plinth-tan.vercel.app`), docs at `/docs`, MCP at `/api/mcp`. Do not reference
-`plinth.sh`; it is dead.
+Surfaces: live domain `https://legibility.io`, docs at `/docs`, MCP at `/api/mcp`. Do not
+reference `onplinth.io`, `plinth-tan.vercel.app` or `plinth.sh`; they are dead.

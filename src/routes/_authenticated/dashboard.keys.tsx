@@ -67,13 +67,15 @@ function KeysPage() {
     <div>
       <h1 className="font-display text-4xl text-foreground">API keys</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
-        Your secret key (<span className="font-mono">plk_…</span>) authenticates calls to read_product.
-        It is shown once at creation. Store it safely.
+        Your secret key (<span className="font-mono">lgk_…</span>) authenticates calls to
+        read_product. It is shown once at creation. Store it safely.
       </p>
 
       {fresh && (
         <div className="mt-6 rounded-md border border-signal bg-surface p-5">
-          <div className="font-mono text-xs uppercase tracking-widest text-signal">New key, shown once</div>
+          <div className="font-mono text-xs uppercase tracking-widest text-signal">
+            New key, shown once
+          </div>
           <div className="mt-3 flex items-center gap-3">
             <code className="flex-1 break-all rounded-sm border border-hairline bg-background px-3 py-2 font-mono text-sm">
               {fresh}
@@ -95,7 +97,9 @@ function KeysPage() {
       )}
 
       {error && (
-        <div className="mt-6 rounded-md border border-signal bg-surface p-4 text-sm text-signal">{error}</div>
+        <div className="mt-6 rounded-md border border-signal bg-surface p-4 text-sm text-signal">
+          {error}
+        </div>
       )}
 
       <div className="mt-8">
@@ -104,7 +108,11 @@ function KeysPage() {
           disabled={busy || active.length >= 1}
           className="rounded-sm bg-signal px-4 py-2 font-mono text-sm text-background disabled:opacity-50"
         >
-          {busy ? "working…" : active.length >= 1 ? "Active key exists (revoke to replace)" : "Create API key"}
+          {busy
+            ? "working…"
+            : active.length >= 1
+              ? "Active key exists (revoke to replace)"
+              : "Create API key"}
         </button>
       </div>
 
@@ -127,7 +135,9 @@ function KeysPage() {
                 </div>
                 <div className="mt-1 font-mono text-xs text-muted-foreground">
                   {k.name} · created {new Date(k.created_at).toLocaleDateString()} ·{" "}
-                  {k.last_used_at ? `last used ${new Date(k.last_used_at).toLocaleDateString()}` : "never used"}
+                  {k.last_used_at
+                    ? `last used ${new Date(k.last_used_at).toLocaleDateString()}`
+                    : "never used"}
                   {k.revoked_at ? " · revoked" : ""}
                 </div>
               </div>

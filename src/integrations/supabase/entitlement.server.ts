@@ -16,12 +16,24 @@ export async function entitlementCheck(userId: string): Promise<Entitlement> {
   const { data, error } = await supabaseAdmin.rpc("entitlement_check", { _user_id: userId });
   const row = Array.isArray(data)
     ? (data[0] as
-        | { allowed: boolean; reason: string; plan_id: string; included_calls: number; used_billable: number }
+        | {
+            allowed: boolean;
+            reason: string;
+            plan_id: string;
+            included_calls: number;
+            used_billable: number;
+          }
         | undefined)
     : undefined;
   if (error || !row) {
     // Fail-safe: do not grant unlimited free calls on an RPC error.
-    return { allowed: false, reason: "degraded", plan_id: "free", included_calls: 0, used_billable: 0 };
+    return {
+      allowed: false,
+      reason: "degraded",
+      plan_id: "free",
+      included_calls: 0,
+      used_billable: 0,
+    };
   }
   return {
     allowed: row.allowed,

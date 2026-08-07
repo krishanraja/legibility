@@ -7,7 +7,7 @@ the North Star counts.
 
 ## Surfaces
 
-- **REST** for developers: `POST /api/v1/<tool>`, auth via `Authorization: Bearer plk_...`.
+- **REST** for developers: `POST /api/v1/<tool>`, auth via `Authorization: Bearer lgk_...`.
 - **MCP** for agents: `POST /api/mcp` (JSON-RPC 2.0). Discovery is free; `tools/call` is paid.
 
 REST exposes `read_product`, `resolve_product`, `compare_products`, `brief_product`, and
@@ -15,19 +15,19 @@ REST exposes `read_product`, `resolve_product`, `compare_products`, `brief_produ
 `brief_product` are REST-only for now (they compose `read_product`, so MCP parity is a thin
 follow-up when an agent needs them). `report_outcome` is REST-only and never billed.
 
-Live host today is `https://plinth-tan.vercel.app`. `onplinth.io` is being pointed at Vercel and
-is propagating; when it resolves, `APP_ORIGIN` in `src/config/product.ts` flips in one place. Do
-not reference `plinth.sh`: it was never the API host.
+Live host today is `https://legibility.io`, set as `APP_ORIGIN` in `src/config/product.ts`,
+which is the one place it is defined. Do not reference `onplinth.io`,
+`plinth-tan.vercel.app` or `plinth.sh`: they are dead.
 
 ## Tools
 
-| Tool               | Status | Sync/async | Body                                                        |
-| ------------------ | ------ | ---------- | ----------------------------------------------------------- |
-| `read_product`     | live   | sync       | exactly one of `url`, `gtin`; optional `min_confidence`     |
-| `resolve_product`  | live   | sync       | `name` (2+ chars); optional `min_confidence`                |
-| `compare_products` | live   | sync       | `urls`: array of 2 to 5 product URLs                        |
-| `brief_product`    | live   | sync       | exactly one of `url`, `gtin`, `name`; optional `min_confidence` |
-| `report_outcome`   | live   | sync       | `outcome` + one of `request_id`, `plinth_id`; optional `observed_price`, `observed_currency`, `note` |
+| Tool               | Status | Sync/async | Body                                                                                                     |
+| ------------------ | ------ | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `read_product`     | live   | sync       | exactly one of `url`, `gtin`; optional `min_confidence`                                                  |
+| `resolve_product`  | live   | sync       | `name` (2+ chars); optional `min_confidence`                                                             |
+| `compare_products` | live   | sync       | `urls`: array of 2 to 5 product URLs                                                                     |
+| `brief_product`    | live   | sync       | exactly one of `url`, `gtin`, `name`; optional `min_confidence`                                          |
+| `report_outcome`   | live   | sync       | `outcome` + one of `request_id`, `legibility_id`; optional `observed_price`, `observed_currency`, `note` |
 
 `resolve_product` is **synchronous**. It takes `{ name }`, runs neural retrieval (Exa) then
 extraction of the top candidates within the request budget, and returns the resolved product in the
@@ -42,11 +42,14 @@ when Exa is out of credits the call returns a null envelope, not an error.)
   "request_id": "req_...",
   "input": { "url": "..." },
   "product": {
-    "title": "...", "brand": "...", "gtin": "...",
+    "title": "...",
+    "brand": "...",
+    "gtin": "...",
     "price": { "low": 110, "high": 110, "currency": "USD", "as_of": "...", "n_sources": 2 },
-    "availability": "in_stock", "attributes": {}
+    "availability": "in_stock",
+    "attributes": {}
   },
-  "plinth_id": "pl_...",
+  "legibility_id": "pl_...",
   "field_confidence": { "title": 0.95, "price": 0.8 },
   "confidence": 0.77,
   "method": "shopify",
@@ -63,7 +66,7 @@ when Exa is out of credits the call returns a null envelope, not an error.)
   `calibration_version` that produced it, so a stored confidence stays auditable across recalibrations.
 - `field_confidence` carries per-field calibrated confidence and is returned on cache hits too (a
   cached read is not a thinner read).
-- `plinth_id` is an opaque minted identity (`pl_...`) for a trusted product. It is stable across
+- `legibility_id` is an opaque minted identity (`pl_...`) for a trusted product. It is stable across
   re-reads and is never derived from the URL or GTIN. Store it as your own foreign key; feed it back
   to `report_outcome`.
 - `method` is the extraction path that produced the object: `jsonld`, `shopify`, `opengraph`,
@@ -81,19 +84,19 @@ is `{ url, title, brand, price, availability, confidence, method }`; `price_delt
 
 ### report_outcome
 
-The outcome-closure channel: an agent reports whether a Plinth answer led to a real result. This is
+The outcome-closure channel: an agent reports whether a Legibility answer led to a real result. This is
 the one label class a competitor cannot crawl, buy, or self-adjudicate, because it exists only
-downstream of a real agent acting on a real Plinth answer.
+downstream of a real agent acting on a real Legibility answer.
 
 ```
 POST /api/v1/report_outcome
-Authorization: Bearer plk_...
-{ "outcome": "purchased", "plinth_id": "pl_...", "observed_price": 109.99, "observed_currency": "USD", "note": "..." }
+Authorization: Bearer lgk_...
+{ "outcome": "purchased", "legibility_id": "pl_...", "observed_price": 109.99, "observed_currency": "USD", "note": "..." }
 ```
 
 - `outcome` (required) is one of `purchased`, `price_matched`, `price_mismatch`, `out_of_stock`,
   `wrong_product`, `other`.
-- Provide `request_id` or `plinth_id` (at least one) to link the outcome to the read. `observed_price`,
+- Provide `request_id` or `legibility_id` (at least one) to link the outcome to the read. `observed_price`,
   `observed_currency`, and `note` (truncated to 500 chars) are optional.
 - Success returns `202 { received: true }`. This call is not metered and not billed.
 
@@ -101,7 +104,7 @@ Authorization: Bearer plk_...
 
 Two independent paths. A `tools/call` (or any billed REST tool) needs one of them.
 
-### API key (`plk_`)
+### API key (`lgk_`)
 
 - Keys are sha256-hashed at rest; the prefix and last four are stored for display. The full key is
   shown once at creation.
@@ -117,7 +120,7 @@ Two independent paths. A `tools/call` (or any billed REST tool) needs one of the
   USDC, 6 decimals), `payTo` (`X402_RECIPIENT`), `asset` (Base Sepolia USDC
   `0x036CbD53842c5426634e7929541eC2318f3dCF7e`), `maxTimeoutSeconds`, `extra: { name: "USDC", version: "2" }`.
 - The agent signs an ERC-3009 `TransferWithAuthorization` (gasless for the buyer) and resends with a
-  base64 `X-PAYMENT` header. Plinth verifies and settles via the facilitator
+  base64 `X-PAYMENT` header. Legibility verifies and settles via the facilitator
   (`X402_FACILITATOR`, default `https://x402.org/facilitator`), then returns `200` with an
   `X-PAYMENT-RESPONSE` header carrying the settlement.
 - x402 calls are paid on-chain, so they skip account metering and rate limiting.
@@ -154,11 +157,11 @@ The billing unit is the **trusted read**, not the call.
 
 Plans (trusted reads per calendar month, UTC):
 
-| Plan    | Price     | Included trusted reads | Overage                     | Card |
-| ------- | --------- | ---------------------- | --------------------------- | ---- |
-| Free    | $0        | 1,000                  | none (hard stop at the cap) | no   |
-| Starter | $29/mo    | 5,000                  | $0.01 / trusted read        | yes  |
-| Growth  | $199/mo   | 50,000                 | $0.005 / trusted read       | yes  |
+| Plan    | Price   | Included trusted reads | Overage                     | Card |
+| ------- | ------- | ---------------------- | --------------------------- | ---- |
+| Free    | $0      | 1,000                  | none (hard stop at the cap) | no   |
+| Starter | $29/mo  | 5,000                  | $0.01 / trusted read        | yes  |
+| Growth  | $199/mo | 50,000                 | $0.005 / trusted read       | yes  |
 
 Paid-tier overage is defined in `plans` but is **not yet auto-metered to Stripe**: the metered
 reporter is founder-gated on a live billing canary. Until it ships, paid accounts are not hard
@@ -168,18 +171,18 @@ blocked at the cap (only free accounts are).
 
 JSON error bodies with a stable shape: `{ error, message }`. Codes in use:
 
-| HTTP | `error`                          | When                                                        |
-| ---- | -------------------------------- | ----------------------------------------------------------- |
-| 400  | `invalid_json`                   | body is not valid JSON                                      |
-| 401  | `unauthorized`                   | missing or invalid `plk_` key                               |
-| 402  | `quota_exceeded` / `cost_fuse`   | free account over its monthly quota or the free cost fuse   |
-| 402  | (x402 `PaymentRequirements`)     | MCP `tools/call` with no key and no settled payment         |
+| HTTP | `error`                          | When                                                         |
+| ---- | -------------------------------- | ------------------------------------------------------------ |
+| 400  | `invalid_json`                   | body is not valid JSON                                       |
+| 401  | `unauthorized`                   | missing or invalid `lgk_` key                                |
+| 402  | `quota_exceeded` / `cost_fuse`   | free account over its monthly quota or the free cost fuse    |
+| 402  | (x402 `PaymentRequirements`)     | MCP `tools/call` with no key and no settled payment          |
 | 405  | `method_not_allowed`             | wrong HTTP method on a POST-only route (with `Allow` header) |
-| 422  | `invalid_request`                | wrong arity or a malformed argument                         |
-| 429  | `rate_limited`                   | over the per-plan rate window (with `retry-after`)          |
-| 500  | `insert_failed`                  | `report_outcome` could not persist                          |
-| 502  | `upstream_unavailable`           | the extraction worker did not respond                       |
-| 503  | `external_worker_not_configured` | worker URL/token not set (should not happen in prod)        |
+| 422  | `invalid_request`                | wrong arity or a malformed argument                          |
+| 429  | `rate_limited`                   | over the per-plan rate window (with `retry-after`)           |
+| 500  | `insert_failed`                  | `report_outcome` could not persist                           |
+| 502  | `upstream_unavailable`           | the extraction worker did not respond                        |
+| 503  | `external_worker_not_configured` | worker URL/token not set (should not happen in prod)         |
 
 New codes are additive. In MCP, tool-level input errors are returned inside a JSON-RPC result with
 `isError: true` rather than as an RPC error, so discovery-vs-call semantics stay clean.
@@ -214,4 +217,5 @@ ships.
 - **Free MCP discovery, paid call:** an agent must be able to see the tools before it decides to pay.
 
 ---
+
 Last reviewed: 2026-07-06.

@@ -1,6 +1,6 @@
-# Plinth: North Star and kill criteria
+# Legibility: North Star and kill criteria
 
-Decision record for the private beta. This is the bar Plinth must clear to keep going, and the
+Decision record for the private beta. This is the bar Legibility must clear to keep going, and the
 signals that say stop. The metrics are no longer theoretical: they are computed live in the DB by the
 `northstar_weekly` and `trust_rate_by_method` RPCs over `usage_events`, the `subscriptions` table,
 and `outcome_reports`, rolled up daily into `ops_daily`, and watched by `kill_dashboard()` on
@@ -47,7 +47,7 @@ Reconsider the product if, after eight weeks of beta with at least ten active ac
 3. Trust rate cannot be pushed above **0.6** without gaming the confidence score (that is, precision
    at the gate falls when the gate is loosened to lift the trust rate).
 
-All three together means accounts try Plinth, do not trust the output, and do not return. That is a
+All three together means accounts try Legibility, do not trust the output, and do not return. That is a
 thesis failure, not a tuning problem, and is the signal to stop rather than keep polishing.
 
 ## The live kill floor

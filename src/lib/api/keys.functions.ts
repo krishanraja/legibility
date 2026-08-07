@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-// Create an API key for the signed-in user. Returns the full plk_ key ONCE.
+// Create an API key for the signed-in user. Returns the full lgk_ key ONCE.
 // v1: one active key per account (per docs); revoke the existing one to create another.
 export const createApiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

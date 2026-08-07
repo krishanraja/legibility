@@ -6,26 +6,26 @@ update this file in the same change.
 
 ## Tables
 
-| Table                | Purpose                                                                    | RLS posture                                                                |
-| -------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `profiles`           | Per-user profile (display_name, company, email, approved, approved_at)     | Owner read/write via `auth.uid() = id`                                     |
-| `user_roles`         | App roles (`admin`, `user`)                                                | Read via `has_role()` security-definer fn only; never selected client-side directly |
-| `waitlist`           | Pre-launch sign-ups (email, company, use_case, status, source, approved_*) | Insert open to anon; select admin-only                                     |
-| `plans`              | Plan catalogue (Free / Starter / Growth)                                   | Public read                                                                |
-| `subscriptions`      | Owner to plan, status, period, Stripe ids                                  | Owner read; service_role writes                                            |
-| `api_keys`           | Hashed key (sha256), prefix, last_four, name, last_used_at, revoked_at     | Owner read; insert/revoke via server fn                                    |
-| `usage_events`       | Per-call meter + calibration observation (see columns below)               | Owner read; service_role inserts                                           |
-| `product_cache`      | Typed product superset, ttl, confidence, field_confidence, plinth_id       | Service-role only; never read directly from the client                     |
-| `outcome_reports`    | Downstream outcome-closure labels (the moat label channel)                 | Owner insert/read own via `auth.uid() = user_id`                           |
-| `golden_eval_runs`   | Recorded pre-release eval (precision at gate, adversarial, recall, ECE)    | Service-role only, no policies                                             |
-| `ops_daily`          | Daily usage rollup (trust rate, errors, latency, cost, active accounts)    | Service-role only                                                          |
-| `ops_alerts`         | Kill-floor and error alerts raised by the monitoring cron                  | Service-role only                                                          |
-| `audit_log`          | Admin/security audit trail (action, actor, target, meta)                   | Service-role writes; admin read                                            |
-| `invoices`           | Stripe invoice mirror for in-app history                                   | Owner read                                                                 |
-| `takedown_requests`  | Email, url, reason, status, notes                                          | Insert open; admin read/triage                                             |
-| `resolutions`        | Reserved for an async resolve job model (resolve is sync; unused)          | Owner read; service_role writes                                            |
-| `webhooks`           | Reserved; webhooks are not built (roadmap only)                            | Owner CRUD                                                                 |
-| `webhook_deliveries` | Reserved; webhooks are not built (roadmap only)                            | Owner read                                                                 |
+| Table                | Purpose                                                                     | RLS posture                                                                         |
+| -------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `profiles`           | Per-user profile (display_name, company, email, approved, approved_at)      | Owner read/write via `auth.uid() = id`                                              |
+| `user_roles`         | App roles (`admin`, `user`)                                                 | Read via `has_role()` security-definer fn only; never selected client-side directly |
+| `waitlist`           | Pre-launch sign-ups (email, company, use*case, status, source, approved*\*) | Insert open to anon; select admin-only                                              |
+| `plans`              | Plan catalogue (Free / Starter / Growth)                                    | Public read                                                                         |
+| `subscriptions`      | Owner to plan, status, period, Stripe ids                                   | Owner read; service_role writes                                                     |
+| `api_keys`           | Hashed key (sha256), prefix, last_four, name, last_used_at, revoked_at      | Owner read; insert/revoke via server fn                                             |
+| `usage_events`       | Per-call meter + calibration observation (see columns below)                | Owner read; service_role inserts                                                    |
+| `product_cache`      | Typed product superset, ttl, confidence, field_confidence, legibility_id    | Service-role only; never read directly from the client                              |
+| `outcome_reports`    | Downstream outcome-closure labels (the moat label channel)                  | Owner insert/read own via `auth.uid() = user_id`                                    |
+| `golden_eval_runs`   | Recorded pre-release eval (precision at gate, adversarial, recall, ECE)     | Service-role only, no policies                                                      |
+| `ops_daily`          | Daily usage rollup (trust rate, errors, latency, cost, active accounts)     | Service-role only                                                                   |
+| `ops_alerts`         | Kill-floor and error alerts raised by the monitoring cron                   | Service-role only                                                                   |
+| `audit_log`          | Admin/security audit trail (action, actor, target, meta)                    | Service-role writes; admin read                                                     |
+| `invoices`           | Stripe invoice mirror for in-app history                                    | Owner read                                                                          |
+| `takedown_requests`  | Email, url, reason, status, notes                                           | Insert open; admin read/triage                                                      |
+| `resolutions`        | Reserved for an async resolve job model (resolve is sync; unused)           | Owner read; service_role writes                                                     |
+| `webhooks`           | Reserved; webhooks are not built (roadmap only)                             | Owner CRUD                                                                          |
+| `webhook_deliveries` | Reserved; webhooks are not built (roadmap only)                             | Owner read                                                                          |
 
 ## Roles
 
@@ -59,7 +59,7 @@ Every keyed call writes one row. Beyond the meter fields (`tool`, `endpoint`, `s
 - `field_confidence` (JSONB): per-field calibrated confidence, returned on cache hits so a repeat
   read is not thinner than the first.
 - `calibration_version`: keeps a cached confidence auditable across recalibrations.
-- `plinth_id`: opaque minted product identity (`pl_...`), stable across re-reads, **never derived**
+- `legibility_id`: opaque minted product identity (`pl_...`), stable across re-reads, **never derived**
   from URL or GTIN. Unique index on non-null values. This is the moat anchor: customers store it as
   a foreign key, and longitudinal history accumulates under it.
 
@@ -121,7 +121,7 @@ The `product` JSONB stored per row (the object the worker returns, cached only f
 }
 ```
 
-Confidence, field confidence, calibration version, and the minted `plinth_id` live in their own
+Confidence, field confidence, calibration version, and the minted `legibility_id` live in their own
 columns (above), not inside the `product` blob. The cache key is the normalised input (URL, GTIN, or
 canonical fuzzy hash). Only trusted products (`confidence >= 0.7`) are written; below-gate reads are
 not cached.
@@ -134,4 +134,5 @@ stores the key id, tool, the requested `domain` (a public hostname, or `gtin:` /
 stores only the agent's own key identity plus the outcome label and an optional observed price.
 
 ---
+
 Last reviewed: 2026-07-06.

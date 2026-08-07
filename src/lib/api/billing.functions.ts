@@ -80,6 +80,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
       { customer, return_url: `${baseUrl()}/dashboard/billing` },
       sk,
     );
-    if (!session.url) throw new Error(session.error?.message ?? "Could not open the billing portal.");
+    if (!session.url)
+      throw new Error(session.error?.message ?? "Could not open the billing portal.");
     return { url: session.url as string };
   });

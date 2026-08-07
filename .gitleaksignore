@@ -1,0 +1,17 @@
+# gitleaks fingerprint allowlist.
+#
+# Scope discipline: each entry here pins ONE finding to ONE commit, ONE file, ONE rule and
+# ONE line. Nothing here disables a rule or exempts a path, so a genuine secret committed
+# to any of these files still fails the build. Do not add path or rule level exemptions.
+#
+# Every entry must say what the string was and why it is not a credential.
+
+# A test fixture for the Stripe webhook signature verifier. The value was
+# "whsec_test_2f8a9c1e4b7d": a made-up string that never existed in Stripe, used only as the
+# HMAC key when signing a fake payload in a unit test. gitleaks was right to flag it, because
+# it carried a realistic "whsec_" prefix and enough entropy to look real.
+#
+# The fixture was replaced in a later commit with "test-signing-value-not-a-credential",
+# which cannot trip the rule. This entry covers only the historical commit, which cannot be
+# rewritten now that the branch is pushed and under review.
+9c7cb73494458afe2d41721507c560c7407f220e:src/lib/api/stripe-signature.test.ts:generic-api-key:5

@@ -1,8 +1,8 @@
 # Support
 
-Internal support guide. Plinth is live and in private beta on
-https://plinth-tan.vercel.app (the custom domain onplinth.io is being
-pointed at Vercel and DNS is still propagating). Every Plinth call is
+Internal support guide. Legibility is live and in private beta on
+https://legibility.io (the custom domain legibility.io is being
+pointed at Vercel and DNS is still propagating). Every Legibility call is
 synchronous: the caller sends a request and gets the typed product object,
 its confidence, and the per-call cost back in the same response. There is no
 async job, no polling, and no webhook to wait on.
@@ -16,7 +16,7 @@ A read returns a `confidence` that is a calibrated probability. 0.7 means
   `confidence >= 0.7`. This is a trusted read. It is billed and it counts
   against quota.
 - **Below the gate:** `product` is `null` and the HTTP status is still 200.
-  Plinth is saying "I could not stand behind this answer." A null read is
+  Legibility is saying "I could not stand behind this answer." A null read is
   **not billed and does not consume quota**. `billable` is set only when a
   product is returned AND confidence is at least 0.7.
 
@@ -100,16 +100,16 @@ and route it to the founder.
 Real HTTP responses from `/api/v1/*`. Error bodies are JSON with at least
 `error` and `message`.
 
-| HTTP | error | What happened | What to say |
-| ---- | ----- | ------------- | ----------- |
-| 200 + `product: null` | (none) | Below the calibrated 0.7 gate | Free, no quota used. Pass `min_confidence` or use a GTIN / structured URL. |
-| 400 | invalid_json | Body was not valid JSON | Fix the request body. |
-| 401 | unauthorized | Missing or bad plk_ key | Send a valid key as a Bearer token. |
-| 402 | (quota) | Monthly quota exhausted | Upgrade. The body links `/dashboard/billing`. |
-| 422 | invalid_request | read: not exactly one of `url`/`gtin`. resolve: `name` under 2 chars | Send one reference, or a real name. |
-| 429 | rate_limited | Per-key burst or sustained rate exceeded | Honor `retry-after`. Upgrade for higher limits. |
-| 502 | upstream_unavailable | The extraction worker did not respond | Retry. If persistent, page on-call. |
-| 503 | external_worker_not_configured | Worker URL/token unset in this env | Ops issue: set `PLINTH_EXTRACTOR_URL` and `PLINTH_EXTRACTOR_TOKEN`. |
+| HTTP                  | error                          | What happened                                                        | What to say                                                                |
+| --------------------- | ------------------------------ | -------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| 200 + `product: null` | (none)                         | Below the calibrated 0.7 gate                                        | Free, no quota used. Pass `min_confidence` or use a GTIN / structured URL. |
+| 400                   | invalid_json                   | Body was not valid JSON                                              | Fix the request body.                                                      |
+| 401                   | unauthorized                   | Missing or bad lgk\_ key                                             | Send a valid key as a Bearer token.                                        |
+| 402                   | (quota)                        | Monthly quota exhausted                                              | Upgrade. The body links `/dashboard/billing`.                              |
+| 422                   | invalid_request                | read: not exactly one of `url`/`gtin`. resolve: `name` under 2 chars | Send one reference, or a real name.                                        |
+| 429                   | rate_limited                   | Per-key burst or sustained rate exceeded                             | Honor `retry-after`. Upgrade for higher limits.                            |
+| 502                   | upstream_unavailable           | The extraction worker did not respond                                | Retry. If persistent, page on-call.                                        |
+| 503                   | external_worker_not_configured | Worker URL/token unset in this env                                   | Ops issue: set `PLINTH_EXTRACTOR_URL` and `PLINTH_EXTRACTOR_TOKEN`.        |
 
 The public `/docs/errors` page also lists 403 `key_revoked`, 404
 `not_resolvable`, and 451 `takedown`. 403 (revoked key or suspended account)
@@ -127,12 +127,12 @@ honest" explanation is the one you will send most.
 
 ## Escalation
 
-| Severity | Definition                                         | Who                                |
-| -------- | -------------------------------------------------- | ---------------------------------- |
-| P0       | API down, billing wrong, data leak                 | Page on-call, status page update   |
-| P1       | Single customer blocked, no workaround             | Reply within 4 business hours      |
-| P2       | Bug with workaround                                | Reply within 1 business day        |
-| P3       | Feature request / docs gap                         | Triage weekly                      |
+| Severity | Definition                             | Who                              |
+| -------- | -------------------------------------- | -------------------------------- |
+| P0       | API down, billing wrong, data leak     | Page on-call, status page update |
+| P1       | Single customer blocked, no workaround | Reply within 4 business hours    |
+| P2       | Bug with workaround                    | Reply within 1 business day      |
+| P3       | Feature request / docs gap             | Triage weekly                    |
 
 ## Refund policy (stub)
 
@@ -143,4 +143,5 @@ refund case. Pro-rata refund on cancellation if a customer requests within
 30 days of an annual plan.
 
 ---
+
 Last reviewed: 2026-07-06.

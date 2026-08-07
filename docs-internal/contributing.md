@@ -1,12 +1,12 @@
 # Contributing
 
 This is an internal contributor guide for humans and AI agents working on
-Plinth.
+Legibility.
 
-Plinth is two repos. This one is the app (public site, dashboard, REST +
+Legibility is two repos. This one is the app (public site, dashboard, REST +
 MCP surface, billing, metering). The extraction engine, the confidence
 scorer, the is-product verifier, calibration, and the eval harness live in a
-separate repo, `plinth-worker`. The app proxies `read_product` and
+separate repo, `legibility-worker`. The app proxies `read_product` and
 `resolve_product` to the worker; correctness lives in the worker.
 
 ## Branching
@@ -29,23 +29,23 @@ every PR. End commit messages with the `Co-Authored-By` trailer.
 
 ## Where to put things
 
-| Adding...                          | Goes in                                      |
-| ---------------------------------- | -------------------------------------------- |
-| A public page                      | `src/routes/<name>.tsx`                      |
-| A docs page                        | `src/routes/docs.<name>.tsx` + sidebar link  |
-| A dashboard page                   | `src/routes/_authenticated/dashboard.<name>.tsx` |
-| A REST endpoint                    | `src/routes/api/v1/<name>.ts`                |
-| An inbound provider webhook receiver | `src/routes/api/<provider>/<name>.ts` (for example `api/stripe/webhook.ts`). Plinth receives provider webhooks; it does NOT send outbound webhooks to customers. |
-| A client-callable server function  | `src/lib/api/<area>.functions.ts`            |
-| A server-only helper               | `src/lib/api/<area>.server.ts` or `src/integrations/...server.ts` |
-| A migration                        | Supabase Management API / MCP, mirror to `supabase/migrations/` |
-| An image / font / binary asset     | `src/assets/` or `public/`                   |
-| Engine, scorer, calibration, eval  | the `plinth-worker` repo, not here           |
+| Adding...                            | Goes in                                                                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A public page                        | `src/routes/<name>.tsx`                                                                                                                                              |
+| A docs page                          | `src/routes/docs.<name>.tsx` + sidebar link                                                                                                                          |
+| A dashboard page                     | `src/routes/_authenticated/dashboard.<name>.tsx`                                                                                                                     |
+| A REST endpoint                      | `src/routes/api/v1/<name>.ts`                                                                                                                                        |
+| An inbound provider webhook receiver | `src/routes/api/<provider>/<name>.ts` (for example `api/stripe/webhook.ts`). Legibility receives provider webhooks; it does NOT send outbound webhooks to customers. |
+| A client-callable server function    | `src/lib/api/<area>.functions.ts`                                                                                                                                    |
+| A server-only helper                 | `src/lib/api/<area>.server.ts` or `src/integrations/...server.ts`                                                                                                    |
+| A migration                          | Supabase Management API / MCP, mirror to `supabase/migrations/`                                                                                                      |
+| An image / font / binary asset       | `src/assets/` or `public/`                                                                                                                                           |
+| Engine, scorer, calibration, eval    | the `legibility-worker` repo, not here                                                                                                                               |
 
 ## The eval harness (the engine's ground truth)
 
 The engine's correctness is not a matter of opinion. It is measured against
-a labelled golden set on every change, in the `plinth-worker` repo.
+a labelled golden set on every change, in the `legibility-worker` repo.
 
 - `worker/test/golden-set.json` is the labelled truth set (316 rows). Each
   row is a reference (URL / GTIN / name), the expected object, and an
@@ -83,20 +83,28 @@ means "about 70 percent likely to be correct."
 
 1. **gitleaks** secret scan. Fails the build on any committed secret. Hard
    gate: a leaked key blocks the merge.
-2. **No em dashes in `src/`.** `grep -rn "—" src/` must return nothing. House
-   style, mechanically enforced. Use a period, comma, colon, or "to" for
-   ranges.
+2. **No em dashes.** CI greps for the character across `src/`, `docs/`,
+   `docs-internal/`, `public/` and the README, restricted to text files, and
+   fails on any hit. House style, mechanically enforced. Use a period, comma,
+   colon, or "to" for ranges.
 3. **Typecheck:** `bunx tsc --noEmit`. Hard gate.
-4. **Lint:** `bun run lint`. Currently non-blocking (`continue-on-error`)
-   until the Lovable-origin files get a prettier pass. Do not add new lint
-   debt behind it.
-5. **Build:** `bun run build`. Hard gate.
+4. **Format:** `bun run format:check`. Hard gate. Run `bun run format` to fix.
+5. **Lint:** `bun run lint`. Hard gate. The `continue-on-error` escape hatch was
+   removed once the repo-wide prettier pass landed. Do not reintroduce it.
+6. **Unit tests + coverage:** `bunx vitest run --coverage`. Hard gate. The money
+   paths (`stripe-signature.ts`, `meter.ts`) are held at 100 percent line and
+   branch. Those thresholds are a protected path: lowering one to make a run go
+   green is a guardrail trip, not a fix.
+7. **Build:** `bun run build`. Hard gate.
+8. **GEO artifacts:** `bun scripts/check-geo.ts`. Hard gate. Validates robots.txt
+   group semantics, the sitemap, and that public plan claims match the JSON-LD
+   offers.
 
 Get CI green before asking for review.
 
 ## Before you ship (checklist)
 
-- [ ] No em dashes in copy (`rg "—" src/` returns nothing outside JSON examples).
+- [ ] No em dashes in copy (the CI house-style step passes).
 - [ ] Every new public table has GRANTs and RLS policies in the migration.
 - [ ] Every authed server function chains `requireSupabaseAuth`.
 - [ ] Every new route has its own `head()` with title, description, og:title, og:description.
@@ -115,7 +123,8 @@ Get CI green before asking for review.
 
 Use the questions tool when scope or preference is genuinely ambiguous. Do
 not ask about settled defaults (Vercel hosting, the `cgkc` Supabase project,
-the standalone `plinth-worker` extraction worker).
+the standalone `legibility-worker` extraction worker).
 
 ---
+
 Last reviewed: 2026-07-06.

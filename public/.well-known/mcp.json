@@ -1,31 +1,46 @@
 {
   "schema_version": "1.0",
-  "name": "plinth",
-  "display_name": "Plinth",
+  "name": "legibility",
+  "display_name": "Legibility",
   "description": "Typed product data for AI agents. Resolves a product URL, GTIN barcode, or fuzzy name into a typed product object with per-field confidence, a price band, source method, and per-call cost.",
-  "homepage": "https://onplinth.io",
-  "documentation": "https://onplinth.io/docs/mcp",
+  "homepage": "https://legibility.io",
+  "documentation": "https://legibility.io/docs/mcp",
   "mcp": {
     "protocol_version": "2025-06-18",
     "transport": "http",
-    "endpoint": "https://onplinth.io/api/mcp",
+    "endpoint": "https://legibility.io/api/mcp",
     "discovery": "free",
     "auth": [
-      { "type": "bearer_api_key", "prefix": "plk_", "description": "Create a key at https://onplinth.io in the dashboard. Required for tools/call unless paying per call over x402." },
-      { "type": "x402", "network": "base-sepolia", "asset": "USDC", "description": "Per-call payment. tools/call returns HTTP 402 with payment requirements when no valid key or X-PAYMENT header is presented. Testnet only, no mainnet settlement yet." }
+      {
+        "type": "bearer_api_key",
+        "prefix": "lgk_",
+        "description": "Create a key at https://legibility.io in the dashboard. Required for tools/call unless paying per call over x402."
+      },
+      {
+        "type": "x402",
+        "network": "base-sepolia",
+        "asset": "USDC",
+        "description": "Per-call payment. tools/call returns HTTP 402 with payment requirements when no valid key or X-PAYMENT header is presented. Testnet only, no mainnet settlement yet."
+      }
     ],
     "tools": [
-      { "name": "read_product", "description": "Resolve a product URL or GTIN into a typed Schema.org Product object with per-field and overall confidence, a price band, source method, and the per-call cost." },
-      { "name": "resolve_product", "description": "Resolve a fuzzy product name into a typed product object via neural search then extraction, returned in the same call." }
+      {
+        "name": "read_product",
+        "description": "Resolve a product URL or GTIN into a typed Schema.org Product object with per-field and overall confidence, a price band, source method, and the per-call cost."
+      },
+      {
+        "name": "resolve_product",
+        "description": "Resolve a fuzzy product name into a typed product object via neural search then extraction, returned in the same call."
+      }
     ]
   },
   "rest_api": {
-    "base_url": "https://onplinth.io/api/v1",
+    "base_url": "https://legibility.io/api/v1",
     "note": "compare_products and brief_product are available over REST only, not yet on the MCP tool list."
   },
   "pricing": {
     "free_tier": "1000 trusted reads per month, no card, hard stop",
-    "paid_tiers": "see https://onplinth.io/docs/quickstart and https://onplinth.io#pricing",
+    "paid_tiers": "see https://legibility.io/docs/quickstart and https://legibility.io#pricing",
     "per_call": "x402 on Base Sepolia (testnet)"
   },
   "contact": "krishanraja@gmail.com"

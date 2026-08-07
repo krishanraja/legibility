@@ -8,11 +8,11 @@ export const Route = createFileRoute("/docs/api/resolve-product")({
     <article className="space-y-6">
       <h1 className="font-display text-5xl">resolve_product</h1>
       <p className="text-lg text-muted-foreground">
-        A fuzzy product name to a typed product object, synchronously. Plinth searches, picks the
-        best matching product page, extracts it, and returns the same envelope as read_product.
+        A fuzzy product name to a typed product object, synchronously. Legibility searches, picks
+        the best matching product page, extracts it, and returns the same envelope as read_product.
       </p>
       <pre className="rounded-md border border-hairline bg-surface p-5 font-mono text-sm overflow-x-auto">
-{`POST ${API_BASE}/resolve_product
+        {`POST ${API_BASE}/resolve_product
 { "name": "sony wh-1000xm5 wireless headphones" }
 
 → {

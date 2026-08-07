@@ -49,22 +49,34 @@ short list of items that need a human action or an external clock. Last updated 
 - [x] **Enable leaked password protection.** Done 2026-08-06 via the Supabase Management API.
       `password_hibp_enabled` is now true and the minimum password length is raised from 6 to 10. The corresponding Supabase security advisor WARN is cleared.
 
-- [ ] **Repoint `PLINTH_EXTRACTOR_URL` at `legibility-worker.vercel.app`.** The worker project
-      already has both `legibility-worker.vercel.app` and `plinth-worker.vercel.app` attached
-      and both serve the same deployment, so the swap is safe. The endpoint path is `/extract`
-      (confirmed by probing: `/extract` returns 401, every other path returns 404), so the new
-      value is `https://legibility-worker.vercel.app/extract` for both production and preview.
-      The env var is marked **sensitive**, so its current value cannot be read back through the
-      API to confirm. Once swapped and redeployed, check `/api/health` still reports
-      `worker: ok`, then detach `plinth-worker.vercel.app`. The worker's own health body still
-      self-identifies as `"service":"plinth-worker"`, which is a change in the worker repo.
+- [x] **Repoint `PLINTH_EXTRACTOR_URL` at `legibility-worker.vercel.app`.** Done 2026-08-07 for
+      both production and preview. The value is now
+      `https://legibility-worker.vercel.app/extract`. The path was confirmed by probing rather
+      than assumed: `/extract` returns 401 (exists, needs the bearer token) and every other
+      path returns 404. The env var is marked **sensitive**, so its previous value could not be
+      read back to diff against; the swap was safe regardless because the worker project has
+      both `legibility-worker.vercel.app` and `plinth-worker.vercel.app` attached and both
+      serve the same deployment.
 
-- [ ] **Decide how CI reaches preview deployments.** SSO protection is on for
-      `all_except_custom_domains`, so previews require a Vercel login. Phase 3 of
-      `docs/AUTONOMOUS-HARDENING-PLAN.md` runs Playwright, axe and Lighthouse against the
-      preview, which needs either a Protection Bypass for Automation token (recommended: keeps
-      previews private) or disabling SSO protection (not recommended: makes every preview
-      world-readable).
+      **Takes effect on the next production deploy** (the merge of PR #28). After that, confirm
+      `/api/health` still reports `worker: ok`, then detach `plinth-worker.vercel.app` from the
+      worker project.
+
+- [ ] **Rename the worker service string.** Its health body still self-identifies as
+      `{"service":"plinth-worker"}` on both hosts. That lives in the worker repo, which is not
+      part of this one.
+
+- [x] **Generated a Protection Bypass for Automation secret** (2026-08-07), scope
+      `automation-bypass`, so CI can reach preview deployments without disabling SSO. Previews
+      stay private: SSO protection remains on for `all_except_custom_domains`.
+
+- [ ] **Add the bypass secret to GitHub Actions secrets.** Needs a human, because the value is
+      a credential and should not pass through a chat transcript. Copy it from Vercel:
+      **Project Settings, Deployment Protection, Protection Bypass for Automation**. Add it to
+      the repo as `VERCEL_AUTOMATION_BYPASS_SECRET`
+      (Settings, Secrets and variables, Actions). Phase 3 then reaches previews by sending
+      `x-vercel-protection-bypass: <secret>` (and optionally
+      `x-vercel-set-bypass-cookie: true`) on every Playwright, axe and Lighthouse request.
 
 - [ ] **Repoint the Stripe webhook URL** to the new origin.
 

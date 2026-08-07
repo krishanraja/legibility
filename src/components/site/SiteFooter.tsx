@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import wordmark from "@/assets/legibility-wordmark.png";
+import wordmark from "@/assets/legibility-wordmark-new.png.png";
 
 export function SiteFooter() {
   return (

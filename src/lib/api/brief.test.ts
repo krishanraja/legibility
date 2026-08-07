@@ -117,10 +117,27 @@ describe("composeBrief: attributes", () => {
     expect(s).not.toContain(`k${MAX_BRIEF_ATTRIBUTES}: `);
   });
 
-  it("omits the attributes sentence when there are none", () => {
+  it("omits the attributes sentence when the object is empty", () => {
     expect(composeBrief({ ...FULL, product: { ...FULL.product!, attributes: {} } })).not.toContain(
       "Key attributes",
     );
+  });
+
+  it("omits the attributes sentence when the field is absent entirely", () => {
+    // Distinct from an empty object: an absent field takes the other side of the
+    // `p.attributes ? ... : []` guard. The coverage ratchet caught this gap, which is
+    // exactly what it is for.
+    const p = { ...FULL.product! };
+    delete p.attributes;
+    expect(composeBrief({ ...FULL, product: p })).not.toContain("Key attributes");
+  });
+
+  it("still produces a valid brief with no attributes at all", () => {
+    const p = { ...FULL.product! };
+    delete p.attributes;
+    const s = composeBrief({ ...FULL, product: p });
+    expect(s).toContain("Wool Runner by Allbirds.");
+    expect(s).toContain("Overall confidence 0.91");
   });
 });
 

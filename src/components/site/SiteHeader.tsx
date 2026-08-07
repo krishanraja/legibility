@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/lib/auth";
 import icon from "@/assets/legibility-icon-and-favicon.png";
-import wordmark from "@/assets/legibility-wordmark.png";
+import wordmark from "@/assets/legibility-wordmark-new.png.png";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -48,7 +48,14 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-4 font-mono text-xs">
         <Link to="/" className="flex items-center gap-3">
           <img src={icon} alt="" aria-hidden className="h-14 w-auto" />
-          <img src={wordmark} alt="legibility" className="h-14 w-auto" />
+          {/*
+            The wordmark box is deliberately smaller than the icon box. The icon is a solid
+            tile whose ink fills 97% of its height; the wordmark file is a tight crop whose
+            ink fills 78%. Matching the two boxes would render the letterforms taller than
+            the mark. At h-10 the wordmark ink lands at ~31px against the icon's 56px, which
+            is the usual 55% cap-height-to-mark ratio for a horizontal lockup.
+          */}
+          <img src={wordmark} alt="legibility" className="h-10 w-auto" />
           <span className="text-muted-foreground hidden sm:inline">product data for agents</span>
         </Link>
         <nav className="hidden items-center gap-7 text-muted-foreground md:flex">{links}</nav>

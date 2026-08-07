@@ -1,8 +1,14 @@
 # Legibility
 
-> Legibility turns a product URL, a barcode (GTIN), or a fuzzy product name into a typed product object an AI agent can trust: calibrated per-field confidence, a price band, the source method, a stable opaque product id, and the exact per-call cost stamped into the response. Available over REST and as an MCP server, payable with an API key or per call in USDC over x402.
+> Legibility measures whether a machine can read a website, and records why when it cannot. It publishes a machine-readability index over a fixed cohort of well-known sites, and offers a free check of any single domain at https://legibility.io. The same reading engine is available as a REST API and an MCP server, priced per call.
 
-Legibility exists because agents that buy, compare, or look up physical products all hit the same wall: reading the product page reliably. Legibility is that layer, finished, behind one call. You send a URL, a GTIN, or a name and get back a typed object. You only pay when a read clears the 0.7 trust gate, so null and low-confidence answers are free.
+Legibility exists because AI assistants increasingly answer product questions by reading a page directly, and a large share of the web cannot be read that way. When a site cannot be read, the assistant answers from a marketplace listing, a review aggregator or a competitor instead, and the brand sees nothing in its analytics because the visit never happened.
+
+A page is judged readable when typed facts can be extracted without guessing, which in practice means JSON-LD or OpenGraph. When it is not readable the reason is recorded as one of a closed set: blocked (the site refused), js_shell (content assembled by JavaScript), no_structured_data, not_a_product, low_confidence, timeout, or robots_disallowed. Those distinctions are the product: refusing crawlers is a decision, rendering in JavaScript is an accident, and they carry different costs.
+
+Method, stated because every published figure carries one: one plain GET of the page with the user agent LegibilityBot/0.1, exactly as an answer engine crawler would issue it. No headless browser. No proxy fallback to get around a refusal; that capability exists and is deliberately switched off, because a site being unreadable without it is the finding. robots.txt is obeyed and a disallowing site is recorded as a data point, never circumvented.
+
+Calibration, with its limit: on a held-out test split of 63 items, precision at the 0.7 trust gate is 1.0 with a Wilson lower bound of 0.832. Expected calibration error across the full range is 0.19, so the score is dependable at the gate and looser in the middle. That is one evaluation run (iso-63-2026-07-05), which is a claim rather than a credential, so the sample size travels with the number.
 
 ## What Legibility does today (live, verified)
 
@@ -40,7 +46,9 @@ Coverage today: Shopify stores (currency resolved through the storefront's own m
 
 ## Who it is for
 
-Developers building agent buy-flows: buy-this-for-me agents, procurement copilots, and comparison agents, typically already paying for Diffbot, Firecrawl, ScrapingBee, or headless browser infrastructure, who need a typed product answer with a confidence they can branch on.
+Primarily commercial owners of a catalogue and a website: heads of ecommerce, brand and digital leads, DTC founders, and the agency strategists advising them, who need to know whether AI assistants can read their site and what specifically is wrong when they cannot.
+
+Secondarily developers building agent buy-flows who want the underlying reading engine as an API.
 
 ## Facts
 

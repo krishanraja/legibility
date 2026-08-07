@@ -57,19 +57,11 @@ jobs:
       - name: Format check
         run: bun run format:check
 
-      # Test tooling is installed additively rather than added to package.json, because the
-      # lockfile could not be regenerated in the authoring environment (bun install fails
-      # there with ConnectionClosed). --no-save keeps bun.lock untouched so the app's own
-      # dependencies stay frozen and reproducible.
-      #
-      # This MUST run before Typecheck. The *.test.ts files import from "vitest", so without
-      # it tsc reports "Cannot find module 'vitest'" and then cascades into implicit-any
-      # errors on every it.each callback, because `it` itself resolves to any.
-      #
-      # TODO: move vitest + @vitest/coverage-v8 into devDependencies and commit the updated
-      # bun.lock from a machine with reliable network, then delete this step.
-      - name: Install test tooling
-        run: bun add --no-save vitest @vitest/coverage-v8
+      # vitest and @vitest/coverage-v8 are now ordinary devDependencies, installed by the
+      # step above. The separate `bun add --no-save` step this replaces existed only because
+      # bun install could not complete in the authoring environment, which turned out to be
+      # two lockfile defects rather than a network fault. Both are fixed, so the tooling is
+      # pinned in bun.lock like everything else and CI no longer resolves it at run time.
 
       - name: Typecheck
         run: bunx tsc --noEmit
@@ -83,8 +75,18 @@ jobs:
       - name: Build
         run: bun run build
 
+      # Fails if a published calibration figure no longer matches golden_eval_runs. Needs
+      # the database, so it is skipped when the secret is absent (forks) rather than
+      # failing for a reason a contributor cannot fix.
+      - name: Calibration figures match the stored run
+        if: env.SUPABASE_SERVICE_ROLE_KEY != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: bun scripts/sync-calibration.ts --check
+
       # Static GEO checks. These need no network and no secrets, so they belong in Tier 1.
-      # The live-surface checks (sitemap URLs resolving, llms.txt claims matching the
-      # database) are Tier 2 and run against the Vercel preview once Phase 3 lands.
+      # They also now gate the copy register: the banned-phrase list is the thing standing
+      # between the front page and the vendor-email voice its buyer has learned to distrust.
       - name: GEO artifacts
         run: bun scripts/check-geo.ts

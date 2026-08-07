@@ -1,52 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
+import { composeBrief, type BriefEnvelope as Envelope } from "@/lib/api/brief";
 
 // v1 REST: brief_product. One input (url | gtin | name) -> typed product + a short
 // agent-readable brief composed from the typed fields (no LLM; deterministic + honest).
-
-type Product = {
-  title?: string;
-  brand?: string | null;
-  price?: { low: number; high: number; currency: string; n_sources: number } | null;
-  availability?: string;
-  attributes?: Record<string, string | number | boolean>;
-};
-type Envelope = {
-  product?: Product | null;
-  confidence?: number;
-  method?: string;
-  cost_usd?: number;
-  cached?: boolean;
-};
 
 function json(body: unknown, status: number, extra?: Record<string, string>) {
   return new Response(JSON.stringify(body), {
     status,
     headers: { ...(extra ?? {}), "content-type": "application/json" },
   });
-}
-
-function composeBrief(e: Envelope): string {
-  const p = e.product;
-  if (!p) return "No confident product data was found for this query.";
-  const parts: string[] = [];
-  parts.push(`${p.title}${p.brand ? ` by ${p.brand}` : ""}.`);
-  if (p.price) {
-    const range =
-      p.price.low === p.price.high ? `${p.price.low}` : `${p.price.low} to ${p.price.high}`;
-    parts.push(
-      `Price ${range} ${p.price.currency} (${p.price.n_sources} source${p.price.n_sources === 1 ? "" : "s"}).`,
-    );
-  } else {
-    parts.push("No defensible price band.");
-  }
-  if (p.availability && p.availability !== "unknown")
-    parts.push(`Availability: ${p.availability.replace(/_/g, " ")}.`);
-  const attrs = p.attributes ? Object.entries(p.attributes).slice(0, 5) : [];
-  if (attrs.length)
-    parts.push(`Key attributes: ${attrs.map(([k, v]) => `${k}: ${v}`).join("; ")}.`);
-  parts.push(`Overall confidence ${e.confidence ?? 0} (source: ${e.method ?? "unknown"}).`);
-  return parts.join(" ");
 }
 
 export const Route = createFileRoute("/api/v1/brief_product")({

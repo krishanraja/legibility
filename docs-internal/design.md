@@ -39,16 +39,32 @@ breathe; never use hardcoded `<br/>`.
 Two bundled PNG assets, imported directly in the header and footer (these
 are real image imports, not CDN `.asset.json` files):
 
-- `src/assets/legibility-wordmark.png`: the wordmark (header + footer).
+- `src/assets/legibility-wordmark-new.png.png`: the wordmark (header + footer).
+  This is the only wordmark. The earlier `legibility-wordmark.png` is deleted;
+  do not reintroduce it. The doubled extension is the name as supplied and is
+  kept deliberately so the file stays byte-identical to what was uploaded.
 - `src/assets/legibility-icon-and-favicon.png`: the square mark (header lockup).
 
 Favicon and apple-touch icon are served from `public/` (`/favicon.png`,
 `/apple-touch-icon.png`) and wired in `src/routes/__root.tsx`.
 
-Header lockup: icon + wordmark, both at `h-14`, with "product data for
-agents" as a muted tagline on `sm` and larger screens. Footer: wordmark
-alone at `h-6`. Never recolour the logo in CSS; if a new tint is needed,
-upload a new asset. A 1200x630 OG social card is not wired yet (roadmap):
+Size the two assets by their ink, not by their canvas. The icon is a solid
+tile: ink fills 97.5% of the box, aspect 1.00. The wordmark is a tight crop:
+ink fills 78.0% of the box, aspect 4.16 (canvas 1715x496). Because the two
+fill their boxes so differently, equal `h-` classes do not produce a balanced
+lockup.
+
+Header lockup: icon at `h-14` (56px tile), wordmark at `h-10` (ink ~31px tall,
+box ~138px wide), giving the 55% cap-height-to-mark ratio a horizontal lockup
+wants, with "product data for agents" as a muted tagline on `sm` and larger
+screens. Footer: wordmark alone at `h-6` (ink ~19px). Never recolour the logo
+in CSS; the wordmark carries its own dark-to-gold gradient, so a CSS tint would
+flatten it. If a new tint is needed, upload a new asset.
+
+The wordmark's left glyphs are near-black. It is legible on the cream
+`--background` the site actually ships. The `.dark` token block in
+`src/styles.css` is defined but never applied (nothing adds the class), so this
+is not a live problem; it would become one if dark mode is ever switched on. A 1200x630 OG social card is not wired yet (roadmap):
 `head()` sets og:title and og:description but no og:image.
 
 ## Shipped surfaces

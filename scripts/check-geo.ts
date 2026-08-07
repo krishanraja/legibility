@@ -51,7 +51,11 @@ function parseRobots(text: string): RobotsGroup[] {
       if (current) current.rules.push([field, value]);
       lastWasAgent = false;
     } else {
-      lastWasAgent = false; // sitemap:, host:, etc. terminate the group
+      // sitemap:, host: and friends are non-group records (RFC 9309). They may appear
+      // anywhere and do NOT close the group, so rules after one still belong to it. All
+      // this does is mark that the next User-agent line starts a new group rather than
+      // joining the current one.
+      lastWasAgent = false;
     }
   }
   return groups;

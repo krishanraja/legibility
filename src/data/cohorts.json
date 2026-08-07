@@ -1,0 +1,38 @@
+{
+  "note": "The fixed cohort swept on a schedule. Two kinds deliberately, retail and news, run together: it costs the same and it shows which audience has the more shocking result. Rung one is ten of each. Do not skip rungs to fifty or two hundred without re-reading the cost cap in scripts/sweep.ts.",
+  "target_note": "Each target is the site's own homepage, not a deep product or article URL. Deep URLs rot within weeks and a rotted URL would show up as a readability failure that is really our bookkeeping error. The homepage is stable, is the page every crawler reaches first, and is what the published number is explicitly labelled as measuring.",
+  "cohorts": [
+    {
+      "id": "retail",
+      "label": "Retail and DTC",
+      "sites": [
+        { "domain": "nike.com", "target": "https://www.nike.com/" },
+        { "domain": "apple.com", "target": "https://www.apple.com/" },
+        { "domain": "walmart.com", "target": "https://www.walmart.com/" },
+        { "domain": "target.com", "target": "https://www.target.com/" },
+        { "domain": "bestbuy.com", "target": "https://www.bestbuy.com/" },
+        { "domain": "ikea.com", "target": "https://www.ikea.com/" },
+        { "domain": "lego.com", "target": "https://www.lego.com/" },
+        { "domain": "zara.com", "target": "https://www.zara.com/" },
+        { "domain": "hm.com", "target": "https://www2.hm.com/" },
+        { "domain": "allbirds.com", "target": "https://www.allbirds.com/" }
+      ]
+    },
+    {
+      "id": "news",
+      "label": "News publishers",
+      "sites": [
+        { "domain": "nytimes.com", "target": "https://www.nytimes.com/" },
+        { "domain": "theguardian.com", "target": "https://www.theguardian.com/" },
+        { "domain": "bbc.co.uk", "target": "https://www.bbc.co.uk/" },
+        { "domain": "reuters.com", "target": "https://www.reuters.com/" },
+        { "domain": "wsj.com", "target": "https://www.wsj.com/" },
+        { "domain": "ft.com", "target": "https://www.ft.com/" },
+        { "domain": "washingtonpost.com", "target": "https://www.washingtonpost.com/" },
+        { "domain": "cnn.com", "target": "https://www.cnn.com/" },
+        { "domain": "bloomberg.com", "target": "https://www.bloomberg.com/" },
+        { "domain": "apnews.com", "target": "https://apnews.com/" }
+      ]
+    }
+  ]
+}

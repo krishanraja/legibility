@@ -179,16 +179,66 @@ function checkDeadBrands() {
   }
 }
 
+/* ------------------------------------------------------- banned marketing phrasing */
+
+/**
+ * The front page is written for a buyer who has had twenty vendor emails promising to
+ * "optimise your AI visibility" and has learned to distrust the register they are written
+ * in. These phrases are the register. They are banned outright rather than discouraged,
+ * because the cost of one of them reappearing during a routine copy edit is that the page
+ * stops sounding like a lab and starts sounding like the twenty-first email.
+ *
+ * Scoped to public-facing copy. Internal docs may say what they like.
+ */
+const BANNED: [string, RegExp][] = [
+  ["rapidly evolving landscape", /rapidly evolving|in today's [a-z ]*landscape/i],
+  ["unlock", /\bunlock(s|ing|ed)?\b/i],
+  ["empower", /\bempower(s|ing|ed|ment)?\b/i],
+  ["seamless", /\bseamless(ly)?\b/i],
+  ["leverage as a verb", /\bleverag(e|es|ing|ed)\b/i],
+  ["revolutionise", /\brevolutionis|revoluti onize|\brevolutionize/i],
+  ["game-changing", /game[- ]chang(ing|er)/i],
+  ["AI-powered as a self-descriptor", /\bAI[- ]powered\b/i],
+  ["cutting edge", /cutting[- ]edge/i],
+  ["best in class", /best[- ]in[- ]class/i],
+  ["supercharge", /\bsupercharg(e|es|ing|ed)\b/i],
+  ["effortless", /\beffortless(ly)?\b/i],
+];
+
+function checkBannedPhrasing() {
+  const files = [
+    "src/routes/index.tsx",
+    "src/routes/__root.tsx",
+    "public/llms.txt",
+    "src/lib/api/readability.ts",
+  ];
+  for (const f of files) {
+    const text = read(f);
+    for (const [label, re] of BANNED) {
+      const m = text.match(re);
+      if (m) {
+        fail(
+          "copy",
+          `${f} contains banned phrasing "${m[0]}" (${label}). This audience punishes it.`,
+        );
+      }
+    }
+  }
+}
+
 /* ---------------------------------------------------------------------- runner */
 
 checkRobots();
 checkSitemap();
 checkPlanClaims();
 checkDeadBrands();
+checkBannedPhrasing();
 
 if (failures.length) {
   for (const f of failures) console.error(`::error::${f}`);
   console.error(`\nGEO check failed with ${failures.length} problem(s).`);
   process.exit(1);
 }
-console.log("GEO check passed: robots groups, sitemap, plan claims, brand strings all clean.");
+console.log(
+  "GEO check passed: robots groups, sitemap, plan claims, brand strings, copy register all clean.",
+);

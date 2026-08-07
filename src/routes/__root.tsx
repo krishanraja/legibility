@@ -81,28 +81,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Legibility · Product data for agents" },
+      { title: "Legibility · Can a machine read your website?" },
       {
         name: "description",
         content:
-          "Typed product object from a URL, a barcode, or a fuzzy name. Confidence per field, cost stamped in the response. REST and MCP, payable by an agent.",
+          "Legibility measures whether a machine can read a website, and records why when it cannot. Enter a domain and see what an AI crawler sees. Method and sample size published with every figure.",
       },
-      { property: "og:title", content: "Legibility · Product data for agents" },
+      { property: "og:title", content: "Legibility · Can a machine read your website?" },
       {
         property: "og:description",
         content:
-          "Agents can decide what to buy. Reading the product page is where they still break. Legibility reads it for them.",
+          "AI assistants recommend products without asking the brand. Enter your domain and see whether one can read yours.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Legibility" },
       { property: "og:url", content: "https://legibility.io" },
       { property: "og:image", content: "https://legibility.io/og.png" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Legibility · Product data for agents" },
+      { name: "twitter:title", content: "Legibility · Can a machine read your website?" },
       {
         name: "twitter:description",
         content:
-          "One call turns a URL, a barcode, or a fuzzy name into a typed product object with calibrated confidence and cost stamped in. REST and MCP.",
+          "Enter a domain and see what an AI crawler sees. We obey robots.txt, we publish our method, and every figure carries its sample size.",
       },
       { name: "twitter:image", content: "https://legibility.io/og.png" },
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               url: "https://legibility.io",
               logo: "https://legibility.io/apple-touch-icon.png",
               description:
-                "Typed product data for AI agents. A product URL, barcode, or fuzzy name to a typed object with calibrated per-field confidence, a price band, and the per-call cost stamped in.",
+                "Legibility measures whether a machine can read a website. It publishes which well-known sites an AI crawler cannot read and why, and offers the same reading engine as an API.",
             },
             {
               "@type": "WebSite",
@@ -136,11 +136,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             {
               "@type": "SoftwareApplication",
               name: "Legibility",
-              applicationCategory: "DeveloperApplication",
+              applicationCategory: "BusinessApplication",
               operatingSystem: "Web (REST API and MCP server)",
               url: "https://legibility.io",
               description:
-                "Turns a product URL, a barcode, or a fuzzy name into a typed product object an agent can trust: calibrated per-field confidence, a price band, a stable id, and the per-call cost stamped in. REST and MCP, payable by key or per call over x402.",
+                "Measures whether a machine can read a web page and records why when it cannot: a refusal, a JavaScript-only render, or an absence of structured data. Free domain check, plus a REST and MCP reading engine priced per call.",
               offers: [
                 {
                   "@type": "Offer",

@@ -75,8 +75,18 @@ jobs:
       - name: Build
         run: bun run build
 
+      # Fails if a published calibration figure no longer matches golden_eval_runs. Needs
+      # the database, so it is skipped when the secret is absent (forks) rather than
+      # failing for a reason a contributor cannot fix.
+      - name: Calibration figures match the stored run
+        if: env.SUPABASE_SERVICE_ROLE_KEY != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: bun scripts/sync-calibration.ts --check
+
       # Static GEO checks. These need no network and no secrets, so they belong in Tier 1.
-      # The live-surface checks (sitemap URLs resolving, llms.txt claims matching the
-      # database) are Tier 2 and run against the Vercel preview once Phase 3 lands.
+      # They also now gate the copy register: the banned-phrase list is the thing standing
+      # between the front page and the vendor-email voice its buyer has learned to distrust.
       - name: GEO artifacts
         run: bun scripts/check-geo.ts

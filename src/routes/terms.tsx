@@ -85,10 +85,13 @@ function Terms() {
 
         <Section n="06" title="Billing">
           <p>
-            Paid plans are billed monthly via Stripe. Usage is metered per call; a cached read is
-            billed at a fraction of a live extraction. Overage above your included calls is billed
-            on the same invoice. Autonomous agents may also pay per call via x402 (USDC on Base);
-            x402 payments are independent of any Stripe account.
+            Paid plans are billed monthly via Stripe for the subscription. Usage is counted per
+            call, and only calls that returned a trusted result are counted. Calls above your
+            included allowance are measured and shown to you, but they are not charged
+            automatically: we will not invoice you for usage above your plan without telling you
+            first. The Free tier stops at its allowance rather than charging anything. Autonomous
+            agents may also pay per call via x402 (USDC on Base); x402 payments are independent of
+            any Stripe account.
           </p>
         </Section>
 

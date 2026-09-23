@@ -23,22 +23,48 @@ zero crashes. Each billable read stamps `confidence`, `method`, `domain`,
 
 ## Stripe SKUs
 
-| Plan    | Stripe product      | Monthly price | Included trusted reads | Overage         |
-| ------- | ------------------- | ------------- | ---------------------- | --------------- |
-| Free    | `plinth_free`       | $0            | 1,000                  | none, hard stop |
-| Starter | `plinth_starter_v1` | $29           | 5,000                  | $0.01/read      |
-| Growth  | `plinth_growth_v1`  | $199          | 50,000                 | $0.005/read     |
-| Custom  | `plinth_custom_*`   | quote         | quote                  | quote           |
+| Plan    | Stripe product       | Price lookup key    | Monthly price | Included trusted reads | Overage         |
+| ------- | -------------------- | ------------------- | ------------- | ---------------------- | --------------- |
+| Free    | none (no card)       | none                | $0            | 1,000                  | none, hard stop |
+| Starter | `Legibility Starter` | `plinth_starter_v1` | $29           | 5,000                  | $0.01/read      |
+| Growth  | `Legibility Growth`  | `plinth_growth_v1`  | $199          | 50,000                 | $0.005/read     |
+| Custom  | quote                | quote               | quote         | quote                  | quote           |
 
-**Status (2026-07-06):** live products and prices exist in Stripe
+The lookup keys still read `plinth_*`. A Stripe lookup key cannot be
+edited in place; changing one means minting a new price, which would
+change the price IDs already stored in `plans.stripe_price_id`. The keys
+are internal and nothing customer-facing renders them, so they are left
+alone deliberately rather than by oversight.
+
+**Status (2026-09-23):** live products and prices exist in Stripe
 (Starter `price_1Tki9C4w6vAdI2o574L46LZW`, Growth
 `price_1Tki9I4w6vAdI2o5NtBRlfk6`), wired to `plans.stripe_price_id`.
-Checkout construction and the signature-verified webhook are built and
-proven in Stripe **test** mode (session, subscription, and `invoice.paid`
-all fire). Production runs on a **live** Stripe key with **live** price
-IDs, so a real end-to-end checkout is a live charge: that **live canary
-has not been run yet and is a founder action**. Subscriptions are flat
-monthly in v1. Free requires **no card**.
+The live webhook endpoint `we_1UIxHl4w6vAdI2o5Fy6Rq25w` points at
+`https://legibility.io/api/stripe/webhook` on all five handled events, and
+the deployed handler was checked against it: an unsigned POST and a
+wrongly signed POST are both rejected 400, and GET is 405. A billing
+portal configuration (`bpc_1UIxS14w6vAdI2o5hHkD2b0H`) now exists; the
+account had none, so `createPortalSession` would have failed at the first
+click.
+
+**Checkout cannot complete today, and the blocker is not in this repo.**
+Account `acct_1Sapu84w6vAdI2o5` reports `charges_enabled: false` with the
+`card_payments` capability **inactive**, while `details_submitted` is true
+and `requirements` is null. Stripe's Checkout API refuses with "No valid
+payment method types for this Checkout Session". The API cannot clear it:
+`POST /v1/account` answers "You cannot use this method on your own
+account: you may only use it on connected accounts." **Activating card
+payments is a dashboard action on the Stripe account and is the single
+remaining step before a first charge is possible.** No charge and no
+subscription has ever been created on this account, so the live canary
+above remains unrun.
+
+**Cleanup outstanding:** webhook endpoint `we_1TkiCp4w6vAdI2o5Bqk7j1Y4`
+still points at `https://plinth-tan.vercel.app/api/stripe/webhook`, a
+Vercel project that was deleted and now returns 404. It is enabled on the
+same five events and should be deleted in the dashboard.
+
+Subscriptions are flat monthly in v1. Free requires **no card**.
 
 ## Quota enforcement
 
@@ -69,6 +95,14 @@ a roadmap item, founder-gated on the live canary (we do not push a first
 metered charge to a customer until the live-Stripe path has been proven
 end to end once). Until then, overage is a reporting figure, not an
 automatic invoice line.
+
+The public terms say the same thing, and must keep saying it. Section 06
+of `/terms` previously read "Overage above your included calls is billed
+on the same invoice", which described a system that does not exist and
+would have been the first thing quoted back at us in a billing dispute.
+It now says usage above the allowance is measured and shown but never
+charged without telling the customer first. If auto-metering ships, that
+paragraph is part of the change, not a follow-up to it.
 
 ## x402 settlement
 

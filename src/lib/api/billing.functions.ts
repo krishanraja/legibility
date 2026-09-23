@@ -21,6 +21,23 @@ function baseUrl() {
   return process.env.APP_BASE_URL ?? APP_ORIGIN;
 }
 
+/**
+ * Turn a Stripe error into something safe to put in front of a visitor.
+ *
+ * Stripe's messages are written for the merchant, not the buyer. The one this account
+ * returns today is "No valid payment method types for this Checkout Session. Please ensure
+ * that you have activated payment methods compatible with your chosen currency in your
+ * dashboard (https://dashboard.stripe.com/settings/payment_methods)", which tells a customer
+ * to go and configure someone else's Stripe account and reads as a broken product.
+ *
+ * The real message is logged, because whoever is on call needs the exact string, and the
+ * caller gets a sentence that is true without being an instruction meant for somebody else.
+ */
+function customerFacingStripeError(context: string, raw: string | undefined): Error {
+  console.error(`[billing] ${context}: ${raw ?? "no message"}`);
+  return new Error("Payments are not available right now. Nothing was charged.");
+}
+
 // Start a Stripe Checkout (subscription) for the signed-in user. Returns the hosted URL.
 export const createCheckoutSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -54,7 +71,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     if (email) params.customer_email = email;
 
     const session = await stripePost("checkout/sessions", params, sk);
-    if (!session.url) throw new Error(session.error?.message ?? "Could not start checkout.");
+    if (!session.url) throw customerFacingStripeError("checkout session", session.error?.message);
     return { url: session.url as string };
   });
 
@@ -80,7 +97,6 @@ export const createPortalSession = createServerFn({ method: "POST" })
       { customer, return_url: `${baseUrl()}/dashboard/billing` },
       sk,
     );
-    if (!session.url)
-      throw new Error(session.error?.message ?? "Could not open the billing portal.");
+    if (!session.url) throw customerFacingStripeError("portal session", session.error?.message);
     return { url: session.url as string };
   });

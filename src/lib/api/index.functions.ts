@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { aggregate, type CohortSummary } from "@/lib/api/cohort";
 
 /**
  * The published machine-readability index.
@@ -9,27 +10,20 @@ import { createServerFn } from "@tanstack/react-start";
  * only way to see them is through the aggregate this returns.
  *
  * Called from the route loader so the figures are in the server-rendered HTML. A page that
- * argues sites should be machine readable cannot itself deliver its central claim by
- * JavaScript.
+ * argues sites should be machine readable cannot deliver its own central claim by JavaScript.
+ *
+ * The current state of the cohort is computed from `domain_latest`, which is the newest
+ * observation per domain, and deliberately NOT from `cohort_readability`, which groups by
+ * run. Those are different questions and the difference is not cosmetic. Observations
+ * deduplicate on content, so a sweep that finds nothing changed inserts nothing and a sweep
+ * that finds one page changed inserts one row. `cohort_readability` for the newest run then
+ * describes only what moved, not what is true: the third sweep recorded a single changed
+ * page, and reading the latest run as the cohort published "6 of 11 sites" on a twenty-site
+ * index. The view is correct for what it answers, which is what a given run found. It is the
+ * wrong question for a page describing the cohort now.
  */
 
-export type CohortRow = {
-  cohort: string;
-  observations: number;
-  domains: number;
-  readable: number;
-  unreadable: number;
-  unreadable_pct: string;
-  blocked: number;
-  js_shell: number;
-  no_structured_data: number;
-  not_a_product: number;
-  low_confidence: number;
-  timeout: number;
-  robots_disallowed: number;
-  error: number;
-  last_observed: string;
-};
+export type CohortRow = CohortSummary;
 
 export type DomainRow = {
   domain: string;
@@ -56,34 +50,27 @@ export const getIndex = createServerFn({ method: "GET" }).handler(
     // The most recent completed run, so the page can date its own figures. A run still in
     // flight is excluded: publishing a half-written sweep as though it were finished is the
     // same class of error as publishing one that never ran.
-    const [{ data: runs }, { data: cohorts }, { data: domains }] = await Promise.all([
+    const [{ data: runs }, { data: domains }] = await Promise.all([
       supabaseAdmin
         .from("sweep_runs")
         .select("finished_at, attempted, status")
         .not("finished_at", "is", null)
         .order("finished_at", { ascending: false })
         .limit(1),
-      supabaseAdmin.from("cohort_readability").select("*"),
       supabaseAdmin
         .from("domain_latest")
         .select("domain, cohort, method, readable, failure_reason, observed_at"),
     ]);
 
-    if (!runs?.length || !cohorts?.length) return EMPTY;
+    if (!runs?.length || !domains?.length) return EMPTY;
 
-    // cohort_readability is per cohort per run. Keep only the rows belonging to the newest
-    // run so a second sweep does not double every count on the page.
-    const byCohort = new Map<string, CohortRow>();
-    for (const row of cohorts as unknown as (CohortRow & { last_observed: string })[]) {
-      const seen = byCohort.get(row.cohort);
-      if (!seen || row.last_observed > seen.last_observed) byCohort.set(row.cohort, row);
-    }
+    const rows = (domains as unknown as DomainRow[]).sort(
+      (a, b) => a.cohort.localeCompare(b.cohort) || a.domain.localeCompare(b.domain),
+    );
 
     return {
-      cohorts: [...byCohort.values()].sort((a, b) => a.cohort.localeCompare(b.cohort)),
-      domains: ((domains ?? []) as unknown as DomainRow[]).sort(
-        (a, b) => a.cohort.localeCompare(b.cohort) || a.domain.localeCompare(b.domain),
-      ),
+      cohorts: aggregate(rows),
+      domains: rows,
       lastRun: runs[0] as IndexPayload["lastRun"],
     };
   },

@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { getIndex, type CohortRow, type DomainRow } from "@/lib/api/index.functions";
 import { REASON_COPY, type FailureReason } from "@/lib/api/readability";
+import { bucket as sum, CHOSEN, DEFECT, INCONCLUSIVE } from "@/lib/api/cohort";
 import { APP_ORIGIN, BOT_TOKEN } from "@/config/product";
 
 /**
@@ -24,21 +25,6 @@ import { APP_ORIGIN, BOT_TOKEN } from "@/config/product";
  * dropping and rebuilding it reproduces the page exactly. The sample is twenty sites and the
  * page says twenty sites, everywhere, in the same breath as the percentage.
  */
-
-/** Reasons where the site decided. Not defects, and reported separately from them. */
-const CHOSEN: FailureReason[] = ["blocked", "robots_disallowed"];
-/** Reasons where the page could have been read and was not. The finding that costs money. */
-const DEFECT: FailureReason[] = [
-  "js_shell",
-  "no_structured_data",
-  "low_confidence",
-  "not_a_product",
-];
-/** Reasons that are about the read, not the site. Never counted against anyone. */
-const INCONCLUSIVE: FailureReason[] = ["timeout", "error"];
-
-const sum = (c: CohortRow, keys: FailureReason[]) =>
-  keys.reduce((n, k) => n + Number(c[k as keyof CohortRow] ?? 0), 0);
 
 export const Route = createFileRoute("/readability")({
   loader: () => getIndex(),

@@ -11,6 +11,16 @@ const ROWS: [string, string, string][] = [
   ["500", "internal_error", "Something on our side. Includes request_id."],
 ];
 export const Route = createFileRoute("/docs/errors")({
+  head: () => ({
+    meta: [
+      { title: "Errors \u00b7 Legibility" },
+      {
+        name: "description",
+        content:
+          "Every error Legibility returns, what causes it, and what to do about it. A read below the 0.7 trust gate returns nothing and is not billed.",
+      },
+    ],
+  }),
   component: () => (
     <article>
       <h1 className="font-display text-5xl">Errors</h1>

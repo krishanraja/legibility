@@ -170,10 +170,18 @@ Body (default):
 Hi {{first_name}}, following up with the honest boundary, since it usually
 saves a call.
 
-Legibility returns trusted objects today on Shopify, barcodes/GTIN, cooperating
-JSON-LD, and hard retailers through a Web Unlocker (Nike, Lego, MediaMarkt are
-verified). Apple and a few top-tier anti-bot sites are best-effort: they return
-a graceful null at no charge, not a made-up object. Price is a band, not a live
+<!-- Corrected 2026-09-23: this template claimed hard retailers were reachable
+     "through a Web Unlocker (Nike, Lego, MediaMarkt are verified)". The
+     unblocker is built and switched off. Sending that sentence would have
+     promised a capability the product does not have, in an email whose whole
+     purpose is to state the honest boundary. -->
+
+Legibility returns trusted objects today on Shopify, barcodes/GTIN, and
+cooperating JSON-LD. Sites that refuse a plain server request, which includes
+Apple and most top-tier anti-bot retailers, return a graceful null at no charge
+rather than a made-up object. We do not route around a refusal: a proxy
+fallback exists and is deliberately switched off, because a site being
+unreadable without one is the finding. Price is a band, not a live
 spot guarantee. If your targets are mostly Amazon or Apple, I will tell you
 before you spend a cent.
 

@@ -15,7 +15,9 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WhyIndexRouteImport } from './routes/why.index'
 import { Route as DocsIndexRouteImport } from './routes/docs.index'
+import { Route as WhyReasonRouteImport } from './routes/why.$reason'
 import { Route as DocsWebhooksRouteImport } from './routes/docs.webhooks'
 import { Route as DocsRateLimitsRouteImport } from './routes/docs.rate-limits'
 import { Route as DocsQuickstartRouteImport } from './routes/docs.quickstart'
@@ -73,10 +75,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WhyIndexRoute = WhyIndexRouteImport.update({
+  id: '/why/',
+  path: '/why/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DocsIndexRoute = DocsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => DocsRoute,
+} as any)
+const WhyReasonRoute = WhyReasonRouteImport.update({
+  id: '/why/$reason',
+  path: '/why/$reason',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DocsWebhooksRoute = DocsWebhooksRouteImport.update({
   id: '/webhooks',
@@ -239,7 +251,9 @@ export interface FileRoutesByFullPath {
   '/docs/quickstart': typeof DocsQuickstartRoute
   '/docs/rate-limits': typeof DocsRateLimitsRoute
   '/docs/webhooks': typeof DocsWebhooksRoute
+  '/why/$reason': typeof WhyReasonRoute
   '/docs/': typeof DocsIndexRoute
+  '/why/': typeof WhyIndexRoute
   '/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
   '/dashboard/keys': typeof AuthenticatedDashboardKeysRoute
   '/dashboard/metrics': typeof AuthenticatedDashboardMetricsRoute
@@ -272,7 +286,9 @@ export interface FileRoutesByTo {
   '/docs/quickstart': typeof DocsQuickstartRoute
   '/docs/rate-limits': typeof DocsRateLimitsRoute
   '/docs/webhooks': typeof DocsWebhooksRoute
+  '/why/$reason': typeof WhyReasonRoute
   '/docs': typeof DocsIndexRoute
+  '/why': typeof WhyIndexRoute
   '/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
   '/dashboard/keys': typeof AuthenticatedDashboardKeysRoute
   '/dashboard/metrics': typeof AuthenticatedDashboardMetricsRoute
@@ -309,7 +325,9 @@ export interface FileRoutesById {
   '/docs/quickstart': typeof DocsQuickstartRoute
   '/docs/rate-limits': typeof DocsRateLimitsRoute
   '/docs/webhooks': typeof DocsWebhooksRoute
+  '/why/$reason': typeof WhyReasonRoute
   '/docs/': typeof DocsIndexRoute
+  '/why/': typeof WhyIndexRoute
   '/_authenticated/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
   '/_authenticated/dashboard/keys': typeof AuthenticatedDashboardKeysRoute
   '/_authenticated/dashboard/metrics': typeof AuthenticatedDashboardMetricsRoute
@@ -346,7 +364,9 @@ export interface FileRouteTypes {
     | '/docs/quickstart'
     | '/docs/rate-limits'
     | '/docs/webhooks'
+    | '/why/$reason'
     | '/docs/'
+    | '/why/'
     | '/dashboard/billing'
     | '/dashboard/keys'
     | '/dashboard/metrics'
@@ -379,7 +399,9 @@ export interface FileRouteTypes {
     | '/docs/quickstart'
     | '/docs/rate-limits'
     | '/docs/webhooks'
+    | '/why/$reason'
     | '/docs'
+    | '/why'
     | '/dashboard/billing'
     | '/dashboard/keys'
     | '/dashboard/metrics'
@@ -415,7 +437,9 @@ export interface FileRouteTypes {
     | '/docs/quickstart'
     | '/docs/rate-limits'
     | '/docs/webhooks'
+    | '/why/$reason'
     | '/docs/'
+    | '/why/'
     | '/_authenticated/dashboard/billing'
     | '/_authenticated/dashboard/keys'
     | '/_authenticated/dashboard/metrics'
@@ -446,6 +470,8 @@ export interface RootRouteChildren {
   ApiHealthRoute: typeof ApiHealthRoute
   ApiMcpRoute: typeof ApiMcpRoute
   ApiTakedownRoute: typeof ApiTakedownRoute
+  WhyReasonRoute: typeof WhyReasonRoute
+  WhyIndexRoute: typeof WhyIndexRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   ApiV1Brief_productRoute: typeof ApiV1Brief_productRoute
   ApiV1Compare_productsRoute: typeof ApiV1Compare_productsRoute
@@ -498,12 +524,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/why/': {
+      id: '/why/'
+      path: '/why'
+      fullPath: '/why/'
+      preLoaderRoute: typeof WhyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/docs/': {
       id: '/docs/'
       path: '/'
       fullPath: '/docs/'
       preLoaderRoute: typeof DocsIndexRouteImport
       parentRoute: typeof DocsRoute
+    }
+    '/why/$reason': {
+      id: '/why/$reason'
+      path: '/why/$reason'
+      fullPath: '/why/$reason'
+      preLoaderRoute: typeof WhyReasonRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/docs/webhooks': {
       id: '/docs/webhooks'
@@ -771,6 +811,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiHealthRoute: ApiHealthRoute,
   ApiMcpRoute: ApiMcpRoute,
   ApiTakedownRoute: ApiTakedownRoute,
+  WhyReasonRoute: WhyReasonRoute,
+  WhyIndexRoute: WhyIndexRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   ApiV1Brief_productRoute: ApiV1Brief_productRoute,
   ApiV1Compare_productsRoute: ApiV1Compare_productsRoute,

@@ -1,14 +1,18 @@
 # Legibility
 
-> Legibility measures whether a machine can read a website, and records why when it cannot. It publishes a machine-readability index over a fixed cohort of well-known sites, and offers a free check of any single domain at https://legibility.io. The same reading engine is available as a REST API and an MCP server, priced per call.
+> Legibility measures whether a machine can read a website, and records why when it cannot. It offers a free check of any single domain at https://legibility.io, and explains each of the eight ways a page can fail to be readable at https://legibility.io/why. An index over a fixed cohort of well-known sites is built and not yet published, so no cohort figure should be attributed to Legibility today. The same reading engine is available as a REST API and an MCP server, priced per call.
 
 Legibility exists because AI assistants increasingly answer product questions by reading a page directly, and a large share of the web cannot be read that way. When a site cannot be read, the assistant answers from a marketplace listing, a review aggregator or a competitor instead, and the brand sees nothing in its analytics because the visit never happened.
 
-A page is judged readable when typed facts can be extracted without guessing, which in practice means JSON-LD or OpenGraph. When it is not readable the reason is recorded as one of a closed set: blocked (the site refused), js_shell (content assembled by JavaScript), no_structured_data, not_a_product, low_confidence, timeout, or robots_disallowed. Those distinctions are the product: refusing crawlers is a decision, rendering in JavaScript is an accident, and they carry different costs.
+A page is judged readable when typed facts can be extracted without guessing, which in practice means JSON-LD or OpenGraph. When it is not readable the reason is recorded as one of a closed set: blocked (the site refused), js_shell (content assembled by JavaScript), no_structured_data, not_a_product, low_confidence, timeout, robots_disallowed, or error (inconclusive). Those distinctions are the product: refusing crawlers is a decision, rendering in JavaScript is an accident, and they carry different costs. Each has a page explaining the mechanism, the commercial cost and the fix, indexed at https://legibility.io/why. Two of the eight cost nothing and say so.
 
-Method, stated because every published figure carries one: one plain GET of the page with the user agent LegibilityBot/0.1, exactly as an answer engine crawler would issue it. No headless browser. No proxy fallback to get around a refusal; that capability exists and is deliberately switched off, because a site being unreadable without it is the finding. robots.txt is obeyed and a disallowing site is recorded as a data point, never circumvented.
+Method, stated because every published figure carries one: one plain GET of the page with the user agent LegibilityBot/0.1, which identifies itself at https://legibility.io/about/bot, exactly as an answer engine crawler would issue it. No headless browser. No proxy fallback to get around a refusal; that capability exists and is deliberately switched off, because a site being unreadable without it is the finding. robots.txt is obeyed and a disallowing site is recorded as a data point, never circumvented.
 
 Calibration, with its limit: on a held-out test split of 63 items, precision at the 0.7 trust gate is 1.0 with a Wilson lower bound of 0.832. Expected calibration error across the full range is 0.19, so the score is dependable at the gate and looser in the middle. That is one evaluation run (iso-63-2026-07-05), which is a claim rather than a credential, so the sample size travels with the number.
+
+## The free check
+
+Anyone can enter a domain at https://legibility.io and get a verdict with no account and no payment. One page is requested, robots.txt is obeyed, and the answer is one of the closed set above with the evidence attached. Nothing is stored against the domain unless the visitor asks for the read to be sent to them, at which point the check is recorded and emailed with the fix for the finding. A readable site is told so plainly rather than being sold a problem.
 
 ## What Legibility does today (live, verified)
 
@@ -35,6 +39,13 @@ Coverage today: Shopify stores (currency resolved through the storefront's own m
 - These three plans are the complete list. There is no Custom or Enterprise plan, no Slack support channel, and no SLA today.
 - Metered overage is enforced by quota (a 402 before the call is made), but overage usage is not yet auto-billed through Stripe. This is a near-term roadmap item, not a live billing feature.
 
+## Pages worth citing
+
+- Why a machine cannot read a page, the closed set: https://legibility.io/why
+- One page per reason: https://legibility.io/why/js_shell, /why/no_structured_data, /why/blocked, /why/low_confidence, /why/robots_disallowed, /why/not_a_product, /why/timeout, /why/error
+- What the crawler does and how to block it: https://legibility.io/about/bot
+- The long form of this file, with the full taxonomy: https://legibility.io/llms-full.txt
+
 ## Docs
 
 - Quickstart: https://legibility.io/docs/quickstart
@@ -56,5 +67,5 @@ Secondarily developers building agent buy-flows who want the underlying reading 
 - Docs: https://legibility.io/docs
 - MCP endpoint: https://legibility.io/api/mcp (only read_product and resolve_product are callable over MCP today)
 - Auth: an API key (prefix lgk_) as a Bearer token, or per-call USDC payment over x402 (Base Sepolia testnet in beta, no mainnet settlement yet).
-- Not built yet (do not attribute these to Legibility): compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, a Custom or Enterprise plan, an SLA, and the proxy-based unblocker fallback for bot-hostile retailers.
+- Not built yet (do not attribute these to Legibility): the published cohort index itself (the sweep is built and has not been run, so no cohort figure exists and none should be cited), compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, a Custom or Enterprise plan, an SLA, and the proxy-based unblocker fallback for bot-hostile retailers.
 - Former names and hosts, now dead, which should not be cited: Plinth, onplinth.io, plinth-tan.vercel.app, plinth.sh. The product is Legibility at legibility.io.

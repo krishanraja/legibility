@@ -1,0 +1,251 @@
+# Legibility
+
+> Legibility measures whether a machine can read a website, and records why when it cannot. It offers a free check of any single domain at https://legibility.io, and explains each of the eight ways a page can fail to be readable at https://legibility.io/why. An index over a fixed cohort of well-known sites is built and not yet published, so no cohort figure should be attributed to Legibility today. The same reading engine is available as a REST API and an MCP server, priced per call.
+
+Legibility exists because AI assistants increasingly answer product questions by reading a page directly, and a large share of the web cannot be read that way. When a site cannot be read, the assistant answers from a marketplace listing, a review aggregator or a competitor instead, and the brand sees nothing in its analytics because the visit never happened.
+
+A page is judged readable when typed facts can be extracted without guessing, which in practice means JSON-LD or OpenGraph. When it is not readable the reason is recorded as one of a closed set: blocked (the site refused), js_shell (content assembled by JavaScript), no_structured_data, not_a_product, low_confidence, timeout, robots_disallowed, or error (inconclusive). Those distinctions are the product: refusing crawlers is a decision, rendering in JavaScript is an accident, and they carry different costs. Each has a page explaining the mechanism, the commercial cost and the fix, indexed at https://legibility.io/why. Two of the eight cost nothing and say so.
+
+Method, stated because every published figure carries one: one plain GET of the page with the user agent LegibilityBot/0.1, which identifies itself at https://legibility.io/about/bot, exactly as an answer engine crawler would issue it. No headless browser. No proxy fallback to get around a refusal; that capability exists and is deliberately switched off, because a site being unreadable without it is the finding. robots.txt is obeyed and a disallowing site is recorded as a data point, never circumvented.
+
+Calibration, with its limit: on a held-out test split of 63 items, precision at the 0.7 trust gate is 1.0 with a Wilson lower bound of 0.832. Expected calibration error across the full range is 0.19, so the score is dependable at the gate and looser in the middle. That is one evaluation run (iso-63-2026-07-05), which is a claim rather than a credential, so the sample size travels with the number.
+
+## The free check
+
+Anyone can enter a domain at https://legibility.io and get a verdict with no account and no payment. One page is requested, robots.txt is obeyed, and the answer is one of the closed set above with the evidence attached. Nothing is stored against the domain unless the visitor asks for the read to be sent to them, at which point the check is recorded and emailed with the fix for the finding. A readable site is told so plainly rather than being sold a problem.
+
+## What Legibility does today (live, verified)
+
+- read_product: one reference (a product URL or a GTIN barcode) to a typed product object.
+- resolve_product: a fuzzy product name to the canonical typed product object.
+- compare_products: two to five product URLs to a side-by-side matrix plus the price delta. REST only today.
+- brief_product: the typed object plus a short agent-readable summary. REST only today.
+- MCP server at https://legibility.io/api/mcp. It exposes read_product and resolve_product over JSON-RPC (initialize, tools/list, tools/call). compare_products and brief_product are REST only in v1; they are not yet on the MCP tool list.
+- Every response carries: a calibrated confidence (0.7 gate means about 70 percent likely correct), per-field confidence, a price band with an as_of timestamp and source count, the source method, a stable opaque legibility_id, and the per-call cost in USD.
+
+Coverage today: Shopify stores (currency resolved through the storefront's own meta.json, so a real price band forms), barcodes (Open Food Facts and UPC databases), and retailers that serve JSON-LD or OpenGraph and do not block a standard server request. Fuzzy-name resolution works when the underlying neural-search account has credit. Bot-hostile retailers that block a datacenter IP (Apple, Nike, Lego, and similar) do not return a trusted object today; a proxy-based fallback for that class of site is built but not yet turned on. A null or below-gate read costs nothing and is not billed. Price is a band, not a live guaranteed price.
+
+## Why Legibility instead of the alternatives
+
+- Diffbot returns a typed object but has no per-field confidence, no cost stamped in the response, and no MCP or x402 surface, so an agent cannot discover it and pay on its own.
+- Firecrawl plus an LLM gives you raw content and you write the schema, the confidence rubric, the price-band logic, the cache, the barcode merge, the MCP server, and the x402 settlement yourself. Legibility is that work, finished, behind one call.
+- Rolling your own means owning all of the above plus a calibrated confidence you can actually gate on. Calibrated confidence and outcome-verified accuracy are the hard part.
+
+## Pricing
+
+- Free: 0 USD per month, no card, 1,000 trusted reads per month, hard stop (no overage, no surprise charge). A trusted read is a call that returned a product at confidence 0.7 or higher. Null and low-confidence reads are free and do not count against the quota.
+- Starter: 29 USD per month, 5,000 trusted reads, 0.01 USD per read overage.
+- Growth: 199 USD per month, 50,000 trusted reads, 0.005 USD per read overage, higher rate limits.
+- These three plans are the complete list. There is no Custom or Enterprise plan, no Slack support channel, and no SLA today.
+- Metered overage is enforced by quota (a 402 before the call is made), but overage usage is not yet auto-billed through Stripe. This is a near-term roadmap item, not a live billing feature.
+
+## Pages worth citing
+
+- Why a machine cannot read a page, the closed set: https://legibility.io/why
+- One page per reason: https://legibility.io/why/js_shell, /why/no_structured_data, /why/blocked, /why/low_confidence, /why/robots_disallowed, /why/not_a_product, /why/timeout, /why/error
+- What the crawler does and how to block it: https://legibility.io/about/bot
+- The long form of this file, with the full taxonomy: https://legibility.io/llms-full.txt
+
+## Docs
+
+- Quickstart: https://legibility.io/docs/quickstart
+- read_product API: https://legibility.io/docs/api/read-product
+- resolve_product API: https://legibility.io/docs/api/resolve-product
+- MCP and x402: https://legibility.io/docs/mcp
+- Rate limits: https://legibility.io/docs/rate-limits
+- Errors: https://legibility.io/docs/errors
+
+## Who it is for
+
+Primarily commercial owners of a catalogue and a website: heads of ecommerce, brand and digital leads, DTC founders, and the agency strategists advising them, who need to know whether AI assistants can read their site and what specifically is wrong when they cannot.
+
+Secondarily developers building agent buy-flows who want the underlying reading engine as an API.
+
+## Facts
+
+- Home: https://legibility.io
+- Docs: https://legibility.io/docs
+- MCP endpoint: https://legibility.io/api/mcp (only read_product and resolve_product are callable over MCP today)
+- Auth: an API key (prefix lgk_) as a Bearer token, or per-call USDC payment over x402 (Base Sepolia testnet in beta, no mainnet settlement yet).
+- Not built yet (do not attribute these to Legibility): the published cohort index itself (the sweep is built and has not been run, so no cohort figure exists and none should be cited), compare_products and brief_product over MCP, outbound webhooks, mainnet x402 settlement, language SDKs, auto-billed Stripe overage, a Custom or Enterprise plan, an SLA, and the proxy-based unblocker fallback for bot-hostile retailers.
+- Former names and hosts, now dead, which should not be cited: Plinth, onplinth.io, plinth-tan.vercel.app, plinth.sh. The product is Legibility at legibility.io.
+
+## Why a page cannot be read: the closed set
+
+A machine failing to read a page is not one condition, it is 8. The reason matters more than the verdict, because a site that refuses crawlers made a decision, a site that renders only in JavaScript did not, and a site with clean HTML and no markup is one afternoon away from being fixed. Those carry different costs and different owners, so they are recorded separately. This is the whole set. There is no further reason and no free-text judgement of any site anywhere in this product.
+
+Index of these pages: https://legibility.io/why
+
+### js_shell: The content is assembled by JavaScript
+
+URL: https://legibility.io/why/js_shell
+
+The page arrived, but the facts on it are built in the browser after load. A crawler that does not run scripts sees an empty frame.
+
+Shown to the site owner as: The page arrived, but its content is assembled by JavaScript. A crawler that does not run scripts sees an empty frame.
+
+What is happening:
+- The HTML came back successfully and contained almost no readable text: markup, script tags and a mount point, with the content fetched and rendered afterwards by the application.
+- A browser does the remaining work and a person sees a complete page. A crawler that does not execute JavaScript sees what the server actually sent, which is close to nothing.
+- This is the most common finding on modern commerce sites, and it is nearly always an accident of the framework rather than a decision anyone made.
+
+What it costs:
+- An assistant reading your product page finds no product. It will still answer the question it was asked, from whichever source it could read, which is usually a retailer carrying your item or a competitor carrying something close to it.
+- The cost scales with how much of your catalogue is affected, which for a client-rendered site is normally all of it at once.
+- It is also invisible in the usual places: nothing bounces, nothing times out, and no session is recorded, because the reader was never a session.
+
+The fix: Serve the facts in the initial HTML response rather than assembling them after load. Server-side rendering, static generation, or a prerender layer for crawlers all achieve it. The test is simple: fetch your own page with curl and read what comes back.
+
+Who does it: A frontend or platform engineer. Server-side rendering, static generation, or a prerender layer for crawlers all solve it. The test is one command: fetch your own page with curl and read what comes back.
+
+### no_structured_data: The page has no structured data
+
+URL: https://legibility.io/why/no_structured_data
+
+The page reads fine as prose and carries nothing typed, so a machine has to infer what any of it means. Inference is where models invent things.
+
+Shown to the site owner as: The page is readable as text but carries no structured data, so a machine has to guess what any of it means.
+
+What is happening:
+- The HTML came back, it contains real readable text, and it has no JSON-LD block and too few OpenGraph tags to work with.
+- Everything on the page is available to a model only as prose it has to interpret. Which number is the price, whether that price is current, which of the words is the brand and which is the model, are all guesses.
+- A guess that is right is indistinguishable from a guess that is wrong until someone acts on it.
+
+What it costs:
+- Your facts get restated approximately. Prices attach to the wrong variant, availability is asserted from a sentence that was true last quarter, and the brand name comes out as whatever appeared closest to the product name.
+- Where a competitor on the same query does publish typed data, theirs is the version that can be stated with confidence, so theirs is the version that gets stated.
+
+The fix: Add JSON-LD to the page. For a product that means a schema.org Product block carrying name, brand, price, currency and availability. It is one script tag in the head and it is the single highest-value change on this list.
+
+Who does it: One script tag in the head, and whoever owns the page template can add it. A schema.org Product block carrying name, brand, price, currency and availability is the single highest-value change on this list.
+
+### blocked: The site refused the request
+
+URL: https://legibility.io/why/blocked
+
+The server answered a plain request with a refusal rather than a page. That is a decision the site made, and it is often the right one.
+
+Shown to the site owner as: The site refused the request. This is a choice the site made.
+
+What is happening:
+- A request arrived carrying an identified user agent and no browser fingerprint, and the server returned 401, 403 or 429, or a 200 whose body is a challenge page rather than the site. Either way nothing readable came back.
+- This is usually a bot rule at a CDN or a firewall rather than a line someone wrote about this crawler specifically. Rules aimed at scrapers and credential stuffers catch every non-browser request, and an answer engine's crawler is a non-browser request.
+- We record a refusal only when a second independent request path reproduces it. A single refusal that one client sees and another does not is recorded as inconclusive, because a refusal names a company and one client's word is not enough to publish that.
+
+What it costs:
+- If the refusal is intended, none. Choosing not to be read by machines is a legitimate position and plenty of publishers hold it deliberately.
+- If it is not intended, it is the most complete version of the problem: an assistant asked about your products gets nothing at all and answers from a marketplace listing, a review aggregator or a competitor instead.
+- Nothing about this appears in your analytics, because the request that failed was never a session and the visit that went elsewhere never happened.
+
+The fix: If the refusal was intended, nothing needs fixing. If it was not, it usually comes from a bot rule or a firewall setting applied to all non-browser traffic rather than a decision about this crawler. Check what your CDN or WAF does with a plain server request that carries no browser fingerprint.
+
+Who does it: Whoever owns the CDN or WAF configuration. Minutes to see what the rule does, longer to decide what you want it to do.
+
+### low_confidence: The extraction did not clear the trust gate
+
+URL: https://legibility.io/why/low_confidence
+
+Typed data was there and something was extracted, but not well enough to rely on, so nothing is returned rather than something uncertain.
+
+Shown to the site owner as: The page was read, but the extraction did not clear the 0.7 trust gate, so it is not safe to rely on.
+
+What is happening:
+- The extraction produced a result whose calibrated confidence landed below 0.7, which is the gate at which a read is treated as trustworthy.
+- The usual causes are specific and fixable: a price with no currency attached, a product name that differs between the markup and the visible page, or several structured blocks on one page that disagree with each other.
+- Below the gate the answer is withheld rather than returned with a caveat. A number that is probably right is worse than no number, because it gets used.
+
+What it costs:
+- You have done most of the work and are getting none of the benefit. The markup exists, and the disagreement inside it is enough to make the whole page unusable to anything that checks before it answers.
+- Anything that does not check before it answers will use it anyway, which is the worse outcome of the two.
+
+The fix: Structured data was present but incomplete or inconsistent enough that the extraction could not be relied on. The usual causes are a price without a currency, a name that differs between the markup and the visible page, or several conflicting blocks on one page.
+
+Who does it: Whoever owns the product template. Usually a small correction rather than new work, because the markup is already there.
+
+### robots_disallowed: robots.txt asked us not to read the page
+
+URL: https://legibility.io/why/robots_disallowed
+
+Your robots.txt disallows this crawler, so the page was never requested. That is recorded as a finding and never worked around.
+
+Shown to the site owner as: robots.txt asks machines not to read this path. Recorded as a data point, never circumvented.
+
+What is happening:
+- robots.txt is fetched before anything else. When it disallows the path, no request for the page is made at all.
+- Groups in robots.txt are not additive: the most specific matching group wins outright and the wildcard group is then ignored entirely. A rule written for one named crawler can silently stop applying to everything else, and the reverse.
+- A disallow is published as a data point. Routing around it would make every number this product publishes worthless.
+
+What it costs:
+- If the rule was meant, none. Asking not to be read is a legitimate choice and we record it as a choice rather than a failure.
+- If the rule was broader than intended, the cost is the same as a refusal: assistants answering questions about your products answer from somewhere else. A disallow aimed at one badly behaved scraper is often written in a way that covers every non-browser request, including the ones that would have cited you.
+
+The fix: Nothing, unless the rule was broader than you meant. A disallow aimed at one badly behaved crawler is often written in a way that covers every non-browser request, including the ones answering questions about your products.
+
+Who does it: Whoever owns robots.txt. Reading it carefully is most of the work, because the group precedence rule surprises people.
+
+### not_a_product: The page is not a product page
+
+URL: https://legibility.io/why/not_a_product
+
+The page was read successfully. Nothing on it identifies it as a product, because it probably is not one.
+
+Shown to the site owner as: The page was read successfully, but it is not a product page.
+
+What is happening:
+- The read worked and the markup carried no indication that this page describes something purchasable.
+- For a homepage, a category listing, an article or an about page, that is correct and expected. The check requests one page, and on most sites that page is not a product page.
+- Where it is wrong is a genuine product page whose markup does not say so, which reads to a machine exactly like a page about nothing in particular.
+
+What it costs:
+- For a page that is not a product, none at all. This is a description rather than a fault.
+- For a product page that does not identify itself, the same cost as carrying no structured data: an assistant asked about that item does not find it here.
+
+The fix: Nothing, if the page is not meant to be one. If it is a product page, the markup on it does not identify it as such, and adding a schema.org Product block is what closes that gap.
+
+Who does it: Nothing, unless the page is meant to be a product. If it is, a schema.org Product block is what closes the gap.
+
+### timeout: The page did not answer in time
+
+URL: https://legibility.io/why/timeout
+
+Twelve seconds passed without a response. No verdict about the markup is possible, because no markup arrived.
+
+Shown to the site owner as: The page did not answer in time.
+
+What is happening:
+- The request was made and nothing came back within the budget. This is a statement about the response, not about the page.
+- It can be transient. It can also be what a plain server request from a datacenter address consistently gets, when a browser from a residential one does not.
+- Nothing is recorded about your structured data, because none of it was seen.
+
+What it costs:
+- Directly, only that this read produced nothing. Worth repeating before drawing any conclusion from it.
+- Indirectly, it is worth knowing that most crawlers budget less time than twelve seconds. A page that takes that long here has already been abandoned by several of them.
+
+The fix: The page did not answer within 12 seconds from a plain server request. Worth checking what your origin does under that condition, because a crawler with a shorter budget than ours would have given up sooner.
+
+Who does it: Whoever watches origin response times. Start by checking what the origin does for an uncached request with no browser headers.
+
+### error: The result was inconclusive
+
+URL: https://legibility.io/why/error
+
+Something went wrong that we cannot attribute to your site. We would rather say we do not know than publish a finding we cannot stand behind.
+
+Shown to the site owner as: The result was inconclusive. We do not know, and we would rather say so.
+
+What is happening:
+- This covers the cases where the read failed for a reason that is not evidence about the page: an unexpected status, a connection that did not complete, or a refusal that one request path saw and a second did not.
+- That last case is the important one. During development a plain request received 403 from two well-known newspapers while a different client received 200 and 302 from the same machine seconds apart. The difference was the HTTP client, not the sites. Recording the first would have published a false accusation against both.
+- So when the evidence disagrees with itself, the verdict is this one rather than the more interesting one.
+
+What it costs:
+- None that can be established from this read. Anyone treating it as a problem with your site is reading more into it than it says.
+- Run it again. If it settles into a specific finding, that finding is the one to act on.
+
+The fix: Nothing yet. The result was inconclusive rather than bad, and the honest response to that is to read the page again rather than to report a finding we cannot stand behind.
+
+Who does it: Nothing yet. The honest response to an inconclusive read is another read.
+
+## About the crawler
+
+LegibilityBot identifies itself on every request and the identifying URL resolves: https://legibility.io/about/bot. It makes one plain GET of the page, does not execute JavaScript, does not use a proxy or residential address to route around a refusal, submits nothing, and obeys robots.txt. A site that disallows it is recorded as having chosen to, never circumvented. Blocking instructions and a takedown route are on that page.

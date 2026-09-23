@@ -10,7 +10,7 @@
  *
  * Each check below maps to one of those. Run: `bun scripts/check-geo.ts`
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 const ROOT = resolve(import.meta.dir, "..");
@@ -205,12 +205,48 @@ const BANNED: [string, RegExp][] = [
   ["effortless", /\beffortless(ly)?\b/i],
 ];
 
+/**
+ * Public-facing source files: every route a visitor can reach, plus the shared chrome.
+ *
+ * Authenticated routes are excluded. They are a product surface rather than a marketing one,
+ * and nothing there is indexed or quoted.
+ */
+function publicSourceFiles(): string[] {
+  const out: string[] = [
+    "src/components/site/SiteHeader.tsx",
+    "src/components/site/SiteFooter.tsx",
+  ];
+  const routes = resolve(ROOT, "src/routes");
+  for (const f of readdirSync(routes)) {
+    if (!f.endsWith(".tsx")) continue;
+    if (f === "__root.tsx") {
+      out.push("src/routes/__root.tsx");
+      continue;
+    }
+    // Skip authenticated and api routes. _authenticated is a layout prefix, api.* are handlers.
+    if (f.startsWith("_") || f.startsWith("api.")) continue;
+    out.push(`src/routes/${f}`);
+  }
+  return out.sort();
+}
+
 function checkBannedPhrasing() {
+  // Every public-facing surface, not just the front page.
+  //
+  // The original four files were the ones that existed when the register was first gated.
+  // They left out every /docs route, the legal pages, the site chrome and the failure-reason
+  // pages, which is exactly where stale copy had been sitting: the header still said "product
+  // data for agents" and /docs opened on the old positioning at sitemap priority 0.9. Those
+  // were fixed by hand once. This is what stops them coming back.
+  //
+  // Discovered rather than listed, so a new public route is covered the day it is added
+  // instead of the day someone remembers to add it here. Internal docs are still free to say
+  // what they like.
   const files = [
-    "src/routes/index.tsx",
-    "src/routes/__root.tsx",
+    ...publicSourceFiles(),
     "public/llms.txt",
     "src/lib/api/readability.ts",
+    "src/content/reasons.ts",
   ];
   for (const f of files) {
     const text = read(f);

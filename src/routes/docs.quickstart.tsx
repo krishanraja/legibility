@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { demoCurl } from "@/config/product";
 export const Route = createFileRoute("/docs/quickstart")({
+  head: () => ({
+    meta: [
+      { title: "Quickstart \u00b7 Legibility" },
+      {
+        name: "description",
+        content:
+          "Get an API key and make your first Legibility call in under a minute. One request turns a product URL or a barcode into a typed object with calibrated confidence.",
+      },
+    ],
+  }),
   component: () => (
     <article className="space-y-6">
       <h1 className="font-display text-5xl">Quickstart</h1>

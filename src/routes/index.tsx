@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -397,7 +397,11 @@ function Index() {
                 When a page is not readable, the reason matters more than the verdict. A site that
                 refuses crawlers made a decision. A site that renders only in JavaScript did not. A
                 site with clean HTML and no markup is one afternoon away from being fixed. We record
-                those separately because they are different problems with different costs.
+                those separately because they are different problems with different costs.{" "}
+                <Link to="/why" className="text-signal underline underline-offset-4">
+                  All eight findings, and what each one costs
+                </Link>
+                .
               </p>
 
               <div className="rounded-md border border-hairline bg-background p-6">

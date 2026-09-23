@@ -10,6 +10,7 @@ import { nitro } from "nitro/vite";
 import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
+import { FAILURE_REASONS } from "./src/lib/api/readability";
 
 // Regenerate public/sitemap.xml from the real route files on every build, so it can
 // never go stale: add a public page route and it appears in the sitemap automatically.
@@ -37,17 +38,28 @@ function sitemapPlugin(origin: string): Plugin {
         if (p === "") p = "/";
         paths.add(p);
       }
+
+      // Dynamic routes are skipped above because a $param has no single URL. /why/$reason is
+      // the exception: its parameter ranges over a closed set, so every page it can produce is
+      // known at build time. Expanded from FAILURE_REASONS rather than from a list kept here,
+      // so adding a reason to the classifier puts its page in the sitemap and leaving one out
+      // is not possible.
+      for (const reason of FAILURE_REASONS) paths.add(`/why/${reason}`);
       const isLegal = (p: string) => /^\/(privacy|terms|takedown)$/.test(p);
       const priority = (p: string) =>
         p === "/"
           ? "1.0"
           : isLegal(p)
             ? "0.3"
-            : p === "/docs" || /^\/docs\/(quickstart|api)/.test(p)
+            : // The failure-reason pages are the content an answer engine is most likely to
+              // quote: eight named, mechanical answers to a question people now ask assistants.
+              p === "/why" || p.startsWith("/why/")
               ? "0.9"
-              : p.startsWith("/docs")
-                ? "0.7"
-                : "0.6";
+              : p === "/docs" || /^\/docs\/(quickstart|api)/.test(p)
+                ? "0.9"
+                : p.startsWith("/docs")
+                  ? "0.7"
+                  : "0.6";
       const changefreq = (p: string) => (isLegal(p) ? "monthly" : "weekly");
 
       // lastmod from the route file's real last commit date.
@@ -57,7 +69,16 @@ function sitemapPlugin(origin: string): Plugin {
       // none: crawlers learn to distrust it and then ignore it when it is genuine.
       const lastmodFor = (p: string): string | null => {
         const base = p === "/" ? "index" : p.slice(1).split("/").join(".");
-        for (const candidate of [`src/routes/${base}.tsx`, `src/routes/${base}.index.tsx`]) {
+        // An expanded dynamic page has no file of its own, so it dates from the template that
+        // renders it and the content file that fills it, whichever changed later.
+        const dynamic = p.startsWith("/why/")
+          ? ["src/routes/why.$reason.tsx", "src/content/reasons.ts"]
+          : [];
+        for (const candidate of [
+          `src/routes/${base}.tsx`,
+          `src/routes/${base}.index.tsx`,
+          ...dynamic,
+        ]) {
           try {
             const iso = execFileSync("git", ["log", "-1", "--format=%cI", "--", candidate], {
               cwd: __dirname,

@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MCP_URL } from "@/config/product";
 export const Route = createFileRoute("/docs/mcp")({
+  head: () => ({
+    meta: [
+      { title: "MCP server and x402 \u00b7 Legibility" },
+      {
+        name: "description",
+        content:
+          "Connect an agent to Legibility over MCP, and pay per call in USDC over x402. Discovery is free, and the tool list is stated rather than implied.",
+      },
+    ],
+  }),
   component: () => (
     <article className="space-y-6">
       <h1 className="font-display text-5xl">MCP server + x402</h1>

@@ -96,6 +96,11 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: bun scripts/sync-plans.ts --check
 
+      # llms-full.txt is generated from llms.txt and the failure-reason content, so the long
+      # form cannot drift from the pages it summarises. Needs no secrets.
+      - name: llms-full.txt matches its sources
+        run: bun scripts/build-llms-full.ts --check
+
       # Static GEO checks. These need no network and no secrets, so they belong in Tier 1.
       # They also now gate the copy register: the banned-phrase list is the thing standing
       # between the front page and the vendor-email voice its buyer has learned to distrust.

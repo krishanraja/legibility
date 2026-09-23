@@ -1,5 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/docs/api/read-product")({
+  head: () => ({
+    meta: [
+      { title: "read_product \u00b7 Legibility" },
+      {
+        name: "description",
+        content:
+          "The read_product endpoint: a product URL or a GTIN barcode to a typed product object, with per-field confidence, a price band, the source method and the cost of the call.",
+      },
+    ],
+  }),
   component: () => (
     <article className="space-y-6">
       <h1 className="font-display text-5xl">read_product</h1>

@@ -1,5 +1,40 @@
 # Legibility GTM Playbook (start here)
 
+> **SUPERSEDED IN PART. READ THIS BEFORE ACTING ON ANYTHING BELOW.**
+>
+> This playbook was written on 2026-07-06 for the previous positioning: a typed
+> product-data API sold to developers building agent buy-flows. The shipped
+> product now leads with a machine-readability index sold to commercial owners
+> of a catalogue, and `src/routes/index.tsx` states in its own header that it is
+> "written for a commercial buyer, not a developer".
+>
+> Two consequences, and the second one matters more than the first.
+>
+> **Audience and messaging below are stale.** Every ICP definition, sequence,
+> hook and demo script targets the old buyer. Treat them as history, not as
+> instructions. Rewriting them is a commercial judgement about who this is
+> sold to, so it is deliberately not done here.
+>
+> **Three capability claims below were wrong and have been corrected in place,**
+> because this directory says it is written to be executed by an agent without
+> a human in the loop, and an agent acting on them would have made claims the
+> product cannot support:
+>
+> - The Bright Data unblocker is **dormant and deliberately switched off**. It
+>   was described as live with named retailers verified. The front page,
+>   `public/llms.txt` and `docs-internal/product.md` all say a site being
+>   unreadable without it _is the finding_, so pitching it inverts the
+>   argument the product rests on.
+> - There is **no Custom or Enterprise plan, no Slack channel and no SLA**.
+>   `scripts/check-geo.ts` fails the build if those claims reappear in
+>   `llms.txt`, because they were removed from there once already.
+> - The cohort index is **built and has never been run**, so no cohort figure
+>   exists. Do not cite one.
+>
+> The current, accurate statements of what exists are `public/llms.txt` and
+> `public/llms-full.txt`, both of which are gated in CI. Where this directory
+> disagrees with them, they win.
+
 This directory is the operating manual for the Legibility agent fleet. It is
 written to be executed by an agent, not skimmed by a human: every file has
 explicit criteria, decision rules, copy-paste templates with merge fields,
@@ -81,10 +116,14 @@ prospect  ->  personalize  ->  outreach  ->  demo  ->  qualify
 ## Honest scope (never violate, pitch only this)
 
 Works today, live-verified: Shopify storefronts, barcodes and GTINs,
-cooperating JSON-LD and strong OpenGraph, hard retailers via the Bright Data
-Web Unlocker (Nike, Lego, MediaMarkt verified), and fuzzy-name resolve when
-Exa has credits. Standing proof URLs: LEGO Millennium Falcon $849.99, Allbirds
-$110, Sony WH-1000XM5, Coca-Cola.
+cooperating JSON-LD and strong OpenGraph, and fuzzy-name resolve when Exa has
+credits.
+
+Corrected 2026-09-23: this list previously included "hard retailers via the
+Bright Data Web Unlocker (Nike, Lego, MediaMarkt verified)". The unblocker is
+built, cost-capped and switched off. A site that cannot be read without it
+returns a graceful null at no charge, and that unreadability is the finding
+rather than an obstacle to route around. Never pitch it as live.
 
 Does not work or is roadmap, say so when relevant: Apple and a few top-tier
 anti-bot sites are best-effort (they return a graceful null at no charge, not

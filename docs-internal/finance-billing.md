@@ -59,10 +59,25 @@ remaining step before a first charge is possible.** No charge and no
 subscription has ever been created on this account, so the live canary
 above remains unrun.
 
-**Cleanup outstanding:** webhook endpoint `we_1TkiCp4w6vAdI2o5Bqk7j1Y4`
-still points at `https://plinth-tan.vercel.app/api/stripe/webhook`, a
-Vercel project that was deleted and now returns 404. It is enabled on the
-same five events and should be deleted in the dashboard.
+**Webhook endpoints.** `we_1TkiCp4w6vAdI2o5Bqk7j1Y4` was deleted on
+2026-09-23. It pointed at `https://plinth-tan.vercel.app/api/stripe/webhook`,
+the retired deployment, whose Vercel project no longer exists and returns
+404; it was still enabled on the same five events as the live endpoint, so
+every subscription event was being delivered twice, once into a black
+hole. Stripe retries a failing endpoint for three days, so this was also a
+standing source of delivery-failure noise hiding a real failure.
+
+Two endpoints on this account belong to other products and are left alone
+deliberately, but both currently 404 and are worth a decision:
+
+- `we_1TJGOf4w6vAdI2o57jKSGRJ2` to
+  `cgkcplcamsijghalintq.supabase.co/functions/v1/stripe-webhook`. That is
+  the old shared Supabase project, now a different tenant; the function is
+  gone.
+- `we_1TuLim4w6vAdI2o5nZe8ojB8` to the n8n workflow
+  `plinth-stripe-revenue`. n8n returns 404 for a production webhook whose
+  workflow is deactivated, so this one may be dormant rather than dead and
+  is recoverable by reactivating the workflow.
 
 Subscriptions are flat monthly in v1. Free requires **no card**.
 

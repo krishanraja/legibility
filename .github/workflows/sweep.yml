@@ -1,0 +1,60 @@
+name: Cohort sweep
+
+# The index is a time series with one point in it.
+#
+# A single reading says what the web looked like on one afternoon. The claim the product
+# actually wants to make is about drift: whether sites are becoming more readable or less,
+# and which of them changed their mind about refusing machines. That needs the sweep to run
+# on a schedule rather than when someone remembers.
+#
+# It runs here rather than from a developer's machine for a specific reason. The sweep's own
+# comments record that its first run in a sandbox reported 20 of 20 sites unreadable, purely
+# an artefact of egress, and that publishing it would have been a catastrophic thing to say
+# about twenty named companies. A GitHub runner has ordinary egress and no proxy in front of
+# it, so the second-opinion check in confirmRefusal is genuinely independent here in a way it
+# cannot be behind a shared outbound address.
+#
+# Every guard in scripts/sweep.ts still applies and none of them are relaxed for automation:
+# robots is checked before the page request exists, the item and cost caps are inside the
+# loop, a zero-observation run fails, and a run with more than 25% transport errors records
+# nothing. A scheduled sweep that starts lying is worse than no scheduled sweep, so this
+# workflow is deliberately allowed to fail loudly rather than swallow a bad reading.
+
+on:
+  schedule:
+    # Mondays, 06:00 UTC. Weekly is enough to see drift on a twenty-site cohort and is one
+    # request per site per week, which is a defensible thing to do to someone else's server.
+    # Ten past six is already taken by the plinth-ops-daily cron in the database.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+# Two sweeps writing at once would interleave their observations across two run rows for no
+# benefit. A queued one waits; it does not cancel the one in flight, because a half-finished
+# sweep leaves a run marked failed and that is noise rather than signal.
+concurrency:
+  group: cohort-sweep
+  cancel-in-progress: false
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    # Twenty sites at a 15 second timeout each, plus a second opinion on any refusal, is a
+    # few minutes. The cap exists so a hanging site cannot hold a runner all day.
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Without the database this records nothing and exits non-zero, which is the right
+      # failure: a sweep that ran and could not store what it found has not done its job.
+      - name: Sweep the cohort and record it
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: bun run sweep

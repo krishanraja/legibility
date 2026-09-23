@@ -4,10 +4,10 @@
   "calibration_version": "iso-63-2026-07-05",
   "split": "test",
   "n": 63,
-  "precision_at_gate": "1.0",
-  "precision_wilson_low": "0.832",
-  "recall_gtin": "1.0",
-  "adversarial_rejection": "1.0",
-  "ece": "0.19",
+  "precision_at_gate": 1,
+  "precision_wilson_low": 0.832,
+  "recall_gtin": 1,
+  "adversarial_rejection": 1,
+  "ece": 0.19,
   "measured_at": "2026-07-06"
 }

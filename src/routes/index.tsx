@@ -87,7 +87,7 @@ const FAQ: [string, string][] = [
   ],
   [
     "How confident are you in the confidence score?",
-    `Measured on a held-out test split of ${calibration.n} items: precision at the 0.7 trust gate is ${calibration.precision_at_gate}, with a Wilson lower bound of ${calibration.precision_wilson_low}. The honest limit is that expected calibration error across the full range is ${calibration.ece}, so the score is dependable at the gate and looser in the middle. One evaluation is a claim rather than a credential, which is why the run and its sample size are published rather than the headline alone.`,
+    `Measured on a held-out test split of ${calibration.n} items: precision at the 0.7 trust gate is ${ratio(calibration.precision_at_gate)}, with a Wilson lower bound of ${ratio(calibration.precision_wilson_low)}. The honest limit is that expected calibration error across the full range is ${ratio(calibration.ece)}, so the score is dependable at the gate and looser in the middle. One evaluation is a claim rather than a credential, which is why the run and its sample size are published rather than the headline alone.`,
   ],
   [
     "Do you respect robots.txt?",
@@ -109,6 +109,24 @@ const FAQ: [string, string][] = [
  * trusting whatever the browser sends. It is absent when the signing secret is unset, in
  * which case the checker still works and capture refuses.
  */
+/**
+ * Render a measured ratio.
+ *
+ * The calibration figures are bare NUMERIC in Postgres, and PostgREST serialises those as
+ * JSON numbers, so a precision of exactly 1 arrives as `1` and would print as "precision at
+ * that gate is 1". That reads as a count rather than a proportion. An earlier copy of
+ * calibration.json held these as strings because an older PostgREST returned them that way,
+ * which is a platform detail and not something the published file should depend on.
+ *
+ * So the file stays a faithful dump of what is stored, and the trailing zero is added here,
+ * where it is presentation. Nothing about the value changes: 1 becomes "1.0", and 0.832 and
+ * 0.19 are printed as they are.
+ */
+function ratio(v: number | string): string {
+  const n = Number(v);
+  return Number.isInteger(n) ? n.toFixed(1) : String(v);
+}
+
 type CheckResult = {
   host: string;
   readable: boolean;
@@ -411,15 +429,15 @@ function Index() {
                 <p className="mt-3 text-foreground">
                   Every extraction carries a calibrated confidence, and a 0.7 gate decides whether
                   it is safe to rely on. On a held-out test split of {calibration.n} items,
-                  precision at that gate is {calibration.precision_at_gate}, with a Wilson lower
-                  bound of {calibration.precision_wilson_low}.
+                  precision at that gate is {ratio(calibration.precision_at_gate)}, with a Wilson
+                  lower bound of {ratio(calibration.precision_wilson_low)}.
                 </p>
                 <p className="mt-3">
                   The limit, stated on the same screen as the claim: expected calibration error
-                  across the full range is {calibration.ece}. The score is dependable at the gate
-                  and looser in the middle. One evaluation run is a claim, not a credential, so the
-                  run is identified ({calibration.calibration_version}) and its sample size travels
-                  with the number.
+                  across the full range is {ratio(calibration.ece)}. The score is dependable at the
+                  gate and looser in the middle. One evaluation run is a claim, not a credential, so
+                  the run is identified ({calibration.calibration_version}) and its sample size
+                  travels with the number.
                 </p>
               </div>
 

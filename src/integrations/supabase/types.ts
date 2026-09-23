@@ -139,6 +139,54 @@ export type Database = {
         };
         Relationships: [];
       };
+      golden_eval_runs: {
+        Row: {
+          adversarial_rejection: number | null;
+          calibration_version: string | null;
+          created_at: string;
+          ece: number | null;
+          id: string;
+          n: number | null;
+          notes: string | null;
+          precision_at_gate: number | null;
+          precision_wilson_low: number | null;
+          recall_gtin: number | null;
+          recall_jsonld: number | null;
+          recall_shopify: number | null;
+          split: string | null;
+        };
+        Insert: {
+          adversarial_rejection?: number | null;
+          calibration_version?: string | null;
+          created_at?: string;
+          ece?: number | null;
+          id?: string;
+          n?: number | null;
+          notes?: string | null;
+          precision_at_gate?: number | null;
+          precision_wilson_low?: number | null;
+          recall_gtin?: number | null;
+          recall_jsonld?: number | null;
+          recall_shopify?: number | null;
+          split?: string | null;
+        };
+        Update: {
+          adversarial_rejection?: number | null;
+          calibration_version?: string | null;
+          created_at?: string;
+          ece?: number | null;
+          id?: string;
+          n?: number | null;
+          notes?: string | null;
+          precision_at_gate?: number | null;
+          precision_wilson_low?: number | null;
+          recall_gtin?: number | null;
+          recall_jsonld?: number | null;
+          recall_shopify?: number | null;
+          split?: string | null;
+        };
+        Relationships: [];
+      };
       invoices: {
         Row: {
           amount_cents: number;
@@ -181,6 +229,167 @@ export type Database = {
         };
         Relationships: [];
       };
+      observations: {
+        Row: {
+          cohort: string;
+          confidence: number | null;
+          cost_usd: number;
+          domain: string;
+          envelope_hash: string;
+          failure_reason: string | null;
+          http_status: number | null;
+          id: string;
+          method: string;
+          observed_at: string;
+          readable: boolean;
+          robots_allowed: boolean;
+          run_id: string;
+          target: string;
+        };
+        Insert: {
+          cohort: string;
+          confidence?: number | null;
+          cost_usd?: number;
+          domain: string;
+          envelope_hash: string;
+          failure_reason?: string | null;
+          http_status?: number | null;
+          id?: string;
+          method?: string;
+          observed_at?: string;
+          readable: boolean;
+          robots_allowed: boolean;
+          run_id: string;
+          target: string;
+        };
+        Update: {
+          cohort?: string;
+          confidence?: number | null;
+          cost_usd?: number;
+          domain?: string;
+          envelope_hash?: string;
+          failure_reason?: string | null;
+          http_status?: number | null;
+          id?: string;
+          method?: string;
+          observed_at?: string;
+          readable?: boolean;
+          robots_allowed?: boolean;
+          run_id?: string;
+          target?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "observations_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "sweep_runs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      ops_alerts: {
+        Row: {
+          created_at: string;
+          day: string | null;
+          delivered: boolean;
+          detail: string | null;
+          id: string;
+          kind: string;
+          value: number | null;
+        };
+        Insert: {
+          created_at?: string;
+          day?: string | null;
+          delivered?: boolean;
+          detail?: string | null;
+          id?: string;
+          kind: string;
+          value?: number | null;
+        };
+        Update: {
+          created_at?: string;
+          day?: string | null;
+          delivered?: boolean;
+          detail?: string | null;
+          id?: string;
+          kind?: string;
+          value?: number | null;
+        };
+        Relationships: [];
+      };
+      ops_daily: {
+        Row: {
+          active_accounts: number;
+          avg_latency_ms: number | null;
+          computed_at: string;
+          day: string;
+          error_calls: number;
+          total_calls: number;
+          total_cost_usd: number | null;
+          trust_rate: number | null;
+          trusted_reads: number;
+        };
+        Insert: {
+          active_accounts?: number;
+          avg_latency_ms?: number | null;
+          computed_at?: string;
+          day: string;
+          error_calls?: number;
+          total_calls?: number;
+          total_cost_usd?: number | null;
+          trust_rate?: number | null;
+          trusted_reads?: number;
+        };
+        Update: {
+          active_accounts?: number;
+          avg_latency_ms?: number | null;
+          computed_at?: string;
+          day?: string;
+          error_calls?: number;
+          total_calls?: number;
+          total_cost_usd?: number | null;
+          trust_rate?: number | null;
+          trusted_reads?: number;
+        };
+        Relationships: [];
+      };
+      outcome_reports: {
+        Row: {
+          created_at: string;
+          id: string;
+          legibility_id: string | null;
+          note: string | null;
+          observed_currency: string | null;
+          observed_price: number | null;
+          outcome: string;
+          request_id: string | null;
+          user_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          legibility_id?: string | null;
+          note?: string | null;
+          observed_currency?: string | null;
+          observed_price?: number | null;
+          outcome: string;
+          request_id?: string | null;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          legibility_id?: string | null;
+          note?: string | null;
+          observed_currency?: string | null;
+          observed_price?: number | null;
+          outcome?: string;
+          request_id?: string | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       plans: {
         Row: {
           active: boolean;
@@ -195,6 +404,7 @@ export type Database = {
           rate_per_sec: number;
           sort_order: number;
           stripe_price_id: string | null;
+          tagline: string | null;
         };
         Insert: {
           active?: boolean;
@@ -209,6 +419,7 @@ export type Database = {
           rate_per_sec?: number;
           sort_order?: number;
           stripe_price_id?: string | null;
+          tagline?: string | null;
         };
         Update: {
           active?: boolean;
@@ -223,87 +434,22 @@ export type Database = {
           rate_per_sec?: number;
           sort_order?: number;
           stripe_price_id?: string | null;
-        };
-        Relationships: [];
-      };
-      golden_eval_runs: {
-        Row: {
-          id: string;
-          created_at: string;
-          calibration_version: string | null;
-          split: string | null;
-          n: number | null;
-          precision_at_gate: number | null;
-          precision_wilson_low: number | null;
-          adversarial_rejection: number | null;
-          ece: number | null;
-          notes: string | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          calibration_version?: string | null;
-          split?: string | null;
-          n?: number | null;
-          precision_at_gate?: number | null;
-          precision_wilson_low?: number | null;
-          adversarial_rejection?: number | null;
-          ece?: number | null;
-          notes?: string | null;
-        };
-        Update: {
-          id?: string;
-          created_at?: string;
-          calibration_version?: string | null;
-          notes?: string | null;
-        };
-        Relationships: [];
-      };
-      outcome_reports: {
-        Row: {
-          id: string;
-          created_at: string;
-          user_id: string;
-          request_id: string | null;
-          legibility_id: string | null;
-          outcome: string;
-          observed_price: number | null;
-          observed_currency: string | null;
-          note: string | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          user_id: string;
-          request_id?: string | null;
-          legibility_id?: string | null;
-          outcome: string;
-          observed_price?: number | null;
-          observed_currency?: string | null;
-          note?: string | null;
-        };
-        Update: {
-          id?: string;
-          created_at?: string;
-          user_id?: string;
-          request_id?: string | null;
-          legibility_id?: string | null;
-          outcome?: string;
-          observed_price?: number | null;
-          observed_currency?: string | null;
-          note?: string | null;
+          tagline?: string | null;
         };
         Relationships: [];
       };
       product_cache: {
         Row: {
           cache_key: string;
+          calibration_version: string | null;
           confidence: number;
           created_by: string | null;
           expires_at: string;
           fetched_at: string;
+          field_confidence: Json;
           gtin: string | null;
           id: string;
+          legibility_id: string | null;
           method: string;
           product: Json;
           takedown: boolean;
@@ -311,12 +457,15 @@ export type Database = {
         };
         Insert: {
           cache_key: string;
+          calibration_version?: string | null;
           confidence: number;
           created_by?: string | null;
           expires_at: string;
           fetched_at?: string;
+          field_confidence?: Json;
           gtin?: string | null;
           id?: string;
+          legibility_id?: string | null;
           method: string;
           product: Json;
           takedown?: boolean;
@@ -324,12 +473,15 @@ export type Database = {
         };
         Update: {
           cache_key?: string;
+          calibration_version?: string | null;
           confidence?: number;
           created_by?: string | null;
           expires_at?: string;
           fetched_at?: string;
+          field_confidence?: Json;
           gtin?: string | null;
           id?: string;
+          legibility_id?: string | null;
           method?: string;
           product?: Json;
           takedown?: boolean;
@@ -459,6 +611,57 @@ export type Database = {
           },
         ];
       };
+      sweep_runs: {
+        Row: {
+          attempted: number;
+          blocked: number;
+          cohorts: string[];
+          cost_cap_usd: number;
+          cost_usd: number;
+          failed: number;
+          finished_at: string | null;
+          id: string;
+          inserted: number;
+          item_cap: number;
+          notes: string | null;
+          started_at: string;
+          status: string;
+          succeeded: number;
+        };
+        Insert: {
+          attempted?: number;
+          blocked?: number;
+          cohorts: string[];
+          cost_cap_usd: number;
+          cost_usd?: number;
+          failed?: number;
+          finished_at?: string | null;
+          id?: string;
+          inserted?: number;
+          item_cap: number;
+          notes?: string | null;
+          started_at?: string;
+          status?: string;
+          succeeded?: number;
+        };
+        Update: {
+          attempted?: number;
+          blocked?: number;
+          cohorts?: string[];
+          cost_cap_usd?: number;
+          cost_usd?: number;
+          failed?: number;
+          finished_at?: string | null;
+          id?: string;
+          inserted?: number;
+          item_cap?: number;
+          notes?: string | null;
+          started_at?: string;
+          status?: string;
+          succeeded?: number;
+        };
+        Relationships: [];
+      };
       takedown_requests: {
         Row: {
           created_at: string;
@@ -495,60 +698,60 @@ export type Database = {
       usage_events: {
         Row: {
           api_key_id: string | null;
+          billable: boolean;
           cached: boolean;
+          calibration_version: string | null;
+          confidence: number | null;
           cost_usd: number;
           created_at: string;
+          domain: string | null;
           endpoint: string | null;
+          envelope_hash: string | null;
           id: number;
           latency_ms: number | null;
           meta: Json;
-          request_id: string | null;
-          confidence: number | null;
           product_returned: boolean | null;
-          billable: boolean;
-          domain: string | null;
-          envelope_hash: string | null;
-          calibration_version: string | null;
+          request_id: string | null;
           status: number;
           tool: string;
           user_id: string;
         };
         Insert: {
           api_key_id?: string | null;
+          billable?: boolean;
           cached?: boolean;
+          calibration_version?: string | null;
+          confidence?: number | null;
           cost_usd?: number;
           created_at?: string;
+          domain?: string | null;
           endpoint?: string | null;
+          envelope_hash?: string | null;
           id?: number;
           latency_ms?: number | null;
           meta?: Json;
-          request_id?: string | null;
-          confidence?: number | null;
           product_returned?: boolean | null;
-          billable?: boolean;
-          domain?: string | null;
-          envelope_hash?: string | null;
-          calibration_version?: string | null;
+          request_id?: string | null;
           status?: number;
           tool: string;
           user_id: string;
         };
         Update: {
           api_key_id?: string | null;
+          billable?: boolean;
           cached?: boolean;
+          calibration_version?: string | null;
+          confidence?: number | null;
           cost_usd?: number;
           created_at?: string;
+          domain?: string | null;
           endpoint?: string | null;
+          envelope_hash?: string | null;
           id?: number;
           latency_ms?: number | null;
           meta?: Json;
-          request_id?: string | null;
-          confidence?: number | null;
           product_returned?: boolean | null;
-          billable?: boolean;
-          domain?: string | null;
-          envelope_hash?: string | null;
-          calibration_version?: string | null;
+          request_id?: string | null;
           status?: number;
           tool?: string;
           user_id?: string;
@@ -716,9 +919,67 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      cohort_readability: {
+        Row: {
+          blocked: number | null;
+          cohort: string | null;
+          cost_usd: number | null;
+          domains: number | null;
+          error: number | null;
+          first_observed: string | null;
+          js_shell: number | null;
+          last_observed: string | null;
+          low_confidence: number | null;
+          no_structured_data: number | null;
+          not_a_product: number | null;
+          observations: number | null;
+          readable: number | null;
+          robots_disallowed: number | null;
+          run_id: string | null;
+          timeout: number | null;
+          unreadable: number | null;
+          unreadable_pct: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "observations_run_id_fkey";
+            columns: ["run_id"];
+            isOneToOne: false;
+            referencedRelation: "sweep_runs";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      domain_latest: {
+        Row: {
+          cohort: string | null;
+          confidence: number | null;
+          domain: string | null;
+          failure_reason: string | null;
+          http_status: number | null;
+          method: string | null;
+          observed_at: string | null;
+          readable: boolean | null;
+          robots_allowed: boolean | null;
+          target: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
+      check_kill_floor: { Args: never; Returns: undefined };
+      compute_ops_daily: { Args: { _day?: string }; Returns: undefined };
+      entitlement_check: {
+        Args: { _user_id: string };
+        Returns: {
+          allowed: boolean;
+          cost_spent_cents: number;
+          included_calls: number;
+          plan_id: string;
+          reason: string;
+          used_billable: number;
+        }[];
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];
@@ -726,42 +987,22 @@ export type Database = {
         };
         Returns: boolean;
       };
-      entitlement_check: {
-        Args: { _user_id: string };
+      kill_dashboard: {
+        Args: never;
         Returns: {
-          allowed: boolean;
-          reason: string;
-          plan_id: string;
-          included_calls: number;
-          used_billable: number;
-          cost_spent_cents: number;
+          red_threshold: string;
+          signal: string;
+          status: string;
+          value: number;
         }[];
       };
       northstar_weekly: {
         Args: { _since?: string };
         Returns: {
+          total_calls: number;
+          trusted_reads: number;
           user_id: string;
           week: string;
-          trusted_reads: number;
-          total_calls: number;
-        }[];
-      };
-      trust_rate_by_method: {
-        Args: { _since?: string };
-        Returns: {
-          method: string;
-          calls: number;
-          gate_pass: number;
-          gate_pass_rate: number;
-        }[];
-      };
-      kill_dashboard: {
-        Args: Record<string, never>;
-        Returns: {
-          signal: string;
-          value: number | null;
-          red_threshold: string;
-          status: string;
         }[];
       };
       rate_check: {
@@ -771,6 +1012,15 @@ export type Database = {
           lim: number;
           reset_seconds: number;
           used: number;
+        }[];
+      };
+      trust_rate_by_method: {
+        Args: { _since?: string };
+        Returns: {
+          calls: number;
+          gate_pass: number;
+          gate_pass_rate: number;
+          method: string;
         }[];
       };
       usage_current_period: {

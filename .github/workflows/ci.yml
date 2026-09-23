@@ -78,8 +78,18 @@ jobs:
       # Fails if a published calibration figure no longer matches golden_eval_runs. Needs
       # the database, so it is skipped when the secret is absent (forks) rather than
       # failing for a reason a contributor cannot fix.
+      #
+      # The condition reads `secrets`, not `env`. It was `env.SUPABASE_SERVICE_ROLE_KEY`,
+      # which cannot work: a step's own `env:` block is not in scope for that step's own
+      # `if`, so the expression evaluated against an empty context and was always false.
+      # Both database steps had therefore never executed. Confirmed on run 57, where both
+      # report "skipped" on a commit that changed the database they check.
+      #
+      # That is the worst kind of gate. This repo's central claim is that a published
+      # number can only be a number that was measured and stored, and the mechanism
+      # enforcing it had never once run.
       - name: Calibration figures match the stored run
-        if: env.SUPABASE_SERVICE_ROLE_KEY != ''
+        if: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -90,7 +100,7 @@ jobs:
       # entitlement_check enforces. An earlier hand-typed version of that card advertised a
       # Slack channel and an SLA that did not exist.
       - name: Plan figures match the plans table
-        if: env.SUPABASE_SERVICE_ROLE_KEY != ''
+        if: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

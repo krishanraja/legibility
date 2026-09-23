@@ -57,6 +57,36 @@ export const REASON_COPY: Record<FailureReason, string> = {
 };
 
 /**
+ * What to do about each reason, for the person who owns the site.
+ *
+ * Separate from REASON_COPY because they answer different questions: that one says what was
+ * found, this one says what it would take to change it. Keyed by the same union, so adding a
+ * reason without an answer is a type error rather than a blank space on a page.
+ *
+ * Written to be useful to someone who will forward it to a developer, which means naming the
+ * actual mechanism rather than describing the benefit of fixing it. Where the honest answer
+ * is "nothing, and that is fine", it says that instead of inventing a task.
+ */
+export const REASON_FIX: Record<FailureReason, string> = {
+  blocked:
+    "If the refusal was intended, nothing needs fixing. If it was not, it usually comes from a bot rule or a firewall setting applied to all non-browser traffic rather than a decision about this crawler. Check what your CDN or WAF does with a plain server request that carries no browser fingerprint.",
+  js_shell:
+    "Serve the facts in the initial HTML response rather than assembling them after load. Server-side rendering, static generation, or a prerender layer for crawlers all achieve it. The test is simple: fetch your own page with curl and read what comes back.",
+  no_structured_data:
+    "Add JSON-LD to the page. For a product that means a schema.org Product block carrying name, brand, price, currency and availability. It is one script tag in the head and it is the single highest-value change on this list.",
+  not_a_product:
+    "Nothing, if the page is not meant to be one. If it is a product page, the markup on it does not identify it as such, and adding a schema.org Product block is what closes that gap.",
+  low_confidence:
+    "Structured data was present but incomplete or inconsistent enough that the extraction could not be relied on. The usual causes are a price without a currency, a name that differs between the markup and the visible page, or several conflicting blocks on one page.",
+  timeout:
+    "The page did not answer within 12 seconds from a plain server request. Worth checking what your origin does under that condition, because a crawler with a shorter budget than ours would have given up sooner.",
+  robots_disallowed:
+    "Nothing, unless the rule was broader than you meant. A disallow aimed at one badly behaved crawler is often written in a way that covers every non-browser request, including the ones answering questions about your products.",
+  error:
+    "Nothing yet. The result was inconclusive rather than bad, and the honest response to that is to read the page again rather than to report a finding we cannot stand behind.",
+};
+
+/**
  * Minimal robots.txt evaluation for a given user agent.
  *
  * Groups are NOT additive: the most specific matching group wins outright and the "*" group

@@ -71,6 +71,45 @@ export type Database = {
         };
         Relationships: [];
       };
+      domain_checks: {
+        Row: {
+          captured_at: string;
+          checked_at: string;
+          detail: string | null;
+          envelope_hash: string;
+          failure_reason: string | null;
+          host: string;
+          http_status: number | null;
+          id: string;
+          method: string;
+          readable: boolean;
+        };
+        Insert: {
+          captured_at?: string;
+          checked_at: string;
+          detail?: string | null;
+          envelope_hash: string;
+          failure_reason?: string | null;
+          host: string;
+          http_status?: number | null;
+          id?: string;
+          method?: string;
+          readable: boolean;
+        };
+        Update: {
+          captured_at?: string;
+          checked_at?: string;
+          detail?: string | null;
+          envelope_hash?: string;
+          failure_reason?: string | null;
+          host?: string;
+          http_status?: number | null;
+          id?: string;
+          method?: string;
+          readable?: boolean;
+        };
+        Relationships: [];
+      };
       invoices: {
         Row: {
           amount_cents: number;
@@ -520,6 +559,7 @@ export type Database = {
         Row: {
           approved_at: string | null;
           approved_by: string | null;
+          check_id: string | null;
           company: string | null;
           created_at: string;
           email: string;
@@ -531,6 +571,7 @@ export type Database = {
         Insert: {
           approved_at?: string | null;
           approved_by?: string | null;
+          check_id?: string | null;
           company?: string | null;
           created_at?: string;
           email: string;
@@ -542,6 +583,7 @@ export type Database = {
         Update: {
           approved_at?: string | null;
           approved_by?: string | null;
+          check_id?: string | null;
           company?: string | null;
           created_at?: string;
           email?: string;
@@ -550,7 +592,15 @@ export type Database = {
           status?: string;
           use_case?: string | null;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "waitlist_check_id_fkey";
+            columns: ["check_id"];
+            isOneToOne: false;
+            referencedRelation: "domain_checks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       webhook_deliveries: {
         Row: {

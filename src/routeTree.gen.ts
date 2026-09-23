@@ -21,9 +21,11 @@ import { Route as DocsRateLimitsRouteImport } from './routes/docs.rate-limits'
 import { Route as DocsQuickstartRouteImport } from './routes/docs.quickstart'
 import { Route as DocsMcpRouteImport } from './routes/docs.mcp'
 import { Route as DocsErrorsRouteImport } from './routes/docs.errors'
+import { Route as ApiTakedownRouteImport } from './routes/api/takedown'
 import { Route as ApiMcpRouteImport } from './routes/api/mcp'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiCheckRouteImport } from './routes/api/check'
+import { Route as ApiCaptureRouteImport } from './routes/api/capture'
 import { Route as AboutBotRouteImport } from './routes/about.bot'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
@@ -100,6 +102,11 @@ const DocsErrorsRoute = DocsErrorsRouteImport.update({
   path: '/errors',
   getParentRoute: () => DocsRoute,
 } as any)
+const ApiTakedownRoute = ApiTakedownRouteImport.update({
+  id: '/api/takedown',
+  path: '/api/takedown',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiMcpRoute = ApiMcpRouteImport.update({
   id: '/api/mcp',
   path: '/api/mcp',
@@ -113,6 +120,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
 const ApiCheckRoute = ApiCheckRouteImport.update({
   id: '/api/check',
   path: '/api/check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCaptureRoute = ApiCaptureRouteImport.update({
+  id: '/api/capture',
+  path: '/api/capture',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutBotRoute = AboutBotRouteImport.update({
@@ -210,9 +222,11 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/about/bot': typeof AboutBotRoute
+  '/api/capture': typeof ApiCaptureRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
   '/api/mcp': typeof ApiMcpRoute
+  '/api/takedown': typeof ApiTakedownRoute
   '/docs/errors': typeof DocsErrorsRoute
   '/docs/mcp': typeof DocsMcpRoute
   '/docs/quickstart': typeof DocsQuickstartRoute
@@ -240,9 +254,11 @@ export interface FileRoutesByTo {
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/about/bot': typeof AboutBotRoute
+  '/api/capture': typeof ApiCaptureRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
   '/api/mcp': typeof ApiMcpRoute
+  '/api/takedown': typeof ApiTakedownRoute
   '/docs/errors': typeof DocsErrorsRoute
   '/docs/mcp': typeof DocsMcpRoute
   '/docs/quickstart': typeof DocsQuickstartRoute
@@ -274,9 +290,11 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/about/bot': typeof AboutBotRoute
+  '/api/capture': typeof ApiCaptureRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
   '/api/mcp': typeof ApiMcpRoute
+  '/api/takedown': typeof ApiTakedownRoute
   '/docs/errors': typeof DocsErrorsRoute
   '/docs/mcp': typeof DocsMcpRoute
   '/docs/quickstart': typeof DocsQuickstartRoute
@@ -308,9 +326,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/about/bot'
+    | '/api/capture'
     | '/api/check'
     | '/api/health'
     | '/api/mcp'
+    | '/api/takedown'
     | '/docs/errors'
     | '/docs/mcp'
     | '/docs/quickstart'
@@ -338,9 +358,11 @@ export interface FileRouteTypes {
     | '/takedown'
     | '/terms'
     | '/about/bot'
+    | '/api/capture'
     | '/api/check'
     | '/api/health'
     | '/api/mcp'
+    | '/api/takedown'
     | '/docs/errors'
     | '/docs/mcp'
     | '/docs/quickstart'
@@ -371,9 +393,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/dashboard'
     | '/about/bot'
+    | '/api/capture'
     | '/api/check'
     | '/api/health'
     | '/api/mcp'
+    | '/api/takedown'
     | '/docs/errors'
     | '/docs/mcp'
     | '/docs/quickstart'
@@ -404,9 +428,11 @@ export interface RootRouteChildren {
   TakedownRoute: typeof TakedownRoute
   TermsRoute: typeof TermsRoute
   AboutBotRoute: typeof AboutBotRoute
+  ApiCaptureRoute: typeof ApiCaptureRoute
   ApiCheckRoute: typeof ApiCheckRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiMcpRoute: typeof ApiMcpRoute
+  ApiTakedownRoute: typeof ApiTakedownRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   ApiV1Brief_productRoute: typeof ApiV1Brief_productRoute
   ApiV1Compare_productsRoute: typeof ApiV1Compare_productsRoute
@@ -501,6 +527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsErrorsRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/api/takedown': {
+      id: '/api/takedown'
+      path: '/api/takedown'
+      fullPath: '/api/takedown'
+      preLoaderRoute: typeof ApiTakedownRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/mcp': {
       id: '/api/mcp'
       path: '/api/mcp'
@@ -520,6 +553,13 @@ declare module '@tanstack/react-router' {
       path: '/api/check'
       fullPath: '/api/check'
       preLoaderRoute: typeof ApiCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/capture': {
+      id: '/api/capture'
+      path: '/api/capture'
+      fullPath: '/api/capture'
+      preLoaderRoute: typeof ApiCaptureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/bot': {
@@ -704,9 +744,11 @@ const rootRouteChildren: RootRouteChildren = {
   TakedownRoute: TakedownRoute,
   TermsRoute: TermsRoute,
   AboutBotRoute: AboutBotRoute,
+  ApiCaptureRoute: ApiCaptureRoute,
   ApiCheckRoute: ApiCheckRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiMcpRoute: ApiMcpRoute,
+  ApiTakedownRoute: ApiTakedownRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   ApiV1Brief_productRoute: ApiV1Brief_productRoute,
   ApiV1Compare_productsRoute: ApiV1Compare_productsRoute,

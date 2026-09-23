@@ -4,8 +4,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { capture, identify } from "@/lib/analytics";
 import { API_BASE, DEMO_GTIN } from "@/config/product";
 import { REASON_COPY, type FailureReason } from "@/lib/api/readability";
 import calibration from "@/data/calibration.json";
@@ -100,6 +99,12 @@ const FAQ: [string, string][] = [
   ],
 ];
 
+/**
+ * Exactly what /api/check returns. `signature` travels with the verdict and is handed back
+ * unread on capture, which is how the server proves it issued the verdict rather than
+ * trusting whatever the browser sends. It is absent when the signing secret is unset, in
+ * which case the checker still works and capture refuses.
+ */
 type CheckResult = {
   host: string;
   readable: boolean;
@@ -108,6 +113,7 @@ type CheckResult = {
   detail: string;
   http_status?: number;
   checked_at: string;
+  signature?: string;
 };
 
 function DomainChecker() {
@@ -121,6 +127,7 @@ function DomainChecker() {
     setBusy(true);
     setError(null);
     setResult(null);
+    capture("check_submitted");
     try {
       const res = await fetch("/api/check", {
         method: "POST",
@@ -128,10 +135,25 @@ function DomainChecker() {
         body: JSON.stringify({ domain }),
       });
       const body = await res.json();
-      if (!res.ok) setError(body.message ?? "That did not work.");
-      else setResult(body as CheckResult);
+      if (!res.ok) {
+        setError(body.message ?? "That did not work.");
+        capture("check_failed", { error: body.error ?? "unknown", status: res.status });
+      } else {
+        const verdict = body as CheckResult;
+        setResult(verdict);
+        // The verdict and its reason are the properties that make this measurable: the
+        // conversion thesis is that an unreadable result converts better than a readable
+        // one, and without these two the funnel cannot be split to find out.
+        capture("check_returned", {
+          host: verdict.host,
+          readable: verdict.readable,
+          reason: verdict.reason ?? "none",
+          method: verdict.method,
+        });
+      }
     } catch {
       setError("That did not work. Try again.");
+      capture("check_failed", { error: "network" });
     } finally {
       setBusy(false);
     }
@@ -195,12 +217,19 @@ function DomainChecker() {
             </div>
           </dl>
 
+          {/*
+            What this offers is what exists. The previous version promised a field-by-field
+            breakdown, history over time and a category comparison behind an account, none of
+            which were built and none of which could be, because the check was never stored.
+            A page arguing that the web should be measured honestly cannot itself write a
+            cheque nothing cashes.
+          */}
           <p className="mt-5 border-t border-hairline pt-4 text-sm text-muted-foreground">
-            This is one page, read once, today. The field-by-field breakdown, the history over time,
-            and how you compare with the rest of your category need an account.
+            This is one page, read once, today. We can send you this read, with what it would take
+            to change it, and tell you when the category index is published.
           </p>
           <div className="mt-4">
-            <CaptureEmail host={result.host} />
+            <CaptureEmail result={result} />
           </div>
         </div>
       )}
@@ -210,29 +239,52 @@ function DomainChecker() {
 
 /**
  * Email capture placed after the result, not before it. The exchange is for something the
- * person now wants (depth, history, comparison) rather than a toll gate on the verdict
- * they came for.
+ * person now wants rather than a toll gate on the verdict they came for.
+ *
+ * What it now offers is what the product can actually deliver today: the read itself, by
+ * email. The previous version wrote a row into a table nothing read and said "We will be in
+ * touch", with no email wired and nothing to send. Promising depth that does not exist is
+ * the one thing a page arguing for honest measurement cannot do.
  */
-function CaptureEmail({ host }: { host: string }) {
+function CaptureEmail({ result }: { result: CheckResult }) {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const { error } = await supabase
-      .from("waitlist")
-      .insert({ email, company: host, use_case: "domain check", source: "checker" });
-    setBusy(false);
-    if (error && !error.message.includes("duplicate")) {
-      toast.error(error.message);
-      return;
+    setError(null);
+    capture("capture_submitted", { host: result.host, readable: result.readable });
+    try {
+      const { signature, ...verdict } = result;
+      const res = await fetch("/api/capture", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, verdict, signature }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        setError(body.message ?? "That did not work.");
+        return;
+      }
+      identify(email, { last_checked_host: result.host });
+      capture("capture_succeeded", { host: result.host, emailed: Boolean(body.emailed) });
+      setDone(true);
+    } catch {
+      setError("That did not work. Try again.");
+    } finally {
+      setBusy(false);
     }
-    setDone(true);
   }
 
-  if (done) return <p className="font-mono text-sm text-foreground">Noted. We will be in touch.</p>;
+  if (done)
+    return (
+      <p className="font-mono text-sm text-foreground">
+        Sent. The read for {result.host} is on its way to {email}.
+      </p>
+    );
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-3 sm:flex-row">
@@ -246,8 +298,9 @@ function CaptureEmail({ host }: { host: string }) {
         className="bg-background"
       />
       <Button type="submit" disabled={busy} variant="outline" className="shrink-0">
-        {busy ? "…" : "Send me the full read"}
+        {busy ? "\u2026" : "Email me this read"}
       </Button>
+      {error && <p className="font-mono text-sm text-signal sm:sr-only">{error}</p>}
     </form>
   );
 }

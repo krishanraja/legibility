@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { classify, normaliseDomainInput, isAllowedByRobots } from "@/lib/api/readability";
+import { signVerdict, type Verdict as SignedVerdict } from "@/lib/api/check-signature";
+import { createLimiter, clientIp } from "@/lib/api/rate-limit";
 import { BOT_UA } from "@/config/product";
 
 /**
@@ -22,28 +24,20 @@ const TIMEOUT_MS = 12_000;
 /** Bounds the work one request can cause: two fetches, both short, both size-limited. */
 const MAX_BYTES = 2_000_000;
 
-/**
- * Per-IP rate limit, in memory.
- *
- * Deliberately not a fifth piece of infrastructure. This runs per serverless instance, so
- * it is a floor rather than a guarantee: it stops one browser hammering the endpoint,
- * which is the realistic abuse here. A determined distributed caller is bounded instead by
- * the timeouts and byte cap above, which is why those exist rather than being left to
- * defaults.
- */
-const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 10;
-const hits = new Map<string, number[]>();
+/** Ten checks a minute per address. Shared implementation, see lib/api/rate-limit.ts. */
+const limiter = createLimiter(10, 60_000);
 
-function rateLimited(ip: string, now: number): boolean {
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  // Unbounded growth would be a slow leak on a long-lived instance.
-  if (hits.size > 5000) {
-    for (const [k, v] of hits) if (v.every((t) => now - t >= WINDOW_MS)) hits.delete(k);
-  }
-  return recent.length > MAX_PER_WINDOW;
+/**
+ * Sign the verdict so /api/capture can prove this service issued it.
+ *
+ * An absent secret means unsigned, and the verdict still goes out: the free checker is what
+ * every visitor sees and it keeps working. Only capture, which writes to the record, refuses
+ * an unsigned verdict. A misconfigured deploy therefore degrades to "the tool works, the
+ * follow-up does not" rather than taking the front page down.
+ */
+function sign(v: SignedVerdict): string | undefined {
+  const secret = process.env.CHECK_SIGNING_SECRET;
+  return secret ? signVerdict(v, secret) : undefined;
 }
 
 function json(body: unknown, status = 200) {
@@ -88,12 +82,7 @@ export const Route = createFileRoute("/api/check")({
   server: {
     handlers: {
       POST: async ({ request }: { request: Request }) => {
-        const ip =
-          request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
-          request.headers.get("x-real-ip") ??
-          "unknown";
-
-        if (rateLimited(ip, Date.now())) {
+        if (limiter.limited(clientIp(request))) {
           return json(
             { error: "rate_limited", message: "Too many checks. Try again shortly." },
             429,
@@ -123,14 +112,15 @@ export const Route = createFileRoute("/api/check")({
         }
 
         if (!robotsAllowed) {
-          return json({
+          const verdict: SignedVerdict = {
             host: target.host,
             readable: false,
             reason: "robots_disallowed",
             method: "none",
             detail: "robots.txt asks machines not to read this page. We did not fetch it.",
             checked_at: new Date().toISOString(),
-          });
+          };
+          return json({ ...verdict, signature: sign(verdict) });
         }
 
         try {
@@ -138,19 +128,20 @@ export const Route = createFileRoute("/api/check")({
           // No second-opinion path is available inside a serverless function, so a single
           // 403 is reported as inconclusive rather than as a block. The cohort sweep, which
           // can cross-check, is the thing allowed to call a site blocked.
-          const verdict = classify(res.status, res.body, false);
-          return json({
+          const classified = classify(res.status, res.body, false);
+          const verdict: SignedVerdict = {
             host: target.host,
-            readable: verdict.readable,
-            reason: verdict.reason,
-            method: verdict.method,
-            detail: verdict.detail,
+            readable: classified.readable,
+            reason: classified.reason,
+            method: classified.method,
+            detail: classified.detail,
             http_status: res.status,
             checked_at: new Date().toISOString(),
-          });
+          };
+          return json({ ...verdict, signature: sign(verdict) });
         } catch (e) {
           const timedOut = e instanceof Error && /abort/i.test(e.name + e.message);
-          return json({
+          const verdict: SignedVerdict = {
             host: target.host,
             readable: false,
             reason: timedOut ? "timeout" : "error",
@@ -159,7 +150,8 @@ export const Route = createFileRoute("/api/check")({
               ? "The site did not answer within 12 seconds."
               : "We could not reach the site.",
             checked_at: new Date().toISOString(),
-          });
+          };
+          return json({ ...verdict, signature: sign(verdict) });
         }
       },
     },

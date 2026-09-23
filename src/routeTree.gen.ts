@@ -24,6 +24,7 @@ import { Route as DocsErrorsRouteImport } from './routes/docs.errors'
 import { Route as ApiMcpRouteImport } from './routes/api/mcp'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as ApiCheckRouteImport } from './routes/api/check'
+import { Route as AboutBotRouteImport } from './routes/about.bot'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
 import { Route as DocsApiResolveProductRouteImport } from './routes/docs.api.resolve-product'
@@ -112,6 +113,11 @@ const ApiHealthRoute = ApiHealthRouteImport.update({
 const ApiCheckRoute = ApiCheckRouteImport.update({
   id: '/api/check',
   path: '/api/check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutBotRoute = AboutBotRouteImport.update({
+  id: '/about/bot',
+  path: '/about/bot',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -203,6 +209,7 @@ export interface FileRoutesByFullPath {
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/about/bot': typeof AboutBotRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
   '/api/mcp': typeof ApiMcpRoute
@@ -232,6 +239,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
+  '/about/bot': typeof AboutBotRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
   '/api/mcp': typeof ApiMcpRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
+  '/about/bot': typeof AboutBotRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
   '/api/mcp': typeof ApiMcpRoute
@@ -298,6 +307,7 @@ export interface FileRouteTypes {
     | '/takedown'
     | '/terms'
     | '/dashboard'
+    | '/about/bot'
     | '/api/check'
     | '/api/health'
     | '/api/mcp'
@@ -327,6 +337,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/takedown'
     | '/terms'
+    | '/about/bot'
     | '/api/check'
     | '/api/health'
     | '/api/mcp'
@@ -359,6 +370,7 @@ export interface FileRouteTypes {
     | '/takedown'
     | '/terms'
     | '/_authenticated/dashboard'
+    | '/about/bot'
     | '/api/check'
     | '/api/health'
     | '/api/mcp'
@@ -391,6 +403,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TakedownRoute: typeof TakedownRoute
   TermsRoute: typeof TermsRoute
+  AboutBotRoute: typeof AboutBotRoute
   ApiCheckRoute: typeof ApiCheckRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiMcpRoute: typeof ApiMcpRoute
@@ -507,6 +520,13 @@ declare module '@tanstack/react-router' {
       path: '/api/check'
       fullPath: '/api/check'
       preLoaderRoute: typeof ApiCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/bot': {
+      id: '/about/bot'
+      path: '/about/bot'
+      fullPath: '/about/bot'
+      preLoaderRoute: typeof AboutBotRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -683,6 +703,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TakedownRoute: TakedownRoute,
   TermsRoute: TermsRoute,
+  AboutBotRoute: AboutBotRoute,
   ApiCheckRoute: ApiCheckRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiMcpRoute: ApiMcpRoute,

@@ -11,15 +11,27 @@
  * judgement is what gets tested.
  */
 
-export type FailureReason =
-  | "blocked"
-  | "js_shell"
-  | "no_structured_data"
-  | "not_a_product"
-  | "low_confidence"
-  | "timeout"
-  | "robots_disallowed"
-  | "error";
+/**
+ * The closed set, defined once as an ordered list.
+ *
+ * The union type is derived from this array rather than declared beside it, so a reason
+ * cannot exist in one and be missing from the other. REASON_COPY is keyed by the derived
+ * union, which makes a missing gloss a type error rather than an undefined at runtime.
+ * Anything that renders the whole taxonomy (the bot page, the per-reason pages) iterates
+ * this list, so a new reason appears everywhere or fails the build.
+ */
+export const FAILURE_REASONS = [
+  "blocked",
+  "js_shell",
+  "no_structured_data",
+  "not_a_product",
+  "low_confidence",
+  "timeout",
+  "robots_disallowed",
+  "error",
+] as const;
+
+export type FailureReason = (typeof FAILURE_REASONS)[number];
 
 export type Verdict = {
   readable: boolean;

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { classify, normaliseDomainInput, isAllowedByRobots } from "@/lib/api/readability";
+import { BOT_UA } from "@/config/product";
 
 /**
  * Public domain checker. The front page's primary action points here.
@@ -14,7 +15,8 @@ import { classify, normaliseDomainInput, isAllowedByRobots } from "@/lib/api/rea
  * site they know, and being citable is worth more than a scary result.
  */
 
-const USER_AGENT = "LegibilityBot/0.1 (+https://legibility.io/about/bot)";
+// Declared identity, from src/config/product.ts. The +url in it must resolve, and does.
+const USER_AGENT = BOT_UA;
 const TIMEOUT_MS = 12_000;
 
 /** Bounds the work one request can cause: two fetches, both short, both size-limited. */

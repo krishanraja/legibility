@@ -30,9 +30,12 @@ import cohortData from "../src/data/cohorts.json";
 // One implementation of the verdict, shared with the public checker at /api/check. Two
 // copies would drift, and the first public disagreement would end the index's credibility.
 import { classify, isAllowedByRobots, type FailureReason } from "../src/lib/api/readability";
+import { BOT_UA } from "../src/config/product";
 
 /** Identifies the crawler and points at a page explaining it. Never disguised. */
-const USER_AGENT = "LegibilityBot/0.1 (+https://legibility.io/about/bot)";
+// Declared identity, from src/config/product.ts, so the sweep and the public checker
+// cannot identify themselves differently to the same site.
+const USER_AGENT = BOT_UA;
 
 /** Structural spend guards. Checked inside the loop, not asserted afterwards. */
 const ITEM_CAP = 250;

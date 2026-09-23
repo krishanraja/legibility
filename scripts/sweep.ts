@@ -62,6 +62,43 @@ type Observation = {
 };
 
 /**
+ * Recording, over PostgREST with the service role.
+ *
+ * Deliberately the same shape as sync-calibration.ts and sync-plans.ts rather than a
+ * Supabase client: three fetches against a REST endpoint do not justify a dependency, and
+ * keeping the three scripts identical means one idiom to learn.
+ *
+ * Writing is opt-in. `--json` prints and records nothing, which is what every exploratory
+ * run should use, and is what proved this sweep's egress was sound before a single row was
+ * ever written about a named company.
+ */
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+function dbHeaders(extra: Record<string, string> = {}) {
+  return {
+    apikey: SUPABASE_SERVICE_ROLE_KEY!,
+    authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY!}`,
+    "content-type": "application/json",
+    ...extra,
+  };
+}
+
+async function db(path: string, init: RequestInit & { headers?: Record<string, string> }) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    ...init,
+    headers: dbHeaders(init.headers),
+    ...(PROXY ? { proxy: PROXY } : {}),
+  } as RequestInit);
+  if (!res.ok) {
+    throw new Error(
+      `${init.method ?? "GET"} ${path} failed: HTTP ${res.status} ${await res.text()}`,
+    );
+  }
+  return res;
+}
+
+/**
  * Egress proxy, when the environment mandates one.
  *
  * Left unset in CI and in production, where this is direct. It exists because bun's fetch
@@ -276,6 +313,81 @@ async function main() {
   console.error(
     `\n${observations.length} observed, ${unreadable.length} unreadable ` +
       `(${((100 * unreadable.length) / observations.length).toFixed(0)}%), spend $${spend.toFixed(4)}`,
+  );
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+    console.error(
+      "\nSUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are not set, so nothing was recorded. " +
+        "Use --json if that was the intent.",
+    );
+    process.exit(1);
+  }
+
+  // The run row opens before the observations so a crash mid-write leaves a 'running' row
+  // rather than a silent gap. A sweep that died is a different thing from a sweep that
+  // never started, and the table should be able to tell them apart.
+  const startedAt = new Date().toISOString();
+  const runRes = await db("sweep_runs?select=id", {
+    method: "POST",
+    headers: { prefer: "return=representation" },
+    body: JSON.stringify({
+      started_at: startedAt,
+      cohorts: cohorts.map((c) => c.id),
+      attempted: observations.length,
+      cost_cap_usd: COST_CAP_USD,
+      item_cap: ITEM_CAP,
+      status: "running",
+    }),
+  });
+  const runId = ((await runRes.json()) as { id: string }[])[0].id;
+
+  // on_conflict names the dedupe index explicitly. Without it, resolution=ignore-duplicates
+  // applies only to the primary key, which is a fresh uuid on every row and so never
+  // conflicts, and a second run raised 23505 against observations_dedupe instead of being
+  // the no-op the schema promises. That index is what makes "re-running the same sweep adds
+  // nothing" true by construction; this is the half that exercises it.
+  let inserted: number;
+  try {
+    const insertRes = await db("observations?on_conflict=target,method,envelope_hash&select=id", {
+      method: "POST",
+      headers: { prefer: "return=representation,resolution=ignore-duplicates" },
+      body: JSON.stringify(
+        observations.map((o) => ({ ...o, run_id: runId, observed_at: startedAt })),
+      ),
+    });
+    inserted = ((await insertRes.json()) as unknown[]).length;
+  } catch (e) {
+    // Close the run as failed rather than leaving it 'running' forever. A row stuck in
+    // 'running' is indistinguishable from a sweep still in flight, and the reason the row is
+    // opened first is to tell a crash apart from a sweep that never started.
+    await db(`sweep_runs?id=eq.${runId}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        finished_at: new Date().toISOString(),
+        status: "failed",
+        notes: e instanceof Error ? e.message.slice(0, 500) : String(e).slice(0, 500),
+      }),
+    }).catch(() => {});
+    throw e;
+  }
+
+  const blocked = observations.filter((o) => o.failure_reason === "blocked").length;
+  await db(`sweep_runs?id=eq.${runId}`, {
+    method: "PATCH",
+    body: JSON.stringify({
+      finished_at: new Date().toISOString(),
+      succeeded: observations.filter((o) => o.readable).length,
+      failed: unreadable.length,
+      blocked,
+      inserted,
+      cost_usd: spend,
+      status: capped ? "capped" : "ok",
+    }),
+  });
+
+  console.error(
+    `recorded run ${runId}: ${inserted} new observation(s) of ${observations.length} ` +
+      `(${observations.length - inserted} already stored)`,
   );
 }
 

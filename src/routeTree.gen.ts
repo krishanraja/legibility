@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TakedownRouteImport } from './routes/takedown'
+import { Route as ReadabilityRouteImport } from './routes/readability'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as DocsRouteImport } from './routes/docs'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -54,6 +55,11 @@ const TermsRoute = TermsRouteImport.update({
 const TakedownRoute = TakedownRouteImport.update({
   id: '/takedown',
   path: '/takedown',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadabilityRoute = ReadabilityRouteImport.update({
+  id: '/readability',
+  path: '/readability',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/docs': typeof DocsRouteWithChildren
   '/privacy': typeof PrivacyRoute
+  '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -273,6 +280,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
+  '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/about/bot': typeof AboutBotRoute
@@ -311,6 +319,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/docs': typeof DocsRouteWithChildren
   '/privacy': typeof PrivacyRoute
+  '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
@@ -350,6 +359,7 @@ export interface FileRouteTypes {
     | '/'
     | '/docs'
     | '/privacy'
+    | '/readability'
     | '/takedown'
     | '/terms'
     | '/dashboard'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/privacy'
+    | '/readability'
     | '/takedown'
     | '/terms'
     | '/about/bot'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/docs'
     | '/privacy'
+    | '/readability'
     | '/takedown'
     | '/terms'
     | '/_authenticated/dashboard'
@@ -462,6 +474,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   DocsRoute: typeof DocsRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
+  ReadabilityRoute: typeof ReadabilityRoute
   TakedownRoute: typeof TakedownRoute
   TermsRoute: typeof TermsRoute
   AboutBotRoute: typeof AboutBotRoute
@@ -494,6 +507,13 @@ declare module '@tanstack/react-router' {
       path: '/takedown'
       fullPath: '/takedown'
       preLoaderRoute: typeof TakedownRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/readability': {
+      id: '/readability'
+      path: '/readability'
+      fullPath: '/readability'
+      preLoaderRoute: typeof ReadabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -803,6 +823,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   DocsRoute: DocsRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
+  ReadabilityRoute: ReadabilityRoute,
   TakedownRoute: TakedownRoute,
   TermsRoute: TermsRoute,
   AboutBotRoute: AboutBotRoute,

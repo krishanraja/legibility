@@ -20,6 +20,11 @@ export function SiteFooter() {
               </a>
             </li>
             <li>
+              <Link to="/readability" className="hover:text-foreground">
+                The index
+              </Link>
+            </li>
+            <li>
               <Link to="/why" className="hover:text-foreground">
                 The eight findings
               </Link>

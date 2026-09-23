@@ -20,6 +20,9 @@ export function SiteHeader() {
       <a href="/#check" className="hover:text-foreground" onClick={() => setMenu(false)}>
         check a site
       </a>
+      <Link to="/readability" className="hover:text-foreground" onClick={() => setMenu(false)}>
+        the index
+      </Link>
       <Link to="/why" className="hover:text-foreground" onClick={() => setMenu(false)}>
         the findings
       </Link>

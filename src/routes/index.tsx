@@ -364,9 +364,12 @@ function Index() {
         */}
         <section id="check" className="border-b border-hairline">
           <div className="mx-auto max-w-[820px] px-6 py-20 lg:py-28">
-            <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal">
-              Machine readability index
-            </p>
+            <Link
+              to="/readability"
+              className="font-mono text-xs uppercase tracking-[0.2em] text-signal hover:underline"
+            >
+              Machine readability index &#8594;
+            </Link>
             <h1 className="font-display mt-6 text-5xl leading-[1.05] text-balance text-foreground sm:text-6xl">
               Most of the web was built for people.
               <span className="mt-3 block italic text-stone">
@@ -389,6 +392,13 @@ function Index() {
             <p className="mt-4 font-mono text-xs text-muted-foreground">
               One request to your homepage, identified as LegibilityBot, exactly as a crawler would.
               We obey robots.txt. Nothing is stored against your domain unless you ask us to.
+            </p>
+            <p className="mt-6 text-muted-foreground">
+              We read twenty well-known retail and news sites the same way.{" "}
+              <Link to="/readability" className="text-signal underline underline-offset-4">
+                See how they scored
+              </Link>
+              .
             </p>
           </div>
         </section>

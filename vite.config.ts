@@ -51,9 +51,10 @@ function sitemapPlugin(origin: string): Plugin {
           ? "1.0"
           : isLegal(p)
             ? "0.3"
-            : // The failure-reason pages are the content an answer engine is most likely to
-              // quote: eight named, mechanical answers to a question people now ask assistants.
-              p === "/why" || p.startsWith("/why/")
+            : // The index and the failure-reason pages are the content an answer engine is
+              // most likely to quote: a measured number about named sites, and eight named,
+              // mechanical answers to a question people now ask assistants.
+              p === "/readability" || p === "/why" || p.startsWith("/why/")
               ? "0.9"
               : p === "/docs" || /^\/docs\/(quickstart|api)/.test(p)
                 ? "0.9"

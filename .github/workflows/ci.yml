@@ -75,21 +75,29 @@ jobs:
       - name: Build
         run: bun run build
 
+      # Whether the database checks below can run at all.
+      #
+      # This exists because the obvious two ways of asking are both wrong. The original
+      # `if: env.SUPABASE_SERVICE_ROLE_KEY != ''` on a step that sets that variable in its
+      # own `env:` block never fires: a step's `env:` is not in scope for its own `if`, so
+      # the expression compared an empty string to an empty string and both database steps
+      # silently skipped from the day they were written. Replacing it with
+      # `if: ${{ secrets.X != '' }}` is worse: `secrets` is not an allowed context in a
+      # step-level `if`, so the whole workflow file stops parsing and every gate in it
+      # disappears, which is how runs 58 and 59 failed with zero jobs.
+      #
+      # A step output is in scope for a later step's `if`, and the expression below emits
+      # only the boolean, never the key, so the secret does not have to be promoted to a
+      # job-level env visible to every third-party action in the job.
+      - name: Can the database checks run
+        id: dbsecret
+        run: echo "present=${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}" >> "$GITHUB_OUTPUT"
+
       # Fails if a published calibration figure no longer matches golden_eval_runs. Needs
       # the database, so it is skipped when the secret is absent (forks) rather than
       # failing for a reason a contributor cannot fix.
-      #
-      # The condition reads `secrets`, not `env`. It was `env.SUPABASE_SERVICE_ROLE_KEY`,
-      # which cannot work: a step's own `env:` block is not in scope for that step's own
-      # `if`, so the expression evaluated against an empty context and was always false.
-      # Both database steps had therefore never executed. Confirmed on run 57, where both
-      # report "skipped" on a commit that changed the database they check.
-      #
-      # That is the worst kind of gate. This repo's central claim is that a published
-      # number can only be a number that was measured and stored, and the mechanism
-      # enforcing it had never once run.
       - name: Calibration figures match the stored run
-        if: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        if: steps.dbsecret.outputs.present == 'true'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -100,7 +108,7 @@ jobs:
       # entitlement_check enforces. An earlier hand-typed version of that card advertised a
       # Slack channel and an SLA that did not exist.
       - name: Plan figures match the plans table
-        if: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        if: steps.dbsecret.outputs.present == 'true'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

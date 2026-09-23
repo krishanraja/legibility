@@ -30,8 +30,8 @@ export const Route = createFileRoute("/api/v1/compare_products")({
     handlers: {
       ...postOnly,
       POST: async ({ request }) => {
-        const WORKER_URL = process.env.PLINTH_EXTRACTOR_URL;
-        const WORKER_TOKEN = process.env.PLINTH_EXTRACTOR_TOKEN;
+        const WORKER_URL = process.env.LEGIBILITY_EXTRACTOR_URL;
+        const WORKER_TOKEN = process.env.LEGIBILITY_EXTRACTOR_TOKEN;
         if (!WORKER_URL || !WORKER_TOKEN)
           return json({ error: "external_worker_not_configured" }, 503);
 

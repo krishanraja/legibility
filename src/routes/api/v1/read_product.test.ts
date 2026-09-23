@@ -102,8 +102,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   h.inserts.length = 0;
   h.keyUpdates.length = 0;
-  process.env.PLINTH_EXTRACTOR_URL = "https://legibility-worker.vercel.app/extract";
-  process.env.PLINTH_EXTRACTOR_TOKEN = "worker-token-for-tests";
+  process.env.LEGIBILITY_EXTRACTOR_URL = "https://legibility-worker.vercel.app/extract";
+  process.env.LEGIBILITY_EXTRACTOR_TOKEN = "worker-token-for-tests";
   h.validateApiKey.mockResolvedValue(PRINCIPAL);
   h.rateCheck.mockResolvedValue(ALLOWED_RL);
   h.entitlementCheck.mockResolvedValue({ allowed: true });
@@ -113,7 +113,7 @@ afterEach(() => vi.unstubAllGlobals());
 
 describe("read_product: configuration and auth", () => {
   it("returns 503 when the worker is not configured, before touching auth", async () => {
-    delete process.env.PLINTH_EXTRACTOR_URL;
+    delete process.env.LEGIBILITY_EXTRACTOR_URL;
     const res = await post({ gtin: "8076800195057" }, AUTH);
     expect(res.status).toBe(503);
     expect((await res.json()).error).toBe("external_worker_not_configured");
@@ -121,7 +121,7 @@ describe("read_product: configuration and auth", () => {
   });
 
   it("returns 503 when the worker token is missing", async () => {
-    delete process.env.PLINTH_EXTRACTOR_TOKEN;
+    delete process.env.LEGIBILITY_EXTRACTOR_TOKEN;
     expect((await post({ gtin: "1" }, AUTH)).status).toBe(503);
   });
 

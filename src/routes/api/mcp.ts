@@ -193,8 +193,8 @@ export const Route = createFileRoute("/api/mcp")({
               }
             }
 
-            const WORKER_URL = process.env.PLINTH_EXTRACTOR_URL;
-            const WORKER_TOKEN = process.env.PLINTH_EXTRACTOR_TOKEN;
+            const WORKER_URL = process.env.LEGIBILITY_EXTRACTOR_URL;
+            const WORKER_TOKEN = process.env.LEGIBILITY_EXTRACTOR_TOKEN;
             if (!WORKER_URL || !WORKER_TOKEN) {
               return toolResult(
                 id,

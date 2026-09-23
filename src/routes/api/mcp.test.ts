@@ -78,8 +78,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   vi.unstubAllGlobals();
   h.inserts.length = 0;
-  process.env.PLINTH_EXTRACTOR_URL = "https://legibility-worker.vercel.app/extract";
-  process.env.PLINTH_EXTRACTOR_TOKEN = "worker-token";
+  process.env.LEGIBILITY_EXTRACTOR_URL = "https://legibility-worker.vercel.app/extract";
+  process.env.LEGIBILITY_EXTRACTOR_TOKEN = "worker-token";
   h.validateApiKey.mockResolvedValue(PRINCIPAL);
   h.rateCheck.mockResolvedValue({ allowed: true, limit: 60, used: 1, reset: 60 });
   h.entitlementCheck.mockResolvedValue({ allowed: true });

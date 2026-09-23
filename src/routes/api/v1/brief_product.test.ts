@@ -78,8 +78,8 @@ beforeEach(() => {
   vi.clearAllMocks();
   vi.unstubAllGlobals();
   h.inserts.length = 0;
-  process.env.PLINTH_EXTRACTOR_URL = "https://legibility-worker.vercel.app/extract";
-  process.env.PLINTH_EXTRACTOR_TOKEN = "worker-token";
+  process.env.LEGIBILITY_EXTRACTOR_URL = "https://legibility-worker.vercel.app/extract";
+  process.env.LEGIBILITY_EXTRACTOR_TOKEN = "worker-token";
   h.validateApiKey.mockResolvedValue({ userId: "user-1", keyId: "key-1" });
   h.rateCheck.mockResolvedValue({ allowed: true, limit: 60, used: 1, reset: 60 });
   h.entitlementCheck.mockResolvedValue({ allowed: true });
@@ -87,7 +87,7 @@ beforeEach(() => {
 
 describe("brief_product: guards", () => {
   it("returns 503 when the worker is unconfigured", async () => {
-    delete process.env.PLINTH_EXTRACTOR_URL;
+    delete process.env.LEGIBILITY_EXTRACTOR_URL;
     expect((await post({ gtin: "1" }, AUTH)).status).toBe(503);
   });
 

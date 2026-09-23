@@ -225,11 +225,17 @@ export const Route = createFileRoute("/api/capture")({
         // second row and no second email.
         const apiKey = process.env.RESEND_API_KEY;
         const from = process.env.RESEND_FROM ?? "Legibility <hello@legibility.io>";
+        // Replies go to a mailbox someone reads. The sending domain is whichever one Resend
+        // has verified, which is a deliverability constraint and not a statement about where
+        // a human should answer; without this, a reply to a read lands at an address nobody
+        // watches and the first real conversation this funnel produces is lost.
+        const replyTo = process.env.RESEND_REPLY_TO;
         let emailed = false;
         if (apiKey) {
           const result = await sendEmail(email, renderVerdictEmail(verdict, APP_ORIGIN), {
             apiKey,
             from,
+            ...(replyTo ? { replyTo } : {}),
           });
           emailed = result.sent;
           if (!result.sent) console.error("[capture] send failed", result.error);

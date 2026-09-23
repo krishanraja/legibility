@@ -22,6 +22,15 @@ short list of items that need a human action or an external clock. Last updated 
       search returns nothing when the Exa account is out of credits. Fund Exa to make name-resolve
       live.
 
+- [ ] **Activate card payments on the Stripe account.** The live account
+      `acct_1Sapu84w6vAdI2o5` reports `charges_enabled: false` and
+      `capabilities.card_payments: inactive`, with no outstanding requirement listed. Only
+      `transfers` is active. Everything downstream is wired (secret key, webhook endpoint
+      `we_1UIxHl4w6vAdI2o5Fy6Rq25w` on all five events the handler switches on, and the
+      `starter` and `growth` rows now carry their live price ids), so checkout will build a
+      session and fail at payment until the account itself can charge. That is Stripe
+      onboarding, not code.
+
 - [ ] **Run the Stripe live canary.** Checkout and the signature-verified webhook are verified in
       test mode. To close the last billing gaps (test/live isolation, webhook idempotency, and
       **metered overage reported to Stripe**, which is not yet wired), provide an `sk_test_` key for

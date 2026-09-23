@@ -304,6 +304,22 @@ describe("POST /api/capture", () => {
     expect(h.waitlistRows).toHaveLength(1);
   });
 
+  it("routes replies to the configured address, which is not the sender", async () => {
+    // The sending domain is whatever Resend has verified; the reply address is a person.
+    // Conflating them sends the first real conversation this funnel produces to a mailbox
+    // nobody watches.
+    process.env.RESEND_REPLY_TO = "krish@themindmaker.ai";
+    await postSigned();
+    expect(h.sendCalls[0][2]).toMatchObject({ replyTo: "krish@themindmaker.ai" });
+    delete process.env.RESEND_REPLY_TO;
+  });
+
+  it("omits reply-to entirely when none is configured", async () => {
+    delete process.env.RESEND_REPLY_TO;
+    await postSigned();
+    expect(h.sendCalls[0][2]).not.toHaveProperty("replyTo");
+  });
+
   it("succeeds without sending when no mail provider is configured", async () => {
     delete process.env.RESEND_API_KEY;
     const res = await postSigned();

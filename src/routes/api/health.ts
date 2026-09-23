@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/health")({
 
         let workerOk = false;
         try {
-          const u = new URL(process.env.PLINTH_EXTRACTOR_URL ?? "");
+          const u = new URL(process.env.LEGIBILITY_EXTRACTOR_URL ?? "");
           const res = await fetch(`${u.protocol}//${u.host}/health`, {
             signal: AbortSignal.timeout(8000),
           });

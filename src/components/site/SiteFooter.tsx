@@ -8,12 +8,17 @@ export function SiteFooter() {
         <div>
           <img src={wordmark} alt="legibility" className="h-6 w-auto" />
           <p className="mt-3 text-muted-foreground max-w-xs">
-            The foundation a product-aware agent stands on.
+            Whether a machine can read a website, and why when it cannot.
           </p>
         </div>
         <div>
           <div className="text-foreground mb-3">Product</div>
           <ul className="space-y-2 text-muted-foreground">
+            <li>
+              <a href="/#check" className="hover:text-foreground">
+                Check a site
+              </a>
+            </li>
             <li>
               <Link to="/docs" className="hover:text-foreground">
                 Docs
@@ -40,9 +45,15 @@ export function SiteFooter() {
           <div className="text-foreground mb-3">Company</div>
           <ul className="space-y-2 text-muted-foreground">
             <li>
-              <a href="/#thesis" className="hover:text-foreground">
-                Thesis
+              {/* Was /#thesis, an id that stopped existing when the front page was rewritten. */}
+              <a href="/#method" className="hover:text-foreground">
+                Method
               </a>
+            </li>
+            <li>
+              <Link to="/about/bot" className="hover:text-foreground">
+                Our crawler
+              </Link>
             </li>
             <li>
               <a href="/#faq" className="hover:text-foreground">

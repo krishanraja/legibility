@@ -12,6 +12,17 @@ export function SiteHeader() {
 
   const links = (
     <>
+      {/*
+        "check" first: the free verdict is the primary action of the whole site and was
+        reachable only by scrolling the front page. Docs stay, one place further along,
+        for the secondary audience llms.txt names.
+      */}
+      <a href="/#check" className="hover:text-foreground" onClick={() => setMenu(false)}>
+        check a site
+      </a>
+      <Link to="/about/bot" className="hover:text-foreground" onClick={() => setMenu(false)}>
+        the bot
+      </Link>
       <Link to="/docs" className="hover:text-foreground" onClick={() => setMenu(false)}>
         docs
       </Link>
@@ -56,7 +67,13 @@ export function SiteHeader() {
             is the usual 55% cap-height-to-mark ratio for a horizontal lockup.
           */}
           <img src={wordmark} alt="legibility" className="h-10 w-auto" />
-          <span className="text-muted-foreground hidden sm:inline">product data for agents</span>
+          {/*
+            Was "product data for agents", which sold the old product to the old buyer on
+            every page including the one arguing the new position. The front page is written
+            for a commercial owner of a catalogue; the chrome around it should not contradict
+            it in the top left corner.
+          */}
+          <span className="text-muted-foreground hidden sm:inline">machine readability</span>
         </Link>
         <nav className="hidden items-center gap-7 text-muted-foreground md:flex">{links}</nav>
         {/* Mobile: a hamburger toggles the same nav so sign-in, docs, pricing and mcp are reachable. */}

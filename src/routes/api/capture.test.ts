@@ -18,8 +18,10 @@ const SECRET = "test-signing-secret";
 const h = vi.hoisted(() => ({
   checkRows: [] as Record<string, unknown>[],
   waitlistRows: [] as Record<string, unknown>[],
+  captureRows: [] as Record<string, unknown>[],
   checkError: null as { message: string } | null,
   waitlistError: null as { message: string } | null,
+  captureError: null as { message: string } | null,
   sent: { sent: true } as { sent: boolean; error?: string },
   sendCalls: [] as unknown[][],
 }));
@@ -33,8 +35,15 @@ vi.mock("@/integrations/supabase/client.server", () => ({
           const result = { data: h.checkError ? null : { id: "check-1" }, error: h.checkError };
           return { select: () => ({ single: () => Promise.resolve(result) }) };
         }
-        h.waitlistRows.push(row);
-        return Promise.resolve({ error: h.waitlistError });
+        if (table === "waitlist") {
+          h.waitlistRows.push(row);
+          return Promise.resolve({ error: h.waitlistError });
+        }
+        if (table === "check_captures") {
+          h.captureRows.push(row);
+          return Promise.resolve({ error: h.captureError });
+        }
+        throw new Error(`unexpected table in capture route: ${table}`);
       },
     }),
   },
@@ -98,9 +107,11 @@ beforeEach(() => {
   vi.clearAllMocks();
   h.checkRows.length = 0;
   h.waitlistRows.length = 0;
+  h.captureRows.length = 0;
   h.sendCalls.length = 0;
   h.checkError = null;
   h.waitlistError = null;
+  h.captureError = null;
   h.sent = { sent: true };
   process.env.CHECK_SIGNING_SECRET = SECRET;
   process.env.RESEND_API_KEY = "re_test";
@@ -141,6 +152,18 @@ describe("POST /api/capture", () => {
     // The admin's decision on an existing row must survive a re-capture, so status is never
     // part of the upsert payload.
     expect(h.waitlistRows[0]).not.toHaveProperty("status");
+
+    // The person-to-check link, which is what the dashboard reads. waitlist cannot hold it:
+    // its email column is UNIQUE, so a second domain would overwrite the first.
+    expect(h.captureRows).toEqual([{ email: "buyer@example.com", check_id: "check-1" }]);
+  });
+
+  it("reports a failed capture-link write rather than claiming success", async () => {
+    h.captureError = { message: "denied" };
+    const res = await postSigned();
+    expect(res.status).toBe(500);
+    await expect(res.json()).resolves.toMatchObject({ error: "storage_failed" });
+    expect(h.sendCalls).toHaveLength(0);
   });
 
   it("does not store a verdict it did not issue", async () => {
@@ -303,6 +326,7 @@ describe("POST /api/capture", () => {
     h.waitlistError = { message: "denied" };
     const res = await postSigned();
     expect(res.status).toBe(500);
+    expect(h.captureRows).toHaveLength(0);
     expect(h.sendCalls).toHaveLength(0);
   });
 

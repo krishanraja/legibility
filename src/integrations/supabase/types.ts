@@ -71,6 +71,35 @@ export type Database = {
         };
         Relationships: [];
       };
+      check_captures: {
+        Row: {
+          captured_at: string;
+          check_id: string;
+          email: string;
+          id: string;
+        };
+        Insert: {
+          captured_at?: string;
+          check_id: string;
+          email: string;
+          id?: string;
+        };
+        Update: {
+          captured_at?: string;
+          check_id?: string;
+          email?: string;
+          id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "check_captures_check_id_fkey";
+            columns: ["check_id"];
+            isOneToOne: false;
+            referencedRelation: "domain_checks";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       domain_checks: {
         Row: {
           captured_at: string;

@@ -8,6 +8,10 @@ import { capture, identify } from "@/lib/analytics";
 import { API_BASE, DEMO_GTIN } from "@/config/product";
 import { REASON_COPY, type FailureReason } from "@/lib/api/readability";
 import calibration from "@/data/calibration.json";
+import plansData from "@/data/plans.json";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { useAuth } from "@/lib/auth";
+import { createCheckoutSession } from "@/lib/api/billing.functions";
 
 /**
  * The front page argues one position: a lot of the web cannot be read by a machine, and
@@ -116,7 +120,7 @@ type CheckResult = {
   signature?: string;
 };
 
-function DomainChecker() {
+function DomainChecker({ onSignIn }: { onSignIn: () => void }) {
   const [domain, setDomain] = useState("");
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
@@ -229,7 +233,7 @@ function DomainChecker() {
             to change it, and tell you when the category index is published.
           </p>
           <div className="mt-4">
-            <CaptureEmail result={result} />
+            <CaptureEmail result={result} onSignIn={onSignIn} />
           </div>
         </div>
       )}
@@ -246,7 +250,7 @@ function DomainChecker() {
  * touch", with no email wired and nothing to send. Promising depth that does not exist is
  * the one thing a page arguing for honest measurement cannot do.
  */
-function CaptureEmail({ result }: { result: CheckResult }) {
+function CaptureEmail({ result, onSignIn }: { result: CheckResult; onSignIn: () => void }) {
   const [email, setEmail] = useState("");
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -281,9 +285,24 @@ function CaptureEmail({ result }: { result: CheckResult }) {
 
   if (done)
     return (
-      <p className="font-mono text-sm text-foreground">
-        Sent. The read for {result.host} is on its way to {email}.
-      </p>
+      <div className="space-y-3">
+        <p className="font-mono text-sm text-foreground">
+          Sent. The read for {result.host} is on its way to {email}.
+        </p>
+        {/*
+          The account offer goes here rather than in place of the verdict. They have the thing
+          they came for, so this is an invitation rather than a toll gate, and it is the first
+          moment an account is worth anything: checks are matched to an account by email, so
+          signing in with this address brings this read and any other with it.
+        */}
+        <p className="text-sm text-muted-foreground">
+          Checks are kept against your email. Create an account with the same address to see this
+          read and any others, and to watch this site over time.
+        </p>
+        <Button onClick={onSignIn} variant="outline" className="shrink-0">
+          Create an account
+        </Button>
+      </div>
     );
 
   return (
@@ -306,13 +325,26 @@ function CaptureEmail({ result }: { result: CheckResult }) {
 }
 
 function Index() {
+  // One modal for the whole page. The verdict card and every pricing card open the same one,
+  // so there is a single place an anonymous visitor turns into an account.
+  const [authOpen, setAuthOpen] = useState(false);
+  const onSignIn = () => {
+    capture("signin_opened");
+    setAuthOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
       <main id="main-content">
         {/* THE FINDING, AND THE READER'S OWN VERSION OF IT */}
-        <section className="border-b border-hairline">
+        {/*
+          id="check" is linked from the header and the footer. The previous footer pointed at
+          "#thesis", an id that stopped existing when this page was rewritten, so every
+          anchor added here carries a target rather than a hope.
+        */}
+        <section id="check" className="border-b border-hairline">
           <div className="mx-auto max-w-[820px] px-6 py-20 lg:py-28">
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-signal">
               Machine readability index
@@ -333,7 +365,7 @@ function Index() {
             </p>
 
             <div className="mt-10">
-              <DomainChecker />
+              <DomainChecker onSignIn={onSignIn} />
             </div>
 
             <p className="mt-4 font-mono text-xs text-muted-foreground">
@@ -413,35 +445,8 @@ function Index() {
               </p>
             </div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {PLANS.map((p) => (
-                <div
-                  key={p.name}
-                  className={`rounded-md border p-7 ${p.featured ? "border-signal" : "border-hairline"} bg-background`}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-                      {p.name}
-                    </div>
-                    {p.featured && (
-                      <div className="font-mono text-[10px] uppercase tracking-widest text-signal">
-                        recommended
-                      </div>
-                    )}
-                  </div>
-                  <div className="font-display mt-3 text-5xl text-foreground">
-                    {p.price}
-                    <span className="text-base text-muted-foreground">/mo</span>
-                  </div>
-                  <div className="mt-2 text-sm text-muted-foreground">{p.desc}</div>
-                  <ul className="mt-6 space-y-2 text-sm text-foreground">
-                    {p.feats.map((f) => (
-                      <li key={f} className="flex gap-2">
-                        <span className="text-signal">→</span>
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              {plansData.plans.map((p) => (
+                <PlanCard key={p.id} plan={p} onSignIn={onSignIn} />
               ))}
             </div>
             <p className="mt-8 text-center font-mono text-xs text-muted-foreground">
@@ -499,37 +504,103 @@ function Index() {
       </main>
 
       <SiteFooter />
+      <AuthModal open={authOpen} onOpenChange={setAuthOpen} />
     </div>
   );
 }
 
 /**
- * Entitlements are what the product actually enforces, nothing more.
+ * One pricing card, with an action.
  *
- * The previous version listed "Slack channel" and "SLA" on the top tier. Neither exists,
- * llms.txt already said so in writing, and they are dev-tool perks aimed at a buyer this
- * page is no longer written for. The quotas below are the values in the plans table, which
- * is what entitlementCheck reads at request time, so the page and the enforcement cannot
- * disagree.
+ * The previous cards were non-interactive divs. The pricing section had no way to buy
+ * anything: checkout existed only inside the dashboard, which you could only reach by
+ * finding the sign-in button in the header first. Someone who read the pricing and decided
+ * to pay had nowhere to click.
+ *
+ * Free routes to sign-in, because the free plan is an account rather than a purchase. Paid
+ * plans route through sign-in when signed out, then to Stripe. Whether a plan is actually
+ * purchasable is not guessed here: stripe_price_id is set by hand in the live project and
+ * has no seed in any migration, so the button is shown and createCheckoutSession reports
+ * the truth at click time.
  */
-const PLANS = [
-  {
-    name: "Free",
-    price: "$0",
-    desc: "1,000 trusted reads per month, no card",
-    feats: ["Unlimited domain checks", "REST and MCP access", "Hard stop, never a surprise bill"],
-  },
-  {
-    name: "Starter",
-    price: "$29",
-    desc: "5,000 trusted reads, $0.01 per read after",
-    feats: ["Higher rate limits", "Per-field confidence", "Priority email"],
-    featured: true,
-  },
-  {
-    name: "Growth",
-    price: "$199",
-    desc: "50,000 trusted reads, $0.005 per read after",
-    feats: ["Highest rate limits", "Per-field confidence", "Priority email"],
-  },
-];
+function PlanCard({
+  plan,
+  onSignIn,
+}: {
+  plan: { id: string; name: string; price: string; tagline: string; features: string[] };
+  onSignIn: () => void;
+}) {
+  const { user } = useAuth();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const featured = plan.id === "starter";
+  const paid = plan.id !== "free";
+
+  async function act() {
+    capture("pricing_plan_clicked", { plan: plan.id, signed_in: Boolean(user) });
+    if (!user) return onSignIn();
+    if (!paid) {
+      window.location.href = "/dashboard";
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const url = await createCheckoutSession({ data: { plan: plan.id as "starter" | "growth" } });
+      if (typeof url === "string") window.location.href = url;
+      else setError("Checkout is not available right now.");
+    } catch (e) {
+      // The honest message, including "That plan is not purchasable yet", rather than a
+      // generic failure that hides which of the two things went wrong.
+      setError(e instanceof Error ? e.message : "Checkout is not available right now.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div
+      className={`flex flex-col rounded-md border p-7 ${featured ? "border-signal" : "border-hairline"} bg-background`}
+    >
+      <div className="flex items-baseline justify-between">
+        <div className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+          {plan.name}
+        </div>
+        {featured && (
+          <div className="font-mono text-[10px] uppercase tracking-widest text-signal">
+            recommended
+          </div>
+        )}
+      </div>
+      <div className="font-display mt-3 text-5xl text-foreground">
+        {plan.price}
+        <span className="text-base text-muted-foreground">/mo</span>
+      </div>
+      <div className="mt-2 text-sm text-muted-foreground">{plan.tagline}</div>
+      <ul className="mt-6 space-y-2 text-sm text-foreground">
+        {plan.features.map((f) => (
+          <li key={f} className="flex gap-2">
+            <span className="text-signal">&#8594;</span>
+            {f}
+          </li>
+        ))}
+      </ul>
+      <div className="mt-6 flex-1" />
+      <Button
+        onClick={act}
+        disabled={busy}
+        variant={featured ? "default" : "outline"}
+        className={featured ? "w-full bg-signal text-background hover:opacity-90" : "w-full"}
+      >
+        {busy
+          ? "\u2026"
+          : !user
+            ? "Create an account"
+            : paid
+              ? `Choose ${plan.name}`
+              : "Go to dashboard"}
+      </Button>
+      {error && <p className="mt-2 font-mono text-xs text-signal">{error}</p>}
+    </div>
+  );
+}

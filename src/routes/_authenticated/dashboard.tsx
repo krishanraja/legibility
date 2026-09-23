@@ -40,6 +40,9 @@ function DashboardLayout() {
             { to: "/dashboard/billing", label: "Billing" },
             { to: "/dashboard/webhooks", label: "Webhooks" },
             { to: "/dashboard/metrics", label: "Metrics" },
+            // Admin-only surfaces. Both render a "admins only" message to everyone else
+            // rather than being hidden, matching how Metrics already behaves.
+            { to: "/dashboard/waitlist", label: "Waitlist" },
           ].map((i) => (
             <Link
               key={i.to}

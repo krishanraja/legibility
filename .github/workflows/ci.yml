@@ -85,6 +85,17 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: bun scripts/sync-calibration.ts --check
 
+      # Same arrangement as calibration: the public pricing card reads src/data/plans.json,
+      # generated from the plans table, so what the page advertises cannot drift from what
+      # entitlement_check enforces. An earlier hand-typed version of that card advertised a
+      # Slack channel and an SLA that did not exist.
+      - name: Plan figures match the plans table
+        if: env.SUPABASE_SERVICE_ROLE_KEY != ''
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: bun scripts/sync-plans.ts --check
+
       # Static GEO checks. These need no network and no secrets, so they belong in Tier 1.
       # They also now gate the copy register: the banned-phrase list is the thing standing
       # between the front page and the vendor-email voice its buyer has learned to distrust.

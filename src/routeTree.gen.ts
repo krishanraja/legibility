@@ -38,6 +38,7 @@ import { Route as ApiV1Compare_productsRouteImport } from './routes/api/v1/compa
 import { Route as ApiV1Brief_productRouteImport } from './routes/api/v1/brief_product'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as AuthenticatedDashboardWebhooksRouteImport } from './routes/_authenticated/dashboard.webhooks'
+import { Route as AuthenticatedDashboardWaitlistRouteImport } from './routes/_authenticated/dashboard.waitlist'
 import { Route as AuthenticatedDashboardUsageRouteImport } from './routes/_authenticated/dashboard.usage'
 import { Route as AuthenticatedDashboardMetricsRouteImport } from './routes/_authenticated/dashboard.metrics'
 import { Route as AuthenticatedDashboardKeysRouteImport } from './routes/_authenticated/dashboard.keys'
@@ -189,6 +190,12 @@ const AuthenticatedDashboardWebhooksRoute =
     path: '/webhooks',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardWaitlistRoute =
+  AuthenticatedDashboardWaitlistRouteImport.update({
+    id: '/waitlist',
+    path: '/waitlist',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
 const AuthenticatedDashboardUsageRoute =
   AuthenticatedDashboardUsageRouteImport.update({
     id: '/usage',
@@ -237,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/keys': typeof AuthenticatedDashboardKeysRoute
   '/dashboard/metrics': typeof AuthenticatedDashboardMetricsRoute
   '/dashboard/usage': typeof AuthenticatedDashboardUsageRoute
+  '/dashboard/waitlist': typeof AuthenticatedDashboardWaitlistRoute
   '/dashboard/webhooks': typeof AuthenticatedDashboardWebhooksRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/v1/brief_product': typeof ApiV1Brief_productRoute
@@ -269,6 +277,7 @@ export interface FileRoutesByTo {
   '/dashboard/keys': typeof AuthenticatedDashboardKeysRoute
   '/dashboard/metrics': typeof AuthenticatedDashboardMetricsRoute
   '/dashboard/usage': typeof AuthenticatedDashboardUsageRoute
+  '/dashboard/waitlist': typeof AuthenticatedDashboardWaitlistRoute
   '/dashboard/webhooks': typeof AuthenticatedDashboardWebhooksRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/v1/brief_product': typeof ApiV1Brief_productRoute
@@ -305,6 +314,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/keys': typeof AuthenticatedDashboardKeysRoute
   '/_authenticated/dashboard/metrics': typeof AuthenticatedDashboardMetricsRoute
   '/_authenticated/dashboard/usage': typeof AuthenticatedDashboardUsageRoute
+  '/_authenticated/dashboard/waitlist': typeof AuthenticatedDashboardWaitlistRoute
   '/_authenticated/dashboard/webhooks': typeof AuthenticatedDashboardWebhooksRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRoute
   '/api/v1/brief_product': typeof ApiV1Brief_productRoute
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/dashboard/keys'
     | '/dashboard/metrics'
     | '/dashboard/usage'
+    | '/dashboard/waitlist'
     | '/dashboard/webhooks'
     | '/api/stripe/webhook'
     | '/api/v1/brief_product'
@@ -373,6 +384,7 @@ export interface FileRouteTypes {
     | '/dashboard/keys'
     | '/dashboard/metrics'
     | '/dashboard/usage'
+    | '/dashboard/waitlist'
     | '/dashboard/webhooks'
     | '/api/stripe/webhook'
     | '/api/v1/brief_product'
@@ -408,6 +420,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/keys'
     | '/_authenticated/dashboard/metrics'
     | '/_authenticated/dashboard/usage'
+    | '/_authenticated/dashboard/waitlist'
     | '/_authenticated/dashboard/webhooks'
     | '/api/stripe/webhook'
     | '/api/v1/brief_product'
@@ -646,6 +659,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardWebhooksRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
+    '/_authenticated/dashboard/waitlist': {
+      id: '/_authenticated/dashboard/waitlist'
+      path: '/waitlist'
+      fullPath: '/dashboard/waitlist'
+      preLoaderRoute: typeof AuthenticatedDashboardWaitlistRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
     '/_authenticated/dashboard/usage': {
       id: '/_authenticated/dashboard/usage'
       path: '/usage'
@@ -682,6 +702,7 @@ interface AuthenticatedDashboardRouteChildren {
   AuthenticatedDashboardKeysRoute: typeof AuthenticatedDashboardKeysRoute
   AuthenticatedDashboardMetricsRoute: typeof AuthenticatedDashboardMetricsRoute
   AuthenticatedDashboardUsageRoute: typeof AuthenticatedDashboardUsageRoute
+  AuthenticatedDashboardWaitlistRoute: typeof AuthenticatedDashboardWaitlistRoute
   AuthenticatedDashboardWebhooksRoute: typeof AuthenticatedDashboardWebhooksRoute
   AuthenticatedDashboardIndexRoute: typeof AuthenticatedDashboardIndexRoute
 }
@@ -692,6 +713,7 @@ const AuthenticatedDashboardRouteChildren: AuthenticatedDashboardRouteChildren =
     AuthenticatedDashboardKeysRoute: AuthenticatedDashboardKeysRoute,
     AuthenticatedDashboardMetricsRoute: AuthenticatedDashboardMetricsRoute,
     AuthenticatedDashboardUsageRoute: AuthenticatedDashboardUsageRoute,
+    AuthenticatedDashboardWaitlistRoute: AuthenticatedDashboardWaitlistRoute,
     AuthenticatedDashboardWebhooksRoute: AuthenticatedDashboardWebhooksRoute,
     AuthenticatedDashboardIndexRoute: AuthenticatedDashboardIndexRoute,
   }

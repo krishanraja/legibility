@@ -28,10 +28,17 @@ function Terms() {
 
         <Section n="01" title="The service">
           <p>
-            Legibility turns a product URL, a GTIN barcode, or a fuzzy product name into a typed
+            Legibility measures whether a machine can read a website and records why when it cannot.
+            It offers a free check of a single domain, publishes an index over a fixed cohort of
+            sites, and makes the same reading engine available as a REST API and an MCP server.
+            Through the API, a product URL, a GTIN barcode, or a fuzzy product name returns a typed
             product object: factual attributes, a price expressed as a band, per-field and overall
-            confidence, the source method, and the per-call cost. It is offered over a REST API and
-            an MCP server.
+            confidence, the source method, and the per-call cost.
+          </p>
+          <p>
+            Checking a domain requests one page from it with an identified user agent, obeying
+            robots.txt. Nothing is stored against a domain unless someone asks for that read to be
+            sent to them. A site owner can have a record removed at any time, as set out below.
           </p>
         </Section>
 

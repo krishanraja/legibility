@@ -204,6 +204,22 @@ export const Route = createFileRoute("/api/capture")({
           );
         }
 
+        // The person-to-check link, which waitlist cannot hold: its email column is UNIQUE, so
+        // the second domain someone checks would overwrite the first and their history would be
+        // one row deep. Asking twice for the same read is one capture, enforced by the unique
+        // index rather than by a read-then-write race.
+        const { error: captureError } = await supabaseAdmin
+          .from("check_captures")
+          .upsert({ email, check_id: check.id }, { onConflict: "email,check_id" });
+
+        if (captureError) {
+          console.error("[capture] check_captures write failed", captureError);
+          return json(
+            { error: "storage_failed", message: "We could not record that. Try again shortly." },
+            500,
+          );
+        }
+
         // The send is last and its failure is reported, not thrown. The capture already
         // succeeded by this point, and telling the visitor to submit again would produce a
         // second row and no second email.

@@ -13,6 +13,7 @@ import { APP_ORIGIN } from "@/config/product";
 
 import appCss from "../styles.css?url";
 import { reportError } from "../lib/error-reporting";
+import { GA_INLINE, GA_SCRIPT_SRC } from "@/lib/google-tag";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -217,6 +218,14 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Google tag (gtag.js). Google's instructions put it first in <head>, but React 19
+            hoists title, meta, link and async scripts ahead of any other head child during
+            SSR. So the async loader lands right after charset, viewport and the stylesheets,
+            and the inline config lands after the rest of the metadata, still ahead of the
+            JSON-LD and PostHog scripts. Rendering it here, before HeadContent, is as early as
+            React allows; head().scripts would put the config after the JSON-LD. */}
+        <script async src={GA_SCRIPT_SRC} />
+        <script dangerouslySetInnerHTML={{ __html: GA_INLINE }} />
         <HeadContent />
         <link rel="canonical" href={canonical} />
       </head>

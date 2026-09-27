@@ -1,7 +1,10 @@
+import { GA_TAG_HTML } from "./google-tag";
+
 export function renderErrorPage(): string {
   return `<!doctype html>
 <html lang="en">
   <head>
+    ${GA_TAG_HTML}
     <meta charset="utf-8" />
     <title>This page didn't load</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -308,9 +308,9 @@ describe("POST /api/capture", () => {
     // The sending domain is whatever Resend has verified; the reply address is a person.
     // Conflating them sends the first real conversation this funnel produces to a mailbox
     // nobody watches.
-    process.env.RESEND_REPLY_TO = "krish@themindmaker.ai";
+    process.env.RESEND_REPLY_TO = "krish@mindmake.co";
     await postSigned();
-    expect(h.sendCalls[0][2]).toMatchObject({ replyTo: "krish@themindmaker.ai" });
+    expect(h.sendCalls[0][2]).toMatchObject({ replyTo: "krish@mindmake.co" });
     delete process.env.RESEND_REPLY_TO;
   });
 

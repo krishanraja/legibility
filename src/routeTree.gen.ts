@@ -9,62 +9,51 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as TakedownRouteImport } from './routes/takedown'
-import { Route as ReadabilityRouteImport } from './routes/readability'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as DocsRouteImport } from './routes/docs'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as WhyIndexRouteImport } from './routes/why.index'
-import { Route as DocsIndexRouteImport } from './routes/docs.index'
-import { Route as WhyReasonRouteImport } from './routes/why.$reason'
-import { Route as DocsWebhooksRouteImport } from './routes/docs.webhooks'
-import { Route as DocsRateLimitsRouteImport } from './routes/docs.rate-limits'
-import { Route as DocsQuickstartRouteImport } from './routes/docs.quickstart'
-import { Route as DocsMcpRouteImport } from './routes/docs.mcp'
-import { Route as DocsErrorsRouteImport } from './routes/docs.errors'
-import { Route as ApiTakedownRouteImport } from './routes/api/takedown'
-import { Route as ApiMcpRouteImport } from './routes/api/mcp'
-import { Route as ApiHealthRouteImport } from './routes/api/health'
-import { Route as ApiCheckRouteImport } from './routes/api/check'
-import { Route as ApiCaptureRouteImport } from './routes/api/capture'
-import { Route as AboutBotRouteImport } from './routes/about.bot'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as DocsRouteImport } from './routes/docs'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ReadabilityRouteImport } from './routes/readability'
+import { Route as TakedownRouteImport } from './routes/takedown'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AboutBotRouteImport } from './routes/about.bot'
+import { Route as ApiCaptureRouteImport } from './routes/api/capture'
+import { Route as ApiCheckRouteImport } from './routes/api/check'
+import { Route as ApiHealthRouteImport } from './routes/api/health'
+import { Route as ApiMcpRouteImport } from './routes/api/mcp'
+import { Route as ApiTakedownRouteImport } from './routes/api/takedown'
+import { Route as DocsIndexRouteImport } from './routes/docs.index'
+import { Route as DocsErrorsRouteImport } from './routes/docs.errors'
+import { Route as DocsMcpRouteImport } from './routes/docs.mcp'
+import { Route as DocsQuickstartRouteImport } from './routes/docs.quickstart'
+import { Route as DocsRateLimitsRouteImport } from './routes/docs.rate-limits'
+import { Route as DocsWebhooksRouteImport } from './routes/docs.webhooks'
+import { Route as WhyIndexRouteImport } from './routes/why.index'
+import { Route as WhyReasonRouteImport } from './routes/why.$reason'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard.index'
-import { Route as DocsApiResolveProductRouteImport } from './routes/docs.api.resolve-product'
-import { Route as DocsApiReadProductRouteImport } from './routes/docs.api.read-product'
-import { Route as ApiV1Resolve_productRouteImport } from './routes/api/v1/resolve_product'
-import { Route as ApiV1Report_outcomeRouteImport } from './routes/api/v1/report_outcome'
-import { Route as ApiV1Read_productRouteImport } from './routes/api/v1/read_product'
-import { Route as ApiV1Compare_productsRouteImport } from './routes/api/v1/compare_products'
-import { Route as ApiV1Brief_productRouteImport } from './routes/api/v1/brief_product'
-import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
-import { Route as AuthenticatedDashboardWebhooksRouteImport } from './routes/_authenticated/dashboard.webhooks'
-import { Route as AuthenticatedDashboardWaitlistRouteImport } from './routes/_authenticated/dashboard.waitlist'
-import { Route as AuthenticatedDashboardUsageRouteImport } from './routes/_authenticated/dashboard.usage'
-import { Route as AuthenticatedDashboardMetricsRouteImport } from './routes/_authenticated/dashboard.metrics'
-import { Route as AuthenticatedDashboardKeysRouteImport } from './routes/_authenticated/dashboard.keys'
 import { Route as AuthenticatedDashboardBillingRouteImport } from './routes/_authenticated/dashboard.billing'
+import { Route as AuthenticatedDashboardKeysRouteImport } from './routes/_authenticated/dashboard.keys'
+import { Route as AuthenticatedDashboardMetricsRouteImport } from './routes/_authenticated/dashboard.metrics'
+import { Route as AuthenticatedDashboardUsageRouteImport } from './routes/_authenticated/dashboard.usage'
+import { Route as AuthenticatedDashboardWaitlistRouteImport } from './routes/_authenticated/dashboard.waitlist'
+import { Route as AuthenticatedDashboardWebhooksRouteImport } from './routes/_authenticated/dashboard.webhooks'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
+import { Route as ApiV1Brief_productRouteImport } from './routes/api/v1/brief_product'
+import { Route as ApiV1Compare_productsRouteImport } from './routes/api/v1/compare_products'
+import { Route as ApiV1Read_productRouteImport } from './routes/api/v1/read_product'
+import { Route as ApiV1Report_outcomeRouteImport } from './routes/api/v1/report_outcome'
+import { Route as ApiV1Resolve_productRouteImport } from './routes/api/v1/resolve_product'
+import { Route as DocsApiReadProductRouteImport } from './routes/docs.api.read-product'
+import { Route as DocsApiResolveProductRouteImport } from './routes/docs.api.resolve-product'
 
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TakedownRoute = TakedownRouteImport.update({
-  id: '/takedown',
-  path: '/takedown',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReadabilityRoute = ReadabilityRouteImport.update({
-  id: '/readability',
-  path: '/readability',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DocsRoute = DocsRouteImport.update({
@@ -72,83 +61,24 @@ const DocsRoute = DocsRouteImport.update({
   path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ReadabilityRoute = ReadabilityRouteImport.update({
+  id: '/readability',
+  path: '/readability',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WhyIndexRoute = WhyIndexRouteImport.update({
-  id: '/why/',
-  path: '/why/',
+const TakedownRoute = TakedownRouteImport.update({
+  id: '/takedown',
+  path: '/takedown',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DocsIndexRoute = DocsIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => DocsRoute,
-} as any)
-const WhyReasonRoute = WhyReasonRouteImport.update({
-  id: '/why/$reason',
-  path: '/why/$reason',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DocsWebhooksRoute = DocsWebhooksRouteImport.update({
-  id: '/webhooks',
-  path: '/webhooks',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsRateLimitsRoute = DocsRateLimitsRouteImport.update({
-  id: '/rate-limits',
-  path: '/rate-limits',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsQuickstartRoute = DocsQuickstartRouteImport.update({
-  id: '/quickstart',
-  path: '/quickstart',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsMcpRoute = DocsMcpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsErrorsRoute = DocsErrorsRouteImport.update({
-  id: '/errors',
-  path: '/errors',
-  getParentRoute: () => DocsRoute,
-} as any)
-const ApiTakedownRoute = ApiTakedownRouteImport.update({
-  id: '/api/takedown',
-  path: '/api/takedown',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiMcpRoute = ApiMcpRouteImport.update({
-  id: '/api/mcp',
-  path: '/api/mcp',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiHealthRoute = ApiHealthRouteImport.update({
-  id: '/api/health',
-  path: '/api/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCheckRoute = ApiCheckRouteImport.update({
-  id: '/api/check',
-  path: '/api/check',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCaptureRoute = ApiCaptureRouteImport.update({
-  id: '/api/capture',
-  path: '/api/capture',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutBotRoute = AboutBotRouteImport.update({
-  id: '/about/bot',
-  path: '/about/bot',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -156,80 +86,80 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AboutBotRoute = AboutBotRouteImport.update({
+  id: '/about/bot',
+  path: '/about/bot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCaptureRoute = ApiCaptureRouteImport.update({
+  id: '/api/capture',
+  path: '/api/capture',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCheckRoute = ApiCheckRouteImport.update({
+  id: '/api/check',
+  path: '/api/check',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHealthRoute = ApiHealthRouteImport.update({
+  id: '/api/health',
+  path: '/api/health',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMcpRoute = ApiMcpRouteImport.update({
+  id: '/api/mcp',
+  path: '/api/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTakedownRoute = ApiTakedownRouteImport.update({
+  id: '/api/takedown',
+  path: '/api/takedown',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsIndexRoute = DocsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsErrorsRoute = DocsErrorsRouteImport.update({
+  id: '/errors',
+  path: '/errors',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsMcpRoute = DocsMcpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsQuickstartRoute = DocsQuickstartRouteImport.update({
+  id: '/quickstart',
+  path: '/quickstart',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsRateLimitsRoute = DocsRateLimitsRouteImport.update({
+  id: '/rate-limits',
+  path: '/rate-limits',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsWebhooksRoute = DocsWebhooksRouteImport.update({
+  id: '/webhooks',
+  path: '/webhooks',
+  getParentRoute: () => DocsRoute,
+} as any)
+const WhyIndexRoute = WhyIndexRouteImport.update({
+  id: '/why/',
+  path: '/why/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhyReasonRoute = WhyReasonRouteImport.update({
+  id: '/why/$reason',
+  path: '/why/$reason',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const DocsApiResolveProductRoute = DocsApiResolveProductRouteImport.update({
-  id: '/api/resolve-product',
-  path: '/api/resolve-product',
-  getParentRoute: () => DocsRoute,
-} as any)
-const DocsApiReadProductRoute = DocsApiReadProductRouteImport.update({
-  id: '/api/read-product',
-  path: '/api/read-product',
-  getParentRoute: () => DocsRoute,
-} as any)
-const ApiV1Resolve_productRoute = ApiV1Resolve_productRouteImport.update({
-  id: '/api/v1/resolve_product',
-  path: '/api/v1/resolve_product',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1Report_outcomeRoute = ApiV1Report_outcomeRouteImport.update({
-  id: '/api/v1/report_outcome',
-  path: '/api/v1/report_outcome',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1Read_productRoute = ApiV1Read_productRouteImport.update({
-  id: '/api/v1/read_product',
-  path: '/api/v1/read_product',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1Compare_productsRoute = ApiV1Compare_productsRouteImport.update({
-  id: '/api/v1/compare_products',
-  path: '/api/v1/compare_products',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1Brief_productRoute = ApiV1Brief_productRouteImport.update({
-  id: '/api/v1/brief_product',
-  path: '/api/v1/brief_product',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
-  id: '/api/stripe/webhook',
-  path: '/api/stripe/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedDashboardWebhooksRoute =
-  AuthenticatedDashboardWebhooksRouteImport.update({
-    id: '/webhooks',
-    path: '/webhooks',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardWaitlistRoute =
-  AuthenticatedDashboardWaitlistRouteImport.update({
-    id: '/waitlist',
-    path: '/waitlist',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardUsageRoute =
-  AuthenticatedDashboardUsageRouteImport.update({
-    id: '/usage',
-    path: '/usage',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardMetricsRoute =
-  AuthenticatedDashboardMetricsRouteImport.update({
-    id: '/metrics',
-    path: '/metrics',
-    getParentRoute: () => AuthenticatedDashboardRoute,
-  } as any)
-const AuthenticatedDashboardKeysRoute =
-  AuthenticatedDashboardKeysRouteImport.update({
-    id: '/keys',
-    path: '/keys',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
 const AuthenticatedDashboardBillingRoute =
@@ -238,6 +168,76 @@ const AuthenticatedDashboardBillingRoute =
     path: '/billing',
     getParentRoute: () => AuthenticatedDashboardRoute,
   } as any)
+const AuthenticatedDashboardKeysRoute =
+  AuthenticatedDashboardKeysRouteImport.update({
+    id: '/keys',
+    path: '/keys',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardMetricsRoute =
+  AuthenticatedDashboardMetricsRouteImport.update({
+    id: '/metrics',
+    path: '/metrics',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardUsageRoute =
+  AuthenticatedDashboardUsageRouteImport.update({
+    id: '/usage',
+    path: '/usage',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardWaitlistRoute =
+  AuthenticatedDashboardWaitlistRouteImport.update({
+    id: '/waitlist',
+    path: '/waitlist',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const AuthenticatedDashboardWebhooksRoute =
+  AuthenticatedDashboardWebhooksRouteImport.update({
+    id: '/webhooks',
+    path: '/webhooks',
+    getParentRoute: () => AuthenticatedDashboardRoute,
+  } as any)
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1Brief_productRoute = ApiV1Brief_productRouteImport.update({
+  id: '/api/v1/brief_product',
+  path: '/api/v1/brief_product',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1Compare_productsRoute = ApiV1Compare_productsRouteImport.update({
+  id: '/api/v1/compare_products',
+  path: '/api/v1/compare_products',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1Read_productRoute = ApiV1Read_productRouteImport.update({
+  id: '/api/v1/read_product',
+  path: '/api/v1/read_product',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1Report_outcomeRoute = ApiV1Report_outcomeRouteImport.update({
+  id: '/api/v1/report_outcome',
+  path: '/api/v1/report_outcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1Resolve_productRoute = ApiV1Resolve_productRouteImport.update({
+  id: '/api/v1/resolve_product',
+  path: '/api/v1/resolve_product',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsApiReadProductRoute = DocsApiReadProductRouteImport.update({
+  id: '/api/read-product',
+  path: '/api/read-product',
+  getParentRoute: () => DocsRoute,
+} as any)
+const DocsApiResolveProductRoute = DocsApiResolveProductRouteImport.update({
+  id: '/api/resolve-product',
+  path: '/api/resolve-product',
+  getParentRoute: () => DocsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -495,39 +495,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/takedown': {
-      id: '/takedown'
-      path: '/takedown'
-      fullPath: '/takedown'
-      preLoaderRoute: typeof TakedownRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/readability': {
-      id: '/readability'
-      path: '/readability'
-      fullPath: '/readability'
-      preLoaderRoute: typeof ReadabilityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/docs': {
-      id: '/docs'
-      path: '/docs'
-      fullPath: '/docs'
-      preLoaderRoute: typeof DocsRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -537,109 +509,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/why/': {
-      id: '/why/'
-      path: '/why'
-      fullPath: '/why/'
-      preLoaderRoute: typeof WhyIndexRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/docs/': {
-      id: '/docs/'
-      path: '/'
-      fullPath: '/docs/'
-      preLoaderRoute: typeof DocsIndexRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/why/$reason': {
-      id: '/why/$reason'
-      path: '/why/$reason'
-      fullPath: '/why/$reason'
-      preLoaderRoute: typeof WhyReasonRouteImport
+    '/readability': {
+      id: '/readability'
+      path: '/readability'
+      fullPath: '/readability'
+      preLoaderRoute: typeof ReadabilityRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/docs/webhooks': {
-      id: '/docs/webhooks'
-      path: '/webhooks'
-      fullPath: '/docs/webhooks'
-      preLoaderRoute: typeof DocsWebhooksRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/rate-limits': {
-      id: '/docs/rate-limits'
-      path: '/rate-limits'
-      fullPath: '/docs/rate-limits'
-      preLoaderRoute: typeof DocsRateLimitsRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/quickstart': {
-      id: '/docs/quickstart'
-      path: '/quickstart'
-      fullPath: '/docs/quickstart'
-      preLoaderRoute: typeof DocsQuickstartRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/mcp': {
-      id: '/docs/mcp'
-      path: '/mcp'
-      fullPath: '/docs/mcp'
-      preLoaderRoute: typeof DocsMcpRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/errors': {
-      id: '/docs/errors'
-      path: '/errors'
-      fullPath: '/docs/errors'
-      preLoaderRoute: typeof DocsErrorsRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/api/takedown': {
-      id: '/api/takedown'
-      path: '/api/takedown'
-      fullPath: '/api/takedown'
-      preLoaderRoute: typeof ApiTakedownRouteImport
+    '/takedown': {
+      id: '/takedown'
+      path: '/takedown'
+      fullPath: '/takedown'
+      preLoaderRoute: typeof TakedownRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/mcp': {
-      id: '/api/mcp'
-      path: '/api/mcp'
-      fullPath: '/api/mcp'
-      preLoaderRoute: typeof ApiMcpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/health': {
-      id: '/api/health'
-      path: '/api/health'
-      fullPath: '/api/health'
-      preLoaderRoute: typeof ApiHealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/check': {
-      id: '/api/check'
-      path: '/api/check'
-      fullPath: '/api/check'
-      preLoaderRoute: typeof ApiCheckRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/capture': {
-      id: '/api/capture'
-      path: '/api/capture'
-      fullPath: '/api/capture'
-      preLoaderRoute: typeof ApiCaptureRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about/bot': {
-      id: '/about/bot'
-      path: '/about/bot'
-      fullPath: '/about/bot'
-      preLoaderRoute: typeof AboutBotRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -649,6 +551,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/about/bot': {
+      id: '/about/bot'
+      path: '/about/bot'
+      fullPath: '/about/bot'
+      preLoaderRoute: typeof AboutBotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/capture': {
+      id: '/api/capture'
+      path: '/api/capture'
+      fullPath: '/api/capture'
+      preLoaderRoute: typeof ApiCaptureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/check': {
+      id: '/api/check'
+      path: '/api/check'
+      fullPath: '/api/check'
+      preLoaderRoute: typeof ApiCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/health': {
+      id: '/api/health'
+      path: '/api/health'
+      fullPath: '/api/health'
+      preLoaderRoute: typeof ApiHealthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/mcp': {
+      id: '/api/mcp'
+      path: '/api/mcp'
+      fullPath: '/api/mcp'
+      preLoaderRoute: typeof ApiMcpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/takedown': {
+      id: '/api/takedown'
+      path: '/api/takedown'
+      fullPath: '/api/takedown'
+      preLoaderRoute: typeof ApiTakedownRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/': {
+      id: '/docs/'
+      path: '/'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof DocsIndexRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/errors': {
+      id: '/docs/errors'
+      path: '/errors'
+      fullPath: '/docs/errors'
+      preLoaderRoute: typeof DocsErrorsRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/mcp': {
+      id: '/docs/mcp'
+      path: '/mcp'
+      fullPath: '/docs/mcp'
+      preLoaderRoute: typeof DocsMcpRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/quickstart': {
+      id: '/docs/quickstart'
+      path: '/quickstart'
+      fullPath: '/docs/quickstart'
+      preLoaderRoute: typeof DocsQuickstartRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/rate-limits': {
+      id: '/docs/rate-limits'
+      path: '/rate-limits'
+      fullPath: '/docs/rate-limits'
+      preLoaderRoute: typeof DocsRateLimitsRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/webhooks': {
+      id: '/docs/webhooks'
+      path: '/webhooks'
+      fullPath: '/docs/webhooks'
+      preLoaderRoute: typeof DocsWebhooksRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/why/': {
+      id: '/why/'
+      path: '/why'
+      fullPath: '/why/'
+      preLoaderRoute: typeof WhyIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/why/$reason': {
+      id: '/why/$reason'
+      path: '/why/$reason'
+      fullPath: '/why/$reason'
+      preLoaderRoute: typeof WhyReasonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/'
@@ -656,88 +656,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/docs/api/resolve-product': {
-      id: '/docs/api/resolve-product'
-      path: '/api/resolve-product'
-      fullPath: '/docs/api/resolve-product'
-      preLoaderRoute: typeof DocsApiResolveProductRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/docs/api/read-product': {
-      id: '/docs/api/read-product'
-      path: '/api/read-product'
-      fullPath: '/docs/api/read-product'
-      preLoaderRoute: typeof DocsApiReadProductRouteImport
-      parentRoute: typeof DocsRoute
-    }
-    '/api/v1/resolve_product': {
-      id: '/api/v1/resolve_product'
-      path: '/api/v1/resolve_product'
-      fullPath: '/api/v1/resolve_product'
-      preLoaderRoute: typeof ApiV1Resolve_productRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/report_outcome': {
-      id: '/api/v1/report_outcome'
-      path: '/api/v1/report_outcome'
-      fullPath: '/api/v1/report_outcome'
-      preLoaderRoute: typeof ApiV1Report_outcomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/read_product': {
-      id: '/api/v1/read_product'
-      path: '/api/v1/read_product'
-      fullPath: '/api/v1/read_product'
-      preLoaderRoute: typeof ApiV1Read_productRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/compare_products': {
-      id: '/api/v1/compare_products'
-      path: '/api/v1/compare_products'
-      fullPath: '/api/v1/compare_products'
-      preLoaderRoute: typeof ApiV1Compare_productsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/brief_product': {
-      id: '/api/v1/brief_product'
-      path: '/api/v1/brief_product'
-      fullPath: '/api/v1/brief_product'
-      preLoaderRoute: typeof ApiV1Brief_productRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/stripe/webhook': {
-      id: '/api/stripe/webhook'
-      path: '/api/stripe/webhook'
-      fullPath: '/api/stripe/webhook'
-      preLoaderRoute: typeof ApiStripeWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/dashboard/webhooks': {
-      id: '/_authenticated/dashboard/webhooks'
-      path: '/webhooks'
-      fullPath: '/dashboard/webhooks'
-      preLoaderRoute: typeof AuthenticatedDashboardWebhooksRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/waitlist': {
-      id: '/_authenticated/dashboard/waitlist'
-      path: '/waitlist'
-      fullPath: '/dashboard/waitlist'
-      preLoaderRoute: typeof AuthenticatedDashboardWaitlistRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/usage': {
-      id: '/_authenticated/dashboard/usage'
-      path: '/usage'
-      fullPath: '/dashboard/usage'
-      preLoaderRoute: typeof AuthenticatedDashboardUsageRouteImport
-      parentRoute: typeof AuthenticatedDashboardRoute
-    }
-    '/_authenticated/dashboard/metrics': {
-      id: '/_authenticated/dashboard/metrics'
-      path: '/metrics'
-      fullPath: '/dashboard/metrics'
-      preLoaderRoute: typeof AuthenticatedDashboardMetricsRouteImport
+    '/_authenticated/dashboard/billing': {
+      id: '/_authenticated/dashboard/billing'
+      path: '/billing'
+      fullPath: '/dashboard/billing'
+      preLoaderRoute: typeof AuthenticatedDashboardBillingRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
     '/_authenticated/dashboard/keys': {
@@ -747,12 +670,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardKeysRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
     }
-    '/_authenticated/dashboard/billing': {
-      id: '/_authenticated/dashboard/billing'
-      path: '/billing'
-      fullPath: '/dashboard/billing'
-      preLoaderRoute: typeof AuthenticatedDashboardBillingRouteImport
+    '/_authenticated/dashboard/metrics': {
+      id: '/_authenticated/dashboard/metrics'
+      path: '/metrics'
+      fullPath: '/dashboard/metrics'
+      preLoaderRoute: typeof AuthenticatedDashboardMetricsRouteImport
       parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/usage': {
+      id: '/_authenticated/dashboard/usage'
+      path: '/usage'
+      fullPath: '/dashboard/usage'
+      preLoaderRoute: typeof AuthenticatedDashboardUsageRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/waitlist': {
+      id: '/_authenticated/dashboard/waitlist'
+      path: '/waitlist'
+      fullPath: '/dashboard/waitlist'
+      preLoaderRoute: typeof AuthenticatedDashboardWaitlistRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/_authenticated/dashboard/webhooks': {
+      id: '/_authenticated/dashboard/webhooks'
+      path: '/webhooks'
+      fullPath: '/dashboard/webhooks'
+      preLoaderRoute: typeof AuthenticatedDashboardWebhooksRouteImport
+      parentRoute: typeof AuthenticatedDashboardRoute
+    }
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/brief_product': {
+      id: '/api/v1/brief_product'
+      path: '/api/v1/brief_product'
+      fullPath: '/api/v1/brief_product'
+      preLoaderRoute: typeof ApiV1Brief_productRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/compare_products': {
+      id: '/api/v1/compare_products'
+      path: '/api/v1/compare_products'
+      fullPath: '/api/v1/compare_products'
+      preLoaderRoute: typeof ApiV1Compare_productsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/read_product': {
+      id: '/api/v1/read_product'
+      path: '/api/v1/read_product'
+      fullPath: '/api/v1/read_product'
+      preLoaderRoute: typeof ApiV1Read_productRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/report_outcome': {
+      id: '/api/v1/report_outcome'
+      path: '/api/v1/report_outcome'
+      fullPath: '/api/v1/report_outcome'
+      preLoaderRoute: typeof ApiV1Report_outcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/resolve_product': {
+      id: '/api/v1/resolve_product'
+      path: '/api/v1/resolve_product'
+      fullPath: '/api/v1/resolve_product'
+      preLoaderRoute: typeof ApiV1Resolve_productRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/api/read-product': {
+      id: '/docs/api/read-product'
+      path: '/api/read-product'
+      fullPath: '/docs/api/read-product'
+      preLoaderRoute: typeof DocsApiReadProductRouteImport
+      parentRoute: typeof DocsRoute
+    }
+    '/docs/api/resolve-product': {
+      id: '/docs/api/resolve-product'
+      path: '/api/resolve-product'
+      fullPath: '/docs/api/resolve-product'
+      preLoaderRoute: typeof DocsApiResolveProductRouteImport
+      parentRoute: typeof DocsRoute
     }
   }
 }

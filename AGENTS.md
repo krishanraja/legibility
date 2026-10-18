@@ -1,6 +1,7 @@
 # AGENTS.md
 
 <!-- north-star:start -->
+
 ## North Star: read it first, every session
 
 This repository's North Star is [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md): an ambition Krish set that is not reached yet.

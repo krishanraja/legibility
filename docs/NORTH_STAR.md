@@ -4,7 +4,7 @@ Status: Current
 Owner: Krish Raja
 Last verified: 2026-10-18
 
-> Within 18 months, by April 2028, more of Legibility's revenue comes from agents paying per call in USDC on mainnet than from human sign-ups, and a hundred production agents depend on it every week.
+> By March 2027, more of Legibility's revenue comes from agents paying per call in USDC on mainnet than from human sign-ups, and a hundred production agents depend on it every week.
 
 Set by Krish on 18 October 2026. It is not reached yet. It is what every session in this repository works toward.
 

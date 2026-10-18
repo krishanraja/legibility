@@ -15,3 +15,12 @@
 # which cannot trip the rule. This entry covers only the historical commit, which cannot be
 # rewritten now that the branch is pushed and under review.
 9c7cb73494458afe2d41721507c560c7407f220e:src/lib/api/stripe-signature.test.ts:generic-api-key:5
+
+# Historical curl examples use "lgk_your_key", "plk_your_key". These explicit
+# YOUR_KEY documentation placeholders were never issued API credentials. The samples
+# appeared in README and the dashboard copy block. Pin only these five old findings.
+a3a8f10bfce518cd74dc571097b5bed8cfc66205:README.md:curl-auth-header:51
+a3a8f10bfce518cd74dc571097b5bed8cfc66205:README.md:curl-auth-header:60
+754987a364ba14bc8eb543928acd7f2ea801e3d9:README.md:curl-auth-header:51
+53ae7f62d3d973ee733f968ab78c70ecdc0713aa:README.md:curl-auth-header:28
+a1df939a6924e53b236b88a4cb23f00a62a5de9c:src/routes/_authenticated/dashboard.index.tsx:curl-auth-header:26

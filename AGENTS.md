@@ -1,6 +1,5 @@
 # AGENTS.md
 
-<<<<<<< HEAD
 <!-- north-star:start -->
 ## North Star: read it first, every session
 
@@ -11,7 +10,7 @@ This repository's North Star is [`docs/NORTH_STAR.md`](docs/NORTH_STAR.md): an a
 - Prefer the work that moves it furthest, and close by noting what moved.
 - Only Krish changes it.
 <!-- north-star:end -->
-=======
+
 ## Cursor Cloud specific instructions
 
 Legibility is a single TanStack Start app (React 19 + TypeScript + Vite + Nitro, Supabase
@@ -23,8 +22,8 @@ extraction lives in a separate `legibility-worker` deploy that this app proxies 
 
 - The package manager is **bun** (`bunfig.toml`, `bun.lock`), not npm/pnpm. `bun` is installed at
   `~/.bun/bin` and on `PATH` via `~/.bashrc`. The update script reinstalls it if missing.
-- `package.json` `engines` pins `node 24.x`, but the base VM ships Node 22 and every gate
-  (install, tsc, lint, vitest, build, dev server) runs fine on it. No Node upgrade is required.
+- Use the Node version pinned by `package.json` (`24.x`). The August 2026 Cursor VM used
+  Node 22; that historical environment does not override the repository toolchain.
 - Standard commands live in `package.json` scripts and are documented in `README.md`
   ("Development"). The CI gate sequence is in `.github/workflows/ci.yml`.
 
@@ -53,4 +52,3 @@ extraction lives in a separate `legibility-worker` deploy that this app proxies 
   reachable worker (`/api/health` reports `degraded` when the worker is unset, which is expected).
 - The Supabase clients are lazily instantiated behind a Proxy, so a missing/placeholder env var
   only throws when a page actually touches Supabase, not at server startup.
->>>>>>> cursor/setup-dev-environment-03a3

@@ -25,6 +25,14 @@ function Terms() {
           Interim terms, plain language. Final text is under counsel review before paid general
           availability. This is not legal advice.
         </p>
+        <p className="mt-6 text-muted-foreground">
+          Legibility is operated by Mindmaker LLC, a United States company, and Mindmaker Ltd, a
+          United Kingdom company (together, "Mindmaker", "we", "us"). Contact us at{" "}
+          <a href="mailto:founders@legibility.io" className="underline hover:text-foreground">
+            founders@legibility.io
+          </a>
+          .
+        </p>
 
         <Section n="01" title="The service">
           <p>
@@ -129,7 +137,7 @@ function Terms() {
         </Section>
 
         <p className="mt-12 text-xs text-muted-foreground">
-          Interim terms. Last updated June 2026. Pending final counsel review before paid GA.
+          Interim terms. Last updated: 19 October 2026. Pending final counsel review before paid GA.
         </p>
       </main>
       <SiteFooter />

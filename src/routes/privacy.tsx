@@ -25,6 +25,15 @@ function Privacy() {
           Interim policy, plain language. Final text is under counsel review before paid general
           availability. This is not legal advice.
         </p>
+        <p className="mt-6 text-muted-foreground">
+          Legibility is operated by Mindmaker LLC, a United States company, and Mindmaker Ltd, a
+          United Kingdom company (together, "Mindmaker", "we", "us"). Mindmaker LLC and Mindmaker
+          Ltd are responsible for the personal information described in this policy. Contact us at{" "}
+          <a href="mailto:founders@legibility.io" className="underline hover:text-foreground">
+            founders@legibility.io
+          </a>
+          .
+        </p>
 
         <Section n="01" title="What we collect">
           <ul className="list-disc space-y-1 pl-5">
@@ -90,7 +99,8 @@ function Privacy() {
         </Section>
 
         <p className="mt-12 text-xs text-muted-foreground">
-          Interim policy. Last updated June 2026. Pending final counsel review before paid GA.
+          Interim policy. Last updated: 19 October 2026. Pending final counsel review before paid
+          GA.
         </p>
       </main>
       <SiteFooter />

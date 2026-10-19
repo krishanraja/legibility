@@ -94,6 +94,12 @@ export function SiteFooter() {
           </ul>
         </div>
       </div>
+      <div className="mx-auto max-w-[1280px] px-6 pb-10 font-mono text-xs text-muted-foreground/60">
+        <p>
+          <span className="inline-block">Legibility is a Mindmaker LLC company.</span>{" "}
+          <span className="inline-block">Mindmaker Ltd in the UK.</span>
+        </p>
+      </div>
     </footer>
   );
 }

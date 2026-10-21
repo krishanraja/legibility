@@ -184,6 +184,10 @@ JSON error bodies with a stable shape: `{ error, message }`. Codes in use:
 | 502  | `upstream_unavailable`           | the extraction worker did not respond                        |
 | 503  | `external_worker_not_configured` | worker URL/token not set (should not happen in prod)         |
 
+The public `/docs/errors` and `/docs/rate-limits` pages render from `src/content/api-reference.ts`,
+which `api-reference.test.ts` holds to the API routes and the `rate_check` migration. Add a new code
+or change a plan rate there, or CI fails.
+
 New codes are additive. In MCP, tool-level input errors are returned inside a JSON-RPC result with
 `isError: true` rather than as an RPC error, so discovery-vs-call semantics stay clean.
 

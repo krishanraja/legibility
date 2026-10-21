@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { signInErrorMessage } from "./AuthModal";
+import { signInErrorMessage } from "./sign-in-error";
 
 describe("signInErrorMessage", () => {
   it("replaces the empty 5xx message supabase-js produces", () => {

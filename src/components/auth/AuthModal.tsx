@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { signInErrorMessage } from "./sign-in-error";
 
 export function AuthModal({
   open,
@@ -31,7 +32,7 @@ export function AuthModal({
     });
     setSending(false);
     if (error) {
-      toast.error(error.message);
+      toast.error(signInErrorMessage(error));
       return;
     }
     setSent(true);

@@ -9,6 +9,7 @@ import {
 } from "@/lib/api/readability";
 import { REASON_PAGES, REASON_PAGE_ORDER } from "@/content/reasons";
 import { APP_ORIGIN } from "@/config/product";
+import { pageMeta } from "@/lib/seo";
 
 /**
  * One page per failure reason.
@@ -40,13 +41,12 @@ export const Route = createFileRoute("/why/$reason")({
     const page = REASON_PAGES[params.reason];
     const url = `${APP_ORIGIN}/why/${params.reason}`;
     return {
-      meta: [
-        { title: `${page.title} · Legibility` },
-        { name: "description", content: page.summary },
-        { property: "og:title", content: `${page.title} · Legibility` },
-        { property: "og:description", content: page.summary },
-        { property: "og:url", content: url },
-      ],
+      meta: pageMeta({
+        title: `${page.title} · Legibility`,
+        description: page.summary,
+        path: `/why/${params.reason}`,
+        type: "article",
+      }),
       scripts: [
         {
           type: "application/ld+json",

@@ -19,6 +19,8 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { REASON_PAGES, REASON_PAGE_ORDER } from "../src/content/reasons";
 import { REASON_COPY, REASON_FIX } from "../src/lib/api/readability";
+import { loadAnswersFromDisk } from "../src/lib/answers-fs";
+import { answerToText, sortAnswers } from "../src/lib/answers";
 
 const ROOT = resolve(import.meta.dir, "..");
 const OUT = resolve(ROOT, "public/llms-full.txt");
@@ -49,6 +51,9 @@ const sections = REASON_PAGE_ORDER.map((reason) => {
   ].join("\n");
 }).join("\n\n");
 
+// Every answer-hub post in full, newest first, from the same files the /answers pages render.
+const answers = sortAnswers(loadAnswersFromDisk(ROOT)).map(answerToText).join("\n\n");
+
 const body = [
   summary,
   "",
@@ -59,6 +64,12 @@ const body = [
   `Index of these pages: ${ORIGIN}/why`,
   "",
   sections,
+  "",
+  "## Answers, in full",
+  "",
+  `Each answer opens with the direct answer, then the detail and a short FAQ. Index: ${ORIGIN}/answers. Feed: ${ORIGIN}/answers/feed.xml.`,
+  "",
+  answers,
   "",
   "## About the crawler",
   "",

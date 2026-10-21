@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/seo";
 export const Route = createFileRoute("/docs/api/read-product")({
   head: () => ({
-    meta: [
-      { title: "read_product \u00b7 Legibility" },
-      {
-        name: "description",
-        content:
-          "The read_product endpoint: a product URL or a GTIN barcode to a typed product object, with per-field confidence, a price band, the source method and the cost of the call.",
-      },
-    ],
+    meta: pageMeta({
+      title: "read_product \u00b7 Legibility",
+      description:
+        "The read_product endpoint: a product URL or a GTIN barcode to a typed product object, with per-field confidence, a price band, the source method and the cost of the call.",
+      path: "/docs/api/read-product",
+    }),
   }),
   component: () => (
     <article className="space-y-6">

@@ -12,6 +12,7 @@ import plansData from "@/data/plans.json";
 import { AuthModal } from "@/components/auth/AuthModal";
 import { useAuth } from "@/lib/auth";
 import { createCheckoutSession } from "@/lib/api/billing.functions";
+import { pageMeta } from "@/lib/seo";
 
 /**
  * The front page argues one position: a lot of the web cannot be read by a machine, and
@@ -30,20 +31,12 @@ import { createCheckoutSession } from "@/lib/api/billing.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { title: "Legibility · Can a machine read your website?" },
-      {
-        name: "description",
-        content:
-          "Enter a domain and see what an AI crawler sees. Legibility measures whether a machine can read a website, and records why when it cannot. Method and sample sizes published with every figure.",
-      },
-      { property: "og:title", content: "Legibility · Can a machine read your website?" },
-      {
-        property: "og:description",
-        content:
-          "AI assistants recommend products without asking the brand. Enter your domain and see whether one can read yours.",
-      },
-    ],
+    meta: pageMeta({
+      title: "Legibility · Can a machine read your website?",
+      description:
+        "Enter a domain and see what an AI crawler sees. Legibility measures whether a machine can read a website, and records why when it cannot. Method and sample sizes published with every figure.",
+      path: "/",
+    }),
     // FAQPage structured data. Mirrors the on-page FAQ below question for question: answer
     // engines quote this verbatim, so a version that drifts from the page is a version that
     // gets quoted wrongly. An earlier revision claimed an unblocker as a live data source

@@ -7,11 +7,17 @@
  *     /dashboard even though `User-agent: *` disallowed it.
  *   - llms.txt advertised a Custom plan, a Slack channel and an SLA that do not exist.
  *   - A find-and-replace left dead brand strings in public-facing files.
+ *   - og.png still showed the dead "plinth" wordmark and host at 2400x1260, and the favicon
+ *     was a 2000x2000 PNG served for a 16 pixel tab.
+ *   - Every page but the homepage shared the homepage's og:url and twitter:title.
  *
  * Each check below maps to one of those. Run: `bun scripts/check-geo.ts`
  */
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve } from "node:path";
+import { loadAnswersFromDisk } from "../src/lib/answers-fs";
+import { answerUrl, validateAnswers } from "../src/lib/answers";
+import { DEFAULT_OG_IMAGE, ANSWERS_OG_IMAGE } from "../src/lib/seo";
 
 const ROOT = resolve(import.meta.dir, "..");
 const ORIGIN = "https://legibility.io";
@@ -75,6 +81,35 @@ function checkRobots() {
         `group [${g.agents.join(", ")}] does not disallow /dashboard. ` +
           `robots groups are not additive, so this group ignores the rules under "*".`,
       );
+    }
+  }
+
+  // The AI agents and assistants that must be explicitly welcome. A name dropped from the
+  // group during an edit falls back to "*", which still allows it, so this guards intent
+  // (an explicit, reviewed list) rather than access. Add to it as operators publish new agents.
+  const REQUIRED_AI_AGENTS = [
+    "GPTBot",
+    "OAI-SearchBot",
+    "ChatGPT-User",
+    "ClaudeBot",
+    "Claude-User",
+    "Claude-SearchBot",
+    "PerplexityBot",
+    "Perplexity-User",
+    "Google-Extended",
+    "Applebot",
+    "Applebot-Extended",
+    "meta-externalagent",
+    "Amazonbot",
+    "DuckAssistBot",
+    "MistralAI-User",
+    "CCBot",
+  ];
+  for (const agent of REQUIRED_AI_AGENTS) {
+    const g = groups.find((x) => x.agents.some((a) => a.toLowerCase() === agent.toLowerCase()));
+    if (!g) fail("robots", `AI agent ${agent} is not named in robots.txt`);
+    else if (!g.rules.some(([f, v]) => f === "allow" && v === "/")) {
+      fail("robots", `AI agent ${agent} is named but its group does not Allow: /`);
     }
   }
 
@@ -247,6 +282,9 @@ function checkBannedPhrasing() {
     "public/llms.txt",
     "src/lib/api/readability.ts",
     "src/content/reasons.ts",
+    ...readdirSync(resolve(ROOT, "src/content/answers"))
+      .filter((f) => f.endsWith(".md"))
+      .map((f) => `src/content/answers/${f}`),
   ];
   for (const f of files) {
     const text = read(f);
@@ -262,6 +300,151 @@ function checkBannedPhrasing() {
   }
 }
 
+/* --------------------------------------------------------------- icons and cards */
+
+/** Width and height from a PNG's IHDR chunk, or null if the file is not a PNG. */
+function pngSize(p: string): { w: number; h: number } | null {
+  const b = readFileSync(resolve(ROOT, p));
+  if (b.length < 24 || b.toString("ascii", 1, 4) !== "PNG") return null;
+  return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+}
+
+function checkIconsAndCards() {
+  const pngs: [string, number, number][] = [
+    ["public/favicon-16x16.png", 16, 16],
+    ["public/favicon-32x32.png", 32, 32],
+    ["public/apple-touch-icon.png", 180, 180],
+    ["public/icon-192.png", 192, 192],
+    ["public/icon-512.png", 512, 512],
+    ["public/icon-maskable-512.png", 512, 512],
+    ["public/og.png", DEFAULT_OG_IMAGE.width, DEFAULT_OG_IMAGE.height],
+    ["public/og-answers.png", ANSWERS_OG_IMAGE.width, ANSWERS_OG_IMAGE.height],
+  ];
+  for (const [p, w, h] of pngs) {
+    if (!existsSync(resolve(ROOT, p))) {
+      fail("icons", `${p} is missing`);
+      continue;
+    }
+    const size = pngSize(p);
+    if (!size) fail("icons", `${p} is not a PNG`);
+    else if (size.w !== w || size.h !== h) {
+      fail("icons", `${p} is ${size.w}x${size.h}, expected ${w}x${h}`);
+    }
+  }
+  if ((DEFAULT_OG_IMAGE.width / DEFAULT_OG_IMAGE.height).toFixed(2) !== "1.90") {
+    fail("cards", "the social card must be 1.91:1 (1200x630) for summary_large_image");
+  }
+
+  const ico = resolve(ROOT, "public/favicon.ico");
+  if (!existsSync(ico)) fail("icons", "public/favicon.ico is missing");
+  else if (readFileSync(ico).readUInt16LE(2) !== 1) fail("icons", "favicon.ico is not an ICO");
+
+  const svg = existsSync(resolve(ROOT, "public/favicon.svg")) ? read("public/favicon.svg") : "";
+  if (!svg.includes("<svg") || !svg.includes("viewBox")) {
+    fail("icons", "public/favicon.svg is missing or not an SVG with a viewBox");
+  }
+
+  let manifest: { icons?: { src: string; sizes: string; purpose?: string }[]; name?: string };
+  try {
+    manifest = JSON.parse(read("public/site.webmanifest"));
+  } catch {
+    return fail("icons", "public/site.webmanifest is missing or not JSON");
+  }
+  if (!manifest.name) fail("icons", "site.webmanifest has no name");
+  for (const need of ["192x192", "512x512"]) {
+    if (!manifest.icons?.some((i) => i.sizes === need)) {
+      fail("icons", `site.webmanifest has no ${need} icon`);
+    }
+  }
+  if (!manifest.icons?.some((i) => i.purpose === "maskable")) {
+    fail("icons", "site.webmanifest has no maskable icon");
+  }
+  for (const i of manifest.icons ?? []) {
+    if (!existsSync(resolve(ROOT, "public", i.src.replace(/^\//, "")))) {
+      fail("icons", `site.webmanifest points at a missing file: ${i.src}`);
+    }
+  }
+
+  const root = read("src/routes/__root.tsx");
+  for (const [label, needle] of [
+    ["the SVG favicon", 'href: "/favicon.svg"'],
+    ["favicon.ico", 'href: "/favicon.ico"'],
+    ["the apple-touch icon", 'href: "/apple-touch-icon.png"'],
+    ["the web manifest", 'href: "/site.webmanifest"'],
+    ["a theme-color", 'name: "theme-color"'],
+    ["site-wide social defaults", "...pageMeta("],
+  ] as const) {
+    if (!root.includes(needle)) fail("head", `__root.tsx does not emit ${label}`);
+  }
+}
+
+/* -------------------------------------------------------- per-route social meta */
+
+/**
+ * Every public page route must build its head through pageMeta, which is what gives it its own
+ * og:url, twitter fields and image dimensions. Layout-only routes are exempt.
+ */
+function checkRouteMeta() {
+  const LAYOUTS = new Set(["src/routes/docs.tsx"]);
+  for (const f of publicSourceFiles()) {
+    if (!f.startsWith("src/routes/") || f === "src/routes/__root.tsx" || LAYOUTS.has(f)) continue;
+    const text = read(f);
+    if (!text.includes("createFileRoute(")) continue;
+    if (!text.includes("pageMeta(")) {
+      fail("meta", `${f} does not build its head with pageMeta, so it has no og:url of its own`);
+    }
+  }
+}
+
+/* --------------------------------------------------------------- agent discovery */
+
+function checkAgentDiscovery() {
+  const llms = read("public/llms.txt");
+  for (const needle of [
+    "https://legibility.io/api/mcp",
+    "https://legibility.io/.well-known/mcp.json",
+    "https://legibility.io/answers",
+    "https://legibility.io/answers/feed.xml",
+    "x402",
+  ]) {
+    if (!llms.includes(needle)) fail("agents", `llms.txt does not mention ${needle}`);
+  }
+  try {
+    const mcp = JSON.parse(read("public/.well-known/mcp.json"));
+    if (mcp?.mcp?.endpoint !== `${ORIGIN}/api/mcp`) {
+      fail("agents", ".well-known/mcp.json endpoint is not the live MCP URL");
+    }
+  } catch {
+    fail("agents", "public/.well-known/mcp.json is missing or not JSON");
+  }
+  if (!read("public/robots.txt").includes("/.well-known/mcp.json")) {
+    fail("agents", "robots.txt does not point agents at /.well-known/mcp.json");
+  }
+}
+
+/* ------------------------------------------------------------------- answer hub */
+
+/**
+ * The full rules live in validateAnswers and run in the unit tests too. They run here as well
+ * so the GEO gate alone says whether the hub is publishable, and so a post missing from the
+ * sitemap or llms.txt is named as a GEO failure.
+ */
+function checkAnswers() {
+  const answers = loadAnswersFromDisk(ROOT);
+  if (answers.length === 0) return fail("answers", "no posts in src/content/answers");
+  const today = new Date().toISOString().slice(0, 10);
+  for (const e of validateAnswers(answers, today)) fail("answers", e);
+  const sitemap = read("public/sitemap.xml");
+  const llms = read("public/llms.txt");
+  const full = read("public/llms-full.txt");
+  for (const a of answers) {
+    const url = answerUrl(a.slug);
+    if (!sitemap.includes(`<loc>${url}</loc>`)) fail("answers", `${a.slug} is not in sitemap.xml`);
+    if (!llms.includes(url)) fail("answers", `${a.slug} is not listed in llms.txt`);
+    if (!full.includes(`URL: ${url}`)) fail("answers", `${a.slug} is not in llms-full.txt`);
+  }
+}
+
 /* ---------------------------------------------------------------------- runner */
 
 checkRobots();
@@ -269,6 +452,10 @@ checkSitemap();
 checkPlanClaims();
 checkDeadBrands();
 checkBannedPhrasing();
+checkIconsAndCards();
+checkRouteMeta();
+checkAgentDiscovery();
+checkAnswers();
 
 if (failures.length) {
   for (const f of failures) console.error(`::error::${f}`);
@@ -276,5 +463,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  "GEO check passed: robots groups, sitemap, plan claims, brand strings, copy register all clean.",
+  "GEO check passed: robots groups and AI agents, sitemap, plan claims, brand strings, copy register, icons and cards, per-route social meta, agent discovery, answer hub.",
 );

@@ -1,18 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { API_BASE } from "@/config/product";
+import { pageMeta } from "@/lib/seo";
 
 // P3.7: the old docs described an async API (res_ id + GET /v1/resolutions/{id}) that
 // was never built. The real endpoint is SYNCHRONOUS and takes `name`.
 export const Route = createFileRoute("/docs/api/resolve-product")({
   head: () => ({
-    meta: [
-      { title: "resolve_product \u00b7 Legibility" },
-      {
-        name: "description",
-        content:
-          "The resolve_product endpoint: a fuzzy product name to the canonical typed object, for when you have a string a person typed rather than an identifier.",
-      },
-    ],
+    meta: pageMeta({
+      title: "resolve_product \u00b7 Legibility",
+      description:
+        "The resolve_product endpoint: a fuzzy product name to the canonical typed object, for when you have a string a person typed rather than an identifier.",
+      path: "/docs/api/resolve-product",
+    }),
   }),
   component: () => (
     <article className="space-y-6">

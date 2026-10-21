@@ -24,3 +24,11 @@ a3a8f10bfce518cd74dc571097b5bed8cfc66205:README.md:curl-auth-header:60
 754987a364ba14bc8eb543928acd7f2ea801e3d9:README.md:curl-auth-header:51
 53ae7f62d3d973ee733f968ab78c70ecdc0713aa:README.md:curl-auth-header:28
 a1df939a6924e53b236b88a4cb23f00a62a5de9c:src/routes/_authenticated/dashboard.index.tsx:curl-auth-header:26
+
+# Answer hub curl examples (added 2026-10-21) use the same "lgk_your_key" documentation
+# placeholder as demoCurl in src/config/product.ts. It was never an issued credential.
+# llms-full.txt carries the same two examples because it is generated from the answers.
+c9c2a543b85ed1e3a4b582f32be2e34bcf447688:src/content/answers/how-can-an-ai-agent-get-typed-product-data-from-a-url-or-barcode.md:curl-auth-header:24
+c9c2a543b85ed1e3a4b582f32be2e34bcf447688:src/content/answers/how-do-i-connect-an-ai-agent-to-a-remote-mcp-server.md:curl-auth-header:40
+c9c2a543b85ed1e3a4b582f32be2e34bcf447688:public/llms-full.txt:curl-auth-header:293
+c9c2a543b85ed1e3a4b582f32be2e34bcf447688:public/llms-full.txt:curl-auth-header:454

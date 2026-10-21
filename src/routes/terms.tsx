@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { pageMeta } from "@/lib/seo";
 
 function Section({ n, title, children }: { n: string; title: string; children: ReactNode }) {
   return (
@@ -146,6 +147,12 @@ function Terms() {
 }
 
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms · Legibility" }] }),
+  head: () => ({
+    meta: pageMeta({
+      title: "Terms · Legibility",
+      description: "The terms of service for Legibility at legibility.io.",
+      path: "/terms",
+    }),
+  }),
   component: Terms,
 });

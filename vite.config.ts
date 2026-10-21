@@ -11,6 +11,7 @@ import viteReact from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import { FAILURE_REASONS } from "./src/lib/api/readability";
+import { loadAnswersFromDisk } from "./src/lib/answers-fs";
 
 // Regenerate public/sitemap.xml from the real route files on every build, so it can
 // never go stale: add a public page route and it appears in the sitemap automatically.
@@ -45,6 +46,22 @@ function sitemapPlugin(origin: string): Plugin {
       // so adding a reason to the classifier puts its page in the sitemap and leaving one out
       // is not possible.
       for (const reason of FAILURE_REASONS) paths.add(`/why/${reason}`);
+
+      // The answer hub. /answers/$slug ranges over the files in src/content/answers, so every
+      // post is expanded here from the same files the pages render. lastmod for a post is its
+      // own `updated` date, which is the date its content last changed, and /answers takes the
+      // newest of them. src/content/answers/answers.test.ts fails if a post is missing here.
+      const answers = loadAnswersFromDisk(__dirname);
+      const answerLastmod = new Map<string, string>();
+      for (const a of answers) {
+        paths.add(`/answers/${a.slug}`);
+        answerLastmod.set(`/answers/${a.slug}`, a.updated);
+      }
+      const newestAnswer = answers
+        .map((a) => a.updated)
+        .sort()
+        .pop();
+      if (newestAnswer) answerLastmod.set("/answers", newestAnswer);
       const isLegal = (p: string) => /^\/(privacy|terms|takedown)$/.test(p);
       const priority = (p: string) =>
         p === "/"
@@ -54,7 +71,11 @@ function sitemapPlugin(origin: string): Plugin {
             : // The index and the failure-reason pages are the content an answer engine is
               // most likely to quote: a measured number about named sites, and eight named,
               // mechanical answers to a question people now ask assistants.
-              p === "/readability" || p === "/why" || p.startsWith("/why/")
+              p === "/readability" ||
+                p === "/why" ||
+                p.startsWith("/why/") ||
+                p === "/answers" ||
+                p.startsWith("/answers/")
               ? "0.9"
               : p === "/docs" || /^\/docs\/(quickstart|api)/.test(p)
                 ? "0.9"
@@ -69,6 +90,8 @@ function sitemapPlugin(origin: string): Plugin {
       // history, git missing). A lastmod that just says "now" on every build is worse than
       // none: crawlers learn to distrust it and then ignore it when it is genuine.
       const lastmodFor = (p: string): string | null => {
+        const fromContent = answerLastmod.get(p);
+        if (fromContent) return fromContent;
         const base = p === "/" ? "index" : p.slice(1).split("/").join(".");
         // An expanded dynamic page has no file of its own, so it dates from the template that
         // renders it and the content file that fills it, whichever changed later.

@@ -55,6 +55,23 @@ Coverage today: Shopify stores (currency resolved through the storefront's own m
 - What the crawler does and how to block it: https://legibility.io/about/bot
 - The long form of this file, with the full taxonomy: https://legibility.io/llms-full.txt
 
+## For agents: discovery and payment
+
+- MCP endpoint: https://legibility.io/api/mcp (JSON-RPC 2.0 over HTTP POST, protocol 2025-06-18). initialize, tools/list and ping are free and need no key.
+- MCP discovery document: https://legibility.io/.well-known/mcp.json states the endpoint, transport, auth methods and tool list in one fetch.
+- Paying per call with no account: tools/call without a key returns HTTP 402 with x402 payment requirements (USDC on Base Sepolia, a testnet). Sign the quoted amount, resend with an X-PAYMENT header, and the result comes back with X-PAYMENT-RESPONSE. The payment settles before the read runs. No mainnet settlement yet.
+- With an API key instead: Authorization: Bearer lgk_... on MCP or on REST at https://legibility.io/api/v1/<tool>. Only trusted reads are billed.
+
+## Answers
+
+Direct answers to questions developers and agents ask, each with a short answer first. Index: https://legibility.io/answers. Feed: https://legibility.io/answers/feed.xml. Full text of every answer is in https://legibility.io/llms-full.txt.
+
+- How can an AI agent pay per API call in USDC?: https://legibility.io/answers/how-can-an-ai-agent-pay-per-api-call-in-usdc
+- How do I connect an AI agent to a remote MCP server over HTTP?: https://legibility.io/answers/how-do-i-connect-an-ai-agent-to-a-remote-mcp-server
+- How can an AI agent get typed product data from a URL or a barcode?: https://legibility.io/answers/how-can-an-ai-agent-get-typed-product-data-from-a-url-or-barcode
+- What does a calibrated confidence score mean when an agent reads product data?: https://legibility.io/answers/what-does-a-calibrated-confidence-score-mean-for-an-agent
+- Why can't an AI agent read a product page?: https://legibility.io/answers/why-cant-an-ai-agent-read-a-product-page
+
 ## Docs
 
 - Quickstart: https://legibility.io/docs/quickstart

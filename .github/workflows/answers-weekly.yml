@@ -1,0 +1,58 @@
+name: Answer hub weekly brief
+
+# Opens one issue a week, "Answer hub brief: week of <Monday>", listing the next candidate
+# questions from docs/answers-backlog.md that are not yet published in src/content/answers,
+# with the checklist every post must meet. See docs/ANSWER-HUB.md.
+#
+# No model spend and no third-party service: the brief is a deterministic script over files in
+# this repository, and the only write is one GitHub issue through the built-in token. Writing
+# the post stays a human (or a supervised agent) job, because the bar is that every claim is
+# checked against the code.
+
+on:
+  schedule:
+    # Mondays, 07:23 UTC. Clear of the cohort sweep at 06:00, and off the top of the hour.
+    - cron: "23 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: answers-weekly
+  cancel-in-progress: false
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build the brief
+        run: |
+          bun scripts/answers-brief.ts --title > brief-title.txt
+          bun scripts/answers-brief.ts > brief-body.md
+          cat brief-title.txt
+          cat brief-body.md
+
+      # One issue per week. A manual re-run in the same week does not open a duplicate.
+      - name: Open the issue unless this week's already exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          title="$(cat brief-title.txt)"
+          existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --state all --search "in:title \"$title\"" --json title --jq "map(select(.title == \"$title\")) | length")"
+          if [ "$existing" != "0" ]; then
+            echo "Issue already exists: $title"
+            exit 0
+          fi
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "$title" --body-file brief-body.md

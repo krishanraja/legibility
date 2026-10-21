@@ -1,9 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/seo";
 
 // P3.7: webhooks are not built. The old page documented 5 events, HMAC signing, and a
 // retry schedule for an async resolve API that does not exist. Honest roadmap page.
 export const Route = createFileRoute("/docs/webhooks")({
-  head: () => ({ meta: [{ title: "Webhooks · Legibility docs" }] }),
+  head: () => ({
+    meta: pageMeta({
+      title: "Webhooks · Legibility docs",
+      description:
+        "Webhooks are on the roadmap and not shipped. Every Legibility call is synchronous and returns its result in the response.",
+      path: "/docs/webhooks",
+    }),
+  }),
   component: () => (
     <article className="space-y-6">
       <h1 className="font-display text-5xl">Webhooks</h1>

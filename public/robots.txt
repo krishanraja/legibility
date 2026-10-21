@@ -10,18 +10,36 @@ User-agent: *
 Allow: /
 Disallow: /dashboard
 
-# AI answer engines and training/search crawlers (GEO): explicitly allowed, same
-# dashboard exclusion as everyone else.
+# AI answer engines, assistants acting for a user, and training/search crawlers (GEO):
+# explicitly allowed, same dashboard exclusion as everyone else. Ordered by operator (OpenAI,
+# Anthropic, Perplexity, Google, Apple, Meta, Amazon, DuckDuckGo, Mistral, Cohere, others).
+# No comment lines inside the run: some parsers end a group at any non-User-agent line.
 User-agent: GPTBot
 User-agent: OAI-SearchBot
 User-agent: ChatGPT-User
 User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: Claude-SearchBot
 User-agent: Claude-Web
 User-agent: anthropic-ai
 User-agent: PerplexityBot
 User-agent: Perplexity-User
 User-agent: Google-Extended
+User-agent: Google-CloudVertexBot
+User-agent: GoogleOther
+User-agent: Applebot
 User-agent: Applebot-Extended
+User-agent: meta-externalagent
+User-agent: meta-externalfetcher
+User-agent: FacebookBot
+User-agent: Amazonbot
+User-agent: DuckAssistBot
+User-agent: MistralAI-User
+User-agent: cohere-ai
+User-agent: cohere-training-data-crawler
+User-agent: YouBot
+User-agent: PhindBot
+User-agent: Timpibot
 User-agent: CCBot
 User-agent: Bytespider
 Allow: /
@@ -29,3 +47,6 @@ Disallow: /dashboard
 
 Sitemap: https://legibility.io/sitemap.xml
 # LLM-oriented site summary (GEO): https://legibility.io/llms.txt
+# Long form with the full text of every answer: https://legibility.io/llms-full.txt
+# Answers feed: https://legibility.io/answers/feed.xml
+# MCP discovery for agents: https://legibility.io/.well-known/mcp.json

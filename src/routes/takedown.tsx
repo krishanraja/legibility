@@ -5,9 +5,17 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/takedown")({
-  head: () => ({ meta: [{ title: "Takedown · Legibility" }] }),
+  head: () => ({
+    meta: pageMeta({
+      title: "Takedown · Legibility",
+      description:
+        "How a site owner asks Legibility to remove a published verdict about their domain.",
+      path: "/takedown",
+    }),
+  }),
   component: Takedown,
 });
 

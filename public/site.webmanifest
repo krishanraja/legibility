@@ -1,0 +1,21 @@
+{
+  "name": "Legibility",
+  "short_name": "Legibility",
+  "description": "Can a machine read your website? Legibility shows what an AI crawler sees and records why when it cannot read a page.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#F4EFE6",
+  "theme_color": "#0E1B2C",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

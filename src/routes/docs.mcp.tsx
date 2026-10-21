@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { MCP_URL } from "@/config/product";
+import { pageMeta } from "@/lib/seo";
 export const Route = createFileRoute("/docs/mcp")({
   head: () => ({
-    meta: [
-      { title: "MCP server and x402 \u00b7 Legibility" },
-      {
-        name: "description",
-        content:
-          "Connect an agent to Legibility over MCP, and pay per call in USDC over x402. Discovery is free, and the tool list is stated rather than implied.",
-      },
-    ],
+    meta: pageMeta({
+      title: "MCP server and x402 \u00b7 Legibility",
+      description:
+        "Connect an agent to Legibility over MCP, and pay per call in USDC over x402. Discovery is free, and the tool list is stated rather than implied.",
+      path: "/docs/mcp",
+    }),
   }),
   component: () => (
     <article className="space-y-6">

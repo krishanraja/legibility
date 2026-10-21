@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/seo";
 const ROWS: [string, string, string][] = [
   ["400", "invalid_request", "Body missing url, gtin, or query."],
   ["401", "missing_key", "No Authorization header."],
@@ -12,14 +13,12 @@ const ROWS: [string, string, string][] = [
 ];
 export const Route = createFileRoute("/docs/errors")({
   head: () => ({
-    meta: [
-      { title: "Errors \u00b7 Legibility" },
-      {
-        name: "description",
-        content:
-          "Every error Legibility returns, what causes it, and what to do about it. A read below the 0.7 trust gate returns nothing and is not billed.",
-      },
-    ],
+    meta: pageMeta({
+      title: "Errors \u00b7 Legibility",
+      description:
+        "Every error Legibility returns, what causes it, and what to do about it. A read below the 0.7 trust gate returns nothing and is not billed.",
+      path: "/docs/errors",
+    }),
   }),
   component: () => (
     <article>

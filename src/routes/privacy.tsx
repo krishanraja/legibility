@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { pageMeta } from "@/lib/seo";
 
 function Section({ n, title, children }: { n: string; title: string; children: ReactNode }) {
   return (
@@ -109,6 +110,12 @@ function Privacy() {
 }
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({ meta: [{ title: "Privacy · Legibility" }] }),
+  head: () => ({
+    meta: pageMeta({
+      title: "Privacy · Legibility",
+      description: "The privacy policy for Legibility at legibility.io.",
+      path: "/privacy",
+    }),
+  }),
   component: Privacy,
 });

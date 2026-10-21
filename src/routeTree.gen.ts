@@ -18,6 +18,9 @@ import { Route as TakedownRouteImport } from './routes/takedown'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AboutBotRouteImport } from './routes/about.bot'
+import { Route as AnswersIndexRouteImport } from './routes/answers.index'
+import { Route as AnswersSlugRouteImport } from './routes/answers.$slug'
+import { Route as AnswersFeedDotxmlRouteImport } from './routes/answers.feed[.]xml'
 import { Route as ApiCaptureRouteImport } from './routes/api/capture'
 import { Route as ApiCheckRouteImport } from './routes/api/check'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
@@ -89,6 +92,21 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 const AboutBotRoute = AboutBotRouteImport.update({
   id: '/about/bot',
   path: '/about/bot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnswersIndexRoute = AnswersIndexRouteImport.update({
+  id: '/answers/',
+  path: '/answers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnswersSlugRoute = AnswersSlugRouteImport.update({
+  id: '/answers/$slug',
+  path: '/answers/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnswersFeedDotxmlRoute = AnswersFeedDotxmlRouteImport.update({
+  id: '/answers/feed.xml',
+  path: '/answers/feed.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiCaptureRoute = ApiCaptureRouteImport.update({
@@ -248,6 +266,8 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/about/bot': typeof AboutBotRoute
+  '/answers/$slug': typeof AnswersSlugRoute
+  '/answers/feed.xml': typeof AnswersFeedDotxmlRoute
   '/api/capture': typeof ApiCaptureRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
@@ -259,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/docs/rate-limits': typeof DocsRateLimitsRoute
   '/docs/webhooks': typeof DocsWebhooksRoute
   '/why/$reason': typeof WhyReasonRoute
+  '/answers/': typeof AnswersIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/why/': typeof WhyIndexRoute
   '/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
@@ -284,6 +305,8 @@ export interface FileRoutesByTo {
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
   '/about/bot': typeof AboutBotRoute
+  '/answers/$slug': typeof AnswersSlugRoute
+  '/answers/feed.xml': typeof AnswersFeedDotxmlRoute
   '/api/capture': typeof ApiCaptureRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
@@ -295,6 +318,7 @@ export interface FileRoutesByTo {
   '/docs/rate-limits': typeof DocsRateLimitsRoute
   '/docs/webhooks': typeof DocsWebhooksRoute
   '/why/$reason': typeof WhyReasonRoute
+  '/answers': typeof AnswersIndexRoute
   '/docs': typeof DocsIndexRoute
   '/why': typeof WhyIndexRoute
   '/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
@@ -324,6 +348,8 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/about/bot': typeof AboutBotRoute
+  '/answers/$slug': typeof AnswersSlugRoute
+  '/answers/feed.xml': typeof AnswersFeedDotxmlRoute
   '/api/capture': typeof ApiCaptureRoute
   '/api/check': typeof ApiCheckRoute
   '/api/health': typeof ApiHealthRoute
@@ -335,6 +361,7 @@ export interface FileRoutesById {
   '/docs/rate-limits': typeof DocsRateLimitsRoute
   '/docs/webhooks': typeof DocsWebhooksRoute
   '/why/$reason': typeof WhyReasonRoute
+  '/answers/': typeof AnswersIndexRoute
   '/docs/': typeof DocsIndexRoute
   '/why/': typeof WhyIndexRoute
   '/_authenticated/dashboard/billing': typeof AuthenticatedDashboardBillingRoute
@@ -364,6 +391,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/dashboard'
     | '/about/bot'
+    | '/answers/$slug'
+    | '/answers/feed.xml'
     | '/api/capture'
     | '/api/check'
     | '/api/health'
@@ -375,6 +404,7 @@ export interface FileRouteTypes {
     | '/docs/rate-limits'
     | '/docs/webhooks'
     | '/why/$reason'
+    | '/answers/'
     | '/docs/'
     | '/why/'
     | '/dashboard/billing'
@@ -400,6 +430,8 @@ export interface FileRouteTypes {
     | '/takedown'
     | '/terms'
     | '/about/bot'
+    | '/answers/$slug'
+    | '/answers/feed.xml'
     | '/api/capture'
     | '/api/check'
     | '/api/health'
@@ -411,6 +443,7 @@ export interface FileRouteTypes {
     | '/docs/rate-limits'
     | '/docs/webhooks'
     | '/why/$reason'
+    | '/answers'
     | '/docs'
     | '/why'
     | '/dashboard/billing'
@@ -439,6 +472,8 @@ export interface FileRouteTypes {
     | '/terms'
     | '/_authenticated/dashboard'
     | '/about/bot'
+    | '/answers/$slug'
+    | '/answers/feed.xml'
     | '/api/capture'
     | '/api/check'
     | '/api/health'
@@ -450,6 +485,7 @@ export interface FileRouteTypes {
     | '/docs/rate-limits'
     | '/docs/webhooks'
     | '/why/$reason'
+    | '/answers/'
     | '/docs/'
     | '/why/'
     | '/_authenticated/dashboard/billing'
@@ -478,12 +514,15 @@ export interface RootRouteChildren {
   TakedownRoute: typeof TakedownRoute
   TermsRoute: typeof TermsRoute
   AboutBotRoute: typeof AboutBotRoute
+  AnswersSlugRoute: typeof AnswersSlugRoute
+  AnswersFeedDotxmlRoute: typeof AnswersFeedDotxmlRoute
   ApiCaptureRoute: typeof ApiCaptureRoute
   ApiCheckRoute: typeof ApiCheckRoute
   ApiHealthRoute: typeof ApiHealthRoute
   ApiMcpRoute: typeof ApiMcpRoute
   ApiTakedownRoute: typeof ApiTakedownRoute
   WhyReasonRoute: typeof WhyReasonRoute
+  AnswersIndexRoute: typeof AnswersIndexRoute
   WhyIndexRoute: typeof WhyIndexRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
   ApiV1Brief_productRoute: typeof ApiV1Brief_productRoute
@@ -556,6 +595,27 @@ declare module '@tanstack/react-router' {
       path: '/about/bot'
       fullPath: '/about/bot'
       preLoaderRoute: typeof AboutBotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/answers/': {
+      id: '/answers/'
+      path: '/answers'
+      fullPath: '/answers/'
+      preLoaderRoute: typeof AnswersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/answers/$slug': {
+      id: '/answers/$slug'
+      path: '/answers/$slug'
+      fullPath: '/answers/$slug'
+      preLoaderRoute: typeof AnswersSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/answers/feed.xml': {
+      id: '/answers/feed.xml'
+      path: '/answers/feed.xml'
+      fullPath: '/answers/feed.xml'
+      preLoaderRoute: typeof AnswersFeedDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/capture': {
@@ -827,12 +887,15 @@ const rootRouteChildren: RootRouteChildren = {
   TakedownRoute: TakedownRoute,
   TermsRoute: TermsRoute,
   AboutBotRoute: AboutBotRoute,
+  AnswersSlugRoute: AnswersSlugRoute,
+  AnswersFeedDotxmlRoute: AnswersFeedDotxmlRoute,
   ApiCaptureRoute: ApiCaptureRoute,
   ApiCheckRoute: ApiCheckRoute,
   ApiHealthRoute: ApiHealthRoute,
   ApiMcpRoute: ApiMcpRoute,
   ApiTakedownRoute: ApiTakedownRoute,
   WhyReasonRoute: WhyReasonRoute,
+  AnswersIndexRoute: AnswersIndexRoute,
   WhyIndexRoute: WhyIndexRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRoute,
   ApiV1Brief_productRoute: ApiV1Brief_productRoute,

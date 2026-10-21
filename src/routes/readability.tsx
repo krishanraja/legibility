@@ -5,6 +5,7 @@ import { getIndex, type CohortRow, type DomainRow } from "@/lib/api/index.functi
 import { REASON_COPY, type FailureReason } from "@/lib/api/readability";
 import { bucket as sum, CHOSEN, DEFECT, INCONCLUSIVE } from "@/lib/api/cohort";
 import { APP_ORIGIN, BOT_TOKEN } from "@/config/product";
+import { pageMeta } from "@/lib/seo";
 
 /**
  * The published index.
@@ -36,13 +37,11 @@ export const Route = createFileRoute("/readability")({
       ? `Of ${total} well-known sites read once each with a plain request, ${chosen} refuse machines by choice and ${defect} could be read and are not. Method, sample size and every per-site verdict published.`
       : "The machine-readability index over a fixed cohort of well-known sites.";
     return {
-      meta: [
-        { title: "The machine readability index · Legibility" },
-        { name: "description", content: description },
-        { property: "og:title", content: "The machine readability index · Legibility" },
-        { property: "og:description", content: description },
-        { property: "og:url", content: `${APP_ORIGIN}/readability` },
-      ],
+      meta: pageMeta({
+        title: "The machine readability index · Legibility",
+        description,
+        path: "/readability",
+      }),
       scripts: [
         {
           type: "application/ld+json",

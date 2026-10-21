@@ -1,7 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/docs/rate-limits")({
-  head: () => ({ meta: [{ title: "Rate limits · Legibility docs" }] }),
+  head: () => ({
+    meta: pageMeta({
+      title: "Rate limits · Legibility docs",
+      description:
+        "Rate limits for the Legibility API and MCP server, the response headers that report them, and what a 429 response means.",
+      path: "/docs/rate-limits",
+    }),
+  }),
   component: () => (
     <article className="space-y-6">
       <h1 className="font-display text-5xl">Rate limits</h1>

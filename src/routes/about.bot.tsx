@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { BOT_UA, BOT_TOKEN } from "@/config/product";
 import { REASON_COPY, FAILURE_REASONS } from "@/lib/api/readability";
+import { pageMeta } from "@/lib/seo";
 
 /**
  * The page LegibilityBot's user agent points at.
@@ -21,20 +22,12 @@ import { REASON_COPY, FAILURE_REASONS } from "@/lib/api/readability";
 
 export const Route = createFileRoute("/about/bot")({
   head: () => ({
-    meta: [
-      { title: "LegibilityBot · Legibility" },
-      {
-        name: "description",
-        content:
-          "LegibilityBot requests one page, once, as a plain GET, to record whether a machine can read it. It obeys robots.txt. This page explains what it does and how to block it.",
-      },
-      { property: "og:title", content: "LegibilityBot · Legibility" },
-      {
-        property: "og:description",
-        content:
-          "What LegibilityBot is, exactly what it requests, and how to block it. It obeys robots.txt and a disallow is recorded as a finding rather than worked around.",
-      },
-    ],
+    meta: pageMeta({
+      title: "LegibilityBot · Legibility",
+      description:
+        "LegibilityBot requests one page, once, as a plain GET, to record whether a machine can read it. It obeys robots.txt. This page explains what it does and how to block it.",
+      path: "/about/bot",
+    }),
   }),
   component: AboutBot,
 });

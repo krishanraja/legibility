@@ -10,7 +10,8 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { APP_ORIGIN } from "@/config/product";
+import { APP_ORIGIN, MCP_URL, API_BASE } from "@/config/product";
+import { pageMeta } from "@/lib/seo";
 
 import appCss from "../styles.css?url";
 import { reportError } from "../lib/error-reporting";
@@ -83,33 +84,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Legibility · Can a machine read your website?" },
-      {
-        name: "description",
-        content:
+      // Site-wide defaults. Every public route overrides title, description, og:url and the
+      // twitter fields through pageMeta; these cover any route that does not.
+      ...pageMeta({
+        title: "Legibility · Can a machine read your website?",
+        description:
           "Legibility measures whether a machine can read a website, and records why when it cannot. Enter a domain and see what an AI crawler sees. Method and sample size published with every figure.",
-      },
-      { property: "og:title", content: "Legibility · Can a machine read your website?" },
-      {
-        property: "og:description",
-        content:
-          "AI assistants recommend products without asking the brand. Enter your domain and see whether one can read yours.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Legibility" },
-      { property: "og:url", content: "https://legibility.io" },
-      { property: "og:image", content: "https://legibility.io/og.png" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Legibility · Can a machine read your website?" },
-      {
-        name: "twitter:description",
-        content:
-          "Enter a domain and see what an AI crawler sees. We obey robots.txt, we publish our method, and every figure carries its sample size.",
-      },
-      { name: "twitter:image", content: "https://legibility.io/og.png" },
+        path: "/",
+      }),
       { name: "robots", content: "index, follow, max-image-preview:large, max-snippet:-1" },
       { name: "application-name", content: "Legibility" },
+      { name: "apple-mobile-web-app-title", content: "Legibility" },
       { name: "author", content: "Legibility" },
+      // Browser chrome colour, matched to the page background (cream). One tag only: TanStack
+      // keeps a single meta per name, so a light/dark pair would silently lose one half.
+      { name: "theme-color", content: "#F4EFE6" },
     ],
     // JSON-LD structured data: what Google rich results AND AI answer engines consume.
     // Fitting for a product-data company to ship clean structured data about itself.
@@ -124,7 +113,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@id": "https://legibility.io/#org",
               name: "Legibility",
               url: "https://legibility.io",
-              logo: "https://legibility.io/apple-touch-icon.png",
+              logo: {
+                "@type": "ImageObject",
+                url: "https://legibility.io/icon-512.png",
+                width: 512,
+                height: 512,
+              },
               description:
                 "Legibility measures whether a machine can read a website. It publishes which well-known sites an AI crawler cannot read and why, and offers the same reading engine as an API.",
             },
@@ -133,11 +127,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@id": "https://legibility.io/#website",
               url: "https://legibility.io",
               name: "Legibility",
+              inLanguage: "en-GB",
               publisher: { "@id": "https://legibility.io/#org" },
             },
             {
               "@type": "SoftwareApplication",
+              "@id": "https://legibility.io/#app",
               name: "Legibility",
+              provider: { "@id": "https://legibility.io/#org" },
               applicationCategory: "BusinessApplication",
               operatingSystem: "Web (REST API and MCP server)",
               url: "https://legibility.io",
@@ -167,6 +164,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
                 },
               ],
             },
+            // The two machine surfaces, described for agents and API directories. Stated as
+            // they are today: MCP carries two tools, x402 settles on a testnet.
+            {
+              "@type": "WebAPI",
+              "@id": "https://legibility.io/#rest-api",
+              name: "Legibility REST API",
+              description:
+                "POST /api/v1/<tool> for read_product, resolve_product, compare_products and brief_product. Typed product objects with calibrated confidence, a price band and the cost of the call. Authenticated with an lgk_ API key as a Bearer token.",
+              url: API_BASE,
+              documentation: "https://legibility.io/docs",
+              termsOfService: "https://legibility.io/terms",
+              provider: { "@id": "https://legibility.io/#org" },
+            },
+            {
+              "@type": "WebAPI",
+              "@id": "https://legibility.io/#mcp",
+              name: "Legibility MCP server",
+              description:
+                "Model Context Protocol server (JSON-RPC 2.0 over HTTP POST, protocol 2025-06-18) exposing read_product and resolve_product. Discovery is free. tools/call is paid with an API key or per call in USDC over x402 on Base Sepolia (testnet; no mainnet settlement yet). Discovery document at /.well-known/mcp.json.",
+              url: MCP_URL,
+              documentation: "https://legibility.io/docs/mcp",
+              termsOfService: "https://legibility.io/terms",
+              provider: { "@id": "https://legibility.io/#org" },
+            },
           ],
         }),
       },
@@ -179,10 +200,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon.png" },
-      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon.png" },
-      { rel: "shortcut icon", href: "/favicon.png" },
+      // Favicon set generated by scripts/build-brand-assets.ts from one drawing of the mark.
+      { rel: "icon", href: "/favicon.ico", sizes: "48x48" },
+      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
+      // Machine-readable summaries for answer engines and agents.
+      { rel: "alternate", type: "text/plain", title: "llms.txt", href: "/llms.txt" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

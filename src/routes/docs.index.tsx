@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { pageMeta } from "@/lib/seo";
 
 /**
  * The docs landing page.
@@ -11,14 +12,12 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/docs/")({
   head: () => ({
-    meta: [
-      { title: "Docs · Legibility" },
-      {
-        name: "description",
-        content:
-          "The reading engine behind the machine-readability index, as a REST API and an MCP server. Typed objects, calibrated confidence, and the cost of the call in every response.",
-      },
-    ],
+    meta: pageMeta({
+      title: "Docs · Legibility",
+      description:
+        "The reading engine behind the machine-readability index, as a REST API and an MCP server. Typed objects, calibrated confidence, and the cost of the call in every response.",
+      path: "/docs",
+    }),
   }),
   component: () => (
     <article>

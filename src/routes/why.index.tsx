@@ -4,6 +4,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { REASON_COPY } from "@/lib/api/readability";
 import { REASON_PAGES, REASON_PAGE_ORDER } from "@/content/reasons";
 import { APP_ORIGIN } from "@/config/product";
+import { pageMeta } from "@/lib/seo";
 
 /**
  * The hub for the eight findings.
@@ -23,13 +24,11 @@ const SUMMARY =
 
 export const Route = createFileRoute("/why/")({
   head: () => ({
-    meta: [
-      { title: "Why a machine cannot read a page · Legibility" },
-      { name: "description", content: SUMMARY },
-      { property: "og:title", content: "Why a machine cannot read a page · Legibility" },
-      { property: "og:description", content: SUMMARY },
-      { property: "og:url", content: `${APP_ORIGIN}/why` },
-    ],
+    meta: pageMeta({
+      title: "Why a machine cannot read a page · Legibility",
+      description: SUMMARY,
+      path: "/why",
+    }),
     scripts: [
       {
         type: "application/ld+json",

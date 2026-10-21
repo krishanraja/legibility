@@ -1,13 +1,15 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
+import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/docs")({
   head: () => ({
-    meta: [
-      { title: "Docs · Legibility" },
-      { name: "description", content: "Legibility API and MCP server documentation." },
-    ],
+    meta: pageMeta({
+      title: "Docs · Legibility",
+      description: "Legibility API and MCP server documentation.",
+      path: "/docs",
+    }),
   }),
   component: DocsLayout,
 });

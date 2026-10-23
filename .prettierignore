@@ -7,3 +7,9 @@ package-lock.json
 bun.lock
 routeTree.gen.ts
 coverage
+# Written by the ai-harness repository administration publisher, which pins
+# their exact bytes (managed-region hashes and the closeout hook's sha256).
+# Reformatting them would fail the harness's own checks.
+AGENTS.md
+docs/HARNESS_CONTEXT.md
+.claude/hooks/harness-closeout.mjs

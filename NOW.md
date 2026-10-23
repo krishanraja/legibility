@@ -1,8 +1,8 @@
 ---
 repo: krishanraja/legibility
 product: Legibility
-as_of: 2026-10-22
-head: 7e1f8b8
+as_of: 2026-10-23
+head: 0fac675
 lifecycle: beta
 production_url: https://legibility.io
 state_doc: docs/OUTSTANDING.md
@@ -34,7 +34,9 @@ What it proves for Mindmake: Krish sees a shift (assistants reading pages instea
 
 Objection it answers: "AI product data is guesswork." Legibility returns `product: null` at low confidence rather than a guess, and a null read costs the caller nothing (`README.md`, "Honest scope" and "Billing").
 
-## Where it is right now (as of 2026-10-22)
+## Where it is right now (as of 2026-10-23)
+
+<!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": null, "current_as_of": null, "current_source": null, "urgency": 4, "urgency_reason": "not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified)"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified), against 1 this week, on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
 
 Lifecycle: beta. `README.md` says "Status: live" and "Private beta": the app serves at legibility.io, but no card payment can complete and x402 runs on testnet only.
 
@@ -44,6 +46,7 @@ Live and recorded as verified:
 - The free domain check, the cohort index and the `/why` pages; the index reads one row per domain, newest reading each, since `10bf892` (23 Sep). The weekly sweep runs on a GitHub runner on Mondays (`.github/workflows/sweep.yml`; `c4c436a`); its last recorded run, on 19 Oct, succeeded (GitHub Actions readback, 22 Oct).
 - The answer hub at `/answers`, with five seed posts, an RSS feed and a weekly brief workflow that spends nothing on models (`c9c2a54`; `docs/ANSWER-HUB.md`).
 - The public errors and rate-limits pages now render from `src/content/api-reference.ts`, checked by tests against the code (`346c1c3`).
+- Magic-link sign-in sends again: the auth sender is on the Resend-verified domain, and a sign-in request for an existing account on 23 Oct returned 200 and stamped its send time (Supabase auth readback, 23 Oct).
 - CI on `main` passed on 21 Oct (GitHub Actions readback, 22 Oct).
 
 Built but not live:
@@ -54,12 +57,13 @@ Built but not live:
 
 Broken, blocked or waiting:
 
-- **Magic-link sign-in emails fail.** The Supabase auth sender is not on a Resend-verified domain (550 in the auth logs); `e62a623` only makes the error readable (21 Oct).
 - **No checkout can complete.** The live Stripe account reports card payments inactive, which only Stripe onboarding can clear (`docs/OUTSTANDING.md`; `8a9e7ea`).
 - Fuzzy-name resolve needs Exa credits; exposed secrets still wait to be rotated (`docs/OUTSTANDING.md`, "Founder actions").
 
 ## What changed recently
 
+- 2026-10-23 **The North Star now has a number, a weekly ladder and an urgency rating, so every session knows how far behind it is and how hard to push.** Ruling (Krish, 2026-10-23): every repository chases one aggressive number on a weekly ladder, and urgency U1 to U5 sets its intensity. The number and ladder are in `docs/NORTH_STAR.md`; where it stands is the first line under "Where it is right now". Contract: ai-harness `contract/north-star-metric.md`.
+- **2026-10-23: magic-link sign-in works again.** The Supabase auth sender now sits on the Resend-verified domain; a sign-in request for an existing account returned 200 and the account's send time was stamped (auth config and user readback). No code changed.
 - **2026-10-21: a readable error when the magic-link email fails** (`e62a623`). supabase-js turned a failed send into a bare "{}" toast. The cause sits outside the code, in the Supabase SMTP sender, and is still open.
 - **2026-10-21: the public errors and rate-limits docs now match the API** (`346c1c3`). They promised per-day and concurrency caps, a `code` field and a 451 takedown that the API never had. Both pages now render from one source checked both ways against the routes, the plans seed and the MCP server; putting back three of the old claims fails 3 of the 5 tests.
 - **2026-10-21: the answer hub and agent-first discovery** (`c9c2a54`), for the North Star: an agent, or the developer building one, can find how to reach the MCP server and pay per call from search, assistants, `llms.txt`, the feed and `/.well-known/mcp.json`. The old social card still showed the dead "plinth" wordmark.
@@ -71,13 +75,12 @@ Broken, blocked or waiting:
 
 ## What is next and what is waiting on Krish
 
-- **Next action:** set the Supabase auth email sender to an address on a Resend-verified domain, so magic-link sign-in works again (`e62a623`). It is a change to live auth settings, so it waits on Krish's yes.
-- Activate card payments on the live Stripe account, then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
+- **Next action:** activate card payments on the live Stripe account (only Stripe onboarding can clear it), then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
 - Rotate the exposed secrets named in `docs/OUTSTANDING.md` and `docs/security-rotation.md`.
 - Drip a little Base Sepolia USDC to a buyer wallet for the first on-chain `200` (`docs/OUTSTANDING.md`, "optional / verification"); mainnet settlement is what the North Star needs.
 - Fund Exa for fuzzy-name resolve; decide on a Bright Data payment method and zone; line up 2 to 3 design partners; counsel review of `/terms` and `/privacy`; the paid GA decision (`docs/OUTSTANDING.md`).
 - Rewriting the GTM playbook for the new buyer is "a commercial judgement about who this is sold to" and waits on Krish (`docs/gtm/README.md`).
-- North Star check (2026-10-22): holds.
+- North Star check (2026-10-23): holds.
 
 ## Read next
 

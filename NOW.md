@@ -2,7 +2,7 @@
 repo: krishanraja/legibility
 product: Legibility
 as_of: 2026-10-23
-head: 0fac675
+head: 48aca05
 lifecycle: beta
 production_url: https://legibility.io
 state_doc: docs/OUTSTANDING.md

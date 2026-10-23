@@ -1,8 +1,8 @@
 ---
 repo: krishanraja/legibility
 product: Legibility
-as_of: 2026-10-22
-head: 7e1f8b8
+as_of: 2026-10-23
+head: 0fac675
 lifecycle: beta
 production_url: https://legibility.io
 state_doc: docs/OUTSTANDING.md
@@ -34,7 +34,7 @@ What it proves for Mindmake: Krish sees a shift (assistants reading pages instea
 
 Objection it answers: "AI product data is guesswork." Legibility returns `product: null` at low confidence rather than a guess, and a null read costs the caller nothing (`README.md`, "Honest scope" and "Billing").
 
-## Where it is right now (as of 2026-10-22)
+## Where it is right now (as of 2026-10-23)
 
 Lifecycle: beta. `README.md` says "Status: live" and "Private beta": the app serves at legibility.io, but no card payment can complete and x402 runs on testnet only.
 

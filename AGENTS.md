@@ -53,3 +53,9 @@ extraction lives in a separate `legibility-worker` deploy that this app proxies 
   reachable worker (`/api/health` reports `degraded` when the worker is unset, which is expected).
 - The Supabase clients are lazily instantiated behind a Proxy, so a missing/placeholder env var
   only throws when a page actually touches Supabase, not at server startup.
+
+<!-- krish-repo-admin:start brain=b059141972f8 sha=0cc207a2c492 -->
+## Administer this repository
+
+Use `docs/HARNESS_CONTEXT.md` for the owning workflow, source of truth and checks. Preserve the goal and accepted decisions when a revision changes one part; explain material trade-offs. Verify the downstream result. Record corrections and observed outcomes through the existing capture path. Experimental results retain their conditions; inferred requirements remain proposals.
+<!-- krish-repo-admin:end -->

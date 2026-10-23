@@ -44,6 +44,7 @@ Live and recorded as verified:
 - The free domain check, the cohort index and the `/why` pages; the index reads one row per domain, newest reading each, since `10bf892` (23 Sep). The weekly sweep runs on a GitHub runner on Mondays (`.github/workflows/sweep.yml`; `c4c436a`); its last recorded run, on 19 Oct, succeeded (GitHub Actions readback, 22 Oct).
 - The answer hub at `/answers`, with five seed posts, an RSS feed and a weekly brief workflow that spends nothing on models (`c9c2a54`; `docs/ANSWER-HUB.md`).
 - The public errors and rate-limits pages now render from `src/content/api-reference.ts`, checked by tests against the code (`346c1c3`).
+- Magic-link sign-in sends again: the auth sender is on the Resend-verified domain, and a sign-in request for an existing account on 23 Oct returned 200 and stamped its send time (Supabase auth readback, 23 Oct).
 - CI on `main` passed on 21 Oct (GitHub Actions readback, 22 Oct).
 
 Built but not live:
@@ -54,12 +55,12 @@ Built but not live:
 
 Broken, blocked or waiting:
 
-- **Magic-link sign-in emails fail.** The Supabase auth sender is not on a Resend-verified domain (550 in the auth logs); `e62a623` only makes the error readable (21 Oct).
 - **No checkout can complete.** The live Stripe account reports card payments inactive, which only Stripe onboarding can clear (`docs/OUTSTANDING.md`; `8a9e7ea`).
 - Fuzzy-name resolve needs Exa credits; exposed secrets still wait to be rotated (`docs/OUTSTANDING.md`, "Founder actions").
 
 ## What changed recently
 
+- **2026-10-23: magic-link sign-in works again.** The Supabase auth sender now sits on the Resend-verified domain; a sign-in request for an existing account returned 200 and the account's send time was stamped (auth config and user readback). No code changed.
 - **2026-10-21: a readable error when the magic-link email fails** (`e62a623`). supabase-js turned a failed send into a bare "{}" toast. The cause sits outside the code, in the Supabase SMTP sender, and is still open.
 - **2026-10-21: the public errors and rate-limits docs now match the API** (`346c1c3`). They promised per-day and concurrency caps, a `code` field and a 451 takedown that the API never had. Both pages now render from one source checked both ways against the routes, the plans seed and the MCP server; putting back three of the old claims fails 3 of the 5 tests.
 - **2026-10-21: the answer hub and agent-first discovery** (`c9c2a54`), for the North Star: an agent, or the developer building one, can find how to reach the MCP server and pay per call from search, assistants, `llms.txt`, the feed and `/.well-known/mcp.json`. The old social card still showed the dead "plinth" wordmark.
@@ -71,13 +72,12 @@ Broken, blocked or waiting:
 
 ## What is next and what is waiting on Krish
 
-- **Next action:** set the Supabase auth email sender to an address on a Resend-verified domain, so magic-link sign-in works again (`e62a623`). It is a change to live auth settings, so it waits on Krish's yes.
-- Activate card payments on the live Stripe account, then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
+- **Next action:** activate card payments on the live Stripe account (only Stripe onboarding can clear it), then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
 - Rotate the exposed secrets named in `docs/OUTSTANDING.md` and `docs/security-rotation.md`.
 - Drip a little Base Sepolia USDC to a buyer wallet for the first on-chain `200` (`docs/OUTSTANDING.md`, "optional / verification"); mainnet settlement is what the North Star needs.
 - Fund Exa for fuzzy-name resolve; decide on a Bright Data payment method and zone; line up 2 to 3 design partners; counsel review of `/terms` and `/privacy`; the paid GA decision (`docs/OUTSTANDING.md`).
 - Rewriting the GTM playbook for the new buyer is "a commercial judgement about who this is sold to" and waits on Krish (`docs/gtm/README.md`).
-- North Star check (2026-10-22): holds.
+- North Star check (2026-10-23): holds.
 
 ## Read next
 

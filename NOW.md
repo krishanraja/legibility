@@ -36,6 +36,8 @@ Objection it answers: "AI product data is guesswork." Legibility returns `produc
 
 ## Where it is right now (as of 2026-10-23)
 
+<!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": null, "current_as_of": null, "current_source": null, "urgency": 4, "urgency_reason": "not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified)"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified), against 1 this week, on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
+
 Lifecycle: beta. `README.md` says "Status: live" and "Private beta": the app serves at legibility.io, but no card payment can complete and x402 runs on testnet only.
 
 Live and recorded as verified:
@@ -60,6 +62,7 @@ Broken, blocked or waiting:
 
 ## What changed recently
 
+- 2026-10-23 **The North Star now has a number, a weekly ladder and an urgency rating, so every session knows how far behind it is and how hard to push.** Ruling (Krish, 2026-10-23): every repository chases one aggressive number on a weekly ladder, and urgency U1 to U5 sets its intensity. The number and ladder are in `docs/NORTH_STAR.md`; where it stands is the first line under "Where it is right now". Contract: ai-harness `contract/north-star-metric.md`.
 - **2026-10-23: magic-link sign-in works again.** The Supabase auth sender now sits on the Resend-verified domain; a sign-in request for an existing account returned 200 and the account's send time was stamped (auth config and user readback). No code changed.
 - **2026-10-21: a readable error when the magic-link email fails** (`e62a623`). supabase-js turned a failed send into a bare "{}" toast. The cause sits outside the code, in the Supabase SMTP sender, and is still open.
 - **2026-10-21: the public errors and rate-limits docs now match the API** (`346c1c3`). They promised per-day and concurrency caps, a `code` field and a 451 takedown that the API never had. Both pages now render from one source checked both ways against the routes, the plans seed and the MCP server; putting back three of the old claims fails 3 of the 5 tests.

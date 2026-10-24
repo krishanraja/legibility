@@ -55,10 +55,10 @@ extraction lives in a separate `legibility-worker` deploy that this app proxies 
 - The Supabase clients are lazily instantiated behind a Proxy, so a missing/placeholder env var
   only throws when a page actually touches Supabase, not at server startup.
 
-<!-- krish-canon:start release=v2026.10.22.1 sha=e02b33892564 rendered=2026-10-23 -->
+<!-- krish-canon:start release=v2026.10.24.1 sha=22b975f4ca30 rendered=2026-10-24 -->
 ## Krish canon
 
-Rendered from `krishanraja/ai-harness` at release v2026.10.22.1. Nothing inside these
+Rendered from `krishanraja/ai-harness` at release v2026.10.24.1. Nothing inside these
 markers is hand-maintained: an edit here is detected and proposed back to the canon,
 never silently overwritten, and never lost. This sync preserves all other text.
 Separately approved repository administration owns only its declared regions and context file.

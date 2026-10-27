@@ -47,3 +47,51 @@ export async function recordKeyClient(keyId: string, client: string | null): Pro
     /* attribution best-effort */
   }
 }
+
+export type IssuedKey = { key: string; prefix: string; last_four: string; keyId: string };
+
+/**
+ * Issue a key to an account, the one way the dashboard and the Founding 200 page both do it:
+ * one active key per account (v1), the full key returned once, only its hash stored, and the
+ * session's attribution touch (A2) attached. Returns null when the account already has an
+ * active key; throws when the key cannot be written. Attribution is best-effort.
+ */
+export async function issueKey(
+  userId: string,
+  name: string,
+  cookieHeader: string | null | undefined,
+): Promise<IssuedKey | null> {
+  const { data: existing } = await supabaseAdmin
+    .from("api_keys")
+    .select("id")
+    .eq("user_id", userId)
+    .is("revoked_at", null);
+  if (existing && existing.length >= 1) return null;
+
+  const mat = generateKeyMaterial();
+  const { data: created, error } = await supabaseAdmin
+    .from("api_keys")
+    .insert({
+      user_id: userId,
+      name,
+      prefix: mat.prefix,
+      key_hash: mat.key_hash,
+      last_four: mat.last_four,
+    })
+    .select("id")
+    .single();
+  if (error || !created) throw new Error("Could not create key.");
+
+  try {
+    const { touchFromCookie } = await import("@/lib/api/attribution");
+    const touch = touchFromCookie(cookieHeader, new Date());
+    const { error: touchError } = await supabaseAdmin.rpc("record_key_creation", {
+      _key_id: created.id,
+      _touch: touch,
+    });
+    if (touchError) console.error("[keys] key touch not recorded", touchError.code);
+  } catch {
+    /* attribution best-effort */
+  }
+  return { key: mat.key, prefix: mat.prefix, last_four: mat.last_four, keyId: created.id };
+}

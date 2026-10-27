@@ -516,12 +516,21 @@ function Index() {
               The same engine is a REST API and an MCP server, priced per call. It is the instrument
               behind the index, not the headline.
             </p>
-            <a
-              href="/docs"
-              className="shrink-0 font-mono text-sm text-signal underline underline-offset-4"
-            >
-              Read the docs →
-            </a>
+            <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+              <a
+                href="/docs"
+                className="font-mono text-sm text-signal underline underline-offset-4"
+              >
+                Read the docs →
+              </a>
+              {/* A3: builders try it on their own product before anything else is asked. */}
+              <Link
+                to="/founding-200"
+                className="font-mono text-sm text-signal underline underline-offset-4"
+              >
+                Building an agent? Test it on your own product →
+              </Link>
+            </div>
           </div>
           <div className="mx-auto max-w-[1280px] px-6 pb-14">
             <pre className="overflow-x-auto rounded-md border border-hairline bg-surface p-5 font-mono text-xs leading-relaxed text-muted-foreground">

@@ -75,7 +75,18 @@ function Privacy() {
           </p>
         </Section>
 
-        <Section n="03" title="The product cache">
+        <Section n="03" title="The Founding 200 test">
+          <p>
+            When you run the test on the Founding 200 page, we keep the product URL or barcode you
+            entered, what you told us you are building, how you will call Legibility and which
+            stores matter to you, with the result of the read. We use them to show you the report
+            and, if you create an account, to attach them to it. We count runs against daily limits
+            using a one-way hash of your IP address; the address itself is not stored. The product
+            URL or barcode you entered is never shared outside Legibility.
+          </p>
+        </Section>
+
+        <Section n="04" title="The product cache">
           <p>
             We cache the typed product objects we extract, keyed on public references (a URL or a
             GTIN). The cache holds factual, publicly available product data. It contains no buyer or
@@ -83,19 +94,23 @@ function Privacy() {
           </p>
         </Section>
 
-        <Section n="04" title="How we use data">
+        <Section n="05" title="How we use data">
           <p>
             We use the above only to operate, secure, meter, and bill the API, and to provide
             support. We do not sell personal data.
           </p>
         </Section>
 
-        <Section n="05" title="Processors we use">
+        <Section n="06" title="Processors we use">
           <ul className="list-disc space-y-1 pl-5">
             <li>Supabase: database and authentication.</li>
             <li>Vercel: application hosting.</li>
             <li>Stripe: subscription billing (we never see full card numbers).</li>
             <li>Google Analytics and PostHog: measuring how the site is used.</li>
+            <li>
+              Cloudflare Turnstile: checking that a test run on the Founding 200 page comes from a
+              person.
+            </li>
             <li>
               The public sources we extract from on your behalf, plus search and barcode providers
               used to resolve a query.
@@ -103,7 +118,7 @@ function Privacy() {
           </ul>
         </Section>
 
-        <Section n="06" title="Retention">
+        <Section n="07" title="Retention">
           <p>
             Usage events are retained for at least 90 days for billing and abuse prevention. Cache
             entries follow their TTL (a few days by default, shorter for volatile fields like
@@ -111,14 +126,14 @@ function Privacy() {
           </p>
         </Section>
 
-        <Section n="07" title="Your rights and takedowns">
+        <Section n="08" title="Your rights and takedowns">
           <p>
             Contact us to access or delete your account data. Rights holders can request removal of
             cached product data via the takedown form, which purges matching entries promptly.
           </p>
         </Section>
 
-        <Section n="08" title="Security">
+        <Section n="09" title="Security">
           <p>
             Keys are stored only as hashes. Row-level security isolates each account's data, and all
             traffic is over TLS.

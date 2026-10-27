@@ -12,6 +12,8 @@
 //     prefix, a wallet address, a User-Agent, a Stripe id or a database id.
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
+import { scrubFreeText } from "@/lib/api/founding";
+
 export const EXPORT_VERSION = "1.0.0";
 export const MAX_WINDOW_DAYS = 92;
 export const MAX_ROWS_PER_SECTION = 100_000;
@@ -118,6 +120,9 @@ export type RawAccount = {
   enrolled_at: string;
   api_key_created_at: string | null;
   acquisition_source: string;
+  /** A3: from the latest linked Founding 200 entry; absent before A3's migration. */
+  use_case?: string;
+  relevant_context?: boolean;
   enrolment_touch: RawTouch | null;
   first_key_touch: RawTouch | null;
 };
@@ -218,9 +223,10 @@ export function buildExport(input: BuildInput) {
   const accounts = rows.accounts.map((a) => ({
     id: acct(a.id),
     email_verified: a.email_verified,
-    // What the builder is building and their first real input arrive with A3's page.
-    use_case: "",
-    relevant_context: false,
+    // What the builder typed on the Founding 200 page, with anything that looks like an
+    // address, a URL, an IP or a barcode removed; and whether they ran a real input.
+    use_case: scrubFreeText(a.use_case ?? ""),
+    relevant_context: a.relevant_context === true,
     is_internal: a.is_internal,
     enrolled_at: a.enrolled_at,
     api_key_created_at: a.api_key_created_at,

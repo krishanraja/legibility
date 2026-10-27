@@ -1,7 +1,7 @@
 ---
 repo: krishanraja/legibility
 product: Legibility
-as_of: 2026-10-23
+as_of: 2026-10-27
 head: 48aca05
 lifecycle: beta
 production_url: https://legibility.io
@@ -34,7 +34,7 @@ What it proves for Mindmake: Krish sees a shift (assistants reading pages instea
 
 Objection it answers: "AI product data is guesswork." Legibility returns `product: null` at low confidence rather than a guess, and a null read costs the caller nothing (`README.md`, "Honest scope" and "Billing").
 
-## Where it is right now (as of 2026-10-23)
+## Where it is right now (as of 2026-10-27)
 
 <!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": null, "current_as_of": null, "current_source": null, "urgency": 4, "urgency_reason": "not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified)"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified), against 1 this week, on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
 
@@ -71,7 +71,6 @@ Broken, blocked or waiting:
 - **2026-10-18: the North Star was set** (`abd91f7`, `f3c6b77`): by March 2027, more revenue from agents paying per call in USDC on mainnet than from human sign-ups, with a hundred production agents depending on it every week.
 - **2026-10-03: TanStack Start bumped to clear an XSS advisory** that had made Vercel block every deploy (`95126cc`), and the public contact moved to krish@mindmake.co (`55a9ab0`).
 - **2026-09-27: a Google Analytics tag on every page, beside PostHog** (`1403690`).
-- **2026-09-23: Legibility moved to a new database after its old one was given to another product** (`272023a`). The 18 Sep cleanup dropped its schema, users and cron and wiped the migration ledger; all 18 migrations were applied again and the calibration record was restored as a marked reconstruction, never a re-run. The same day: the cohort sweep finally writes what it reads (it had contained zero inserts, `bb892ba`), the index was published and its arithmetic tested (`10bf892`), the rename to Legibility finished on the app side (the worker had been rejecting every cache write for seven weeks, `4752215`), and a Stripe webhook still pointing at the deleted pre-revival deployment was removed (`b94fd93`).
 
 ## What is next and what is waiting on Krish
 

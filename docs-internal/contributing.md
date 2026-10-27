@@ -94,7 +94,11 @@ means "about 70 percent likely to be correct."
 6. **Unit tests + coverage:** `bunx vitest run --coverage`. Hard gate. The money
    paths (`stripe-signature.ts`, `meter.ts`) are held at 100 percent line and
    branch. Those thresholds are a protected path: lowering one to make a run go
-   green is a guardrail trip, not a fix.
+   green is a guardrail trip, not a fix. The same run includes the migration
+   tests in `src/test/db/`: every file in `supabase/migrations/` applied in order
+   to an in-process Postgres (PGlite) with Supabase's roles, default grants,
+   `auth.users` and the `pg_cron` calls stubbed, so a migration's triggers,
+   grants and week arithmetic are tested as SQL with no network or secrets.
 7. **Build:** `bun run build`. Hard gate.
 8. **GEO artifacts:** `bun scripts/check-geo.ts`. Hard gate. Validates robots.txt
    group semantics, the sitemap, and that public plan claims match the JSON-LD

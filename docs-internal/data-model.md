@@ -63,6 +63,19 @@ Every keyed call writes one row. Beyond the meter fields (`tool`, `endpoint`, `s
   from URL or GTIN. Unique index on non-null values. This is the moat anchor: customers store it as
   a foreign key, and longitudinal history accumulates under it.
 
+## The internal list (A1)
+
+Service role only: RLS on with no policy, and the default grants to `anon` and `authenticated`
+revoked, so both get "permission denied". Membership is written at run time by an admin on
+`/dashboard/metrics` (each change lands in `audit_log`), never by a migration or seed.
+
+- `internal_accounts`: `account_id` (PK, `auth.users`), `class` (one of `krish`, `engine`,
+  `testbench`, `directory_test`, `registry`, `ci`, `demo`, `smoke`), `added_at`, `added_by` (the
+  admin's account id). Every account here, and every key on it, is internal.
+- `internal_keys`: `key_id` (PK, `api_keys`), `class`, `added_at`. A class label for one key. A
+  trigger refuses a key whose account is not in `internal_accounts`, and taking an account off the
+  list removes its key labels, so `is_internal` on the account is always enough.
+
 ## Functions
 
 Role and usage:
@@ -79,8 +92,18 @@ Billing and North Star (all `REVOKE`d from `public`/`anon`/`authenticated`, serv
   Returns `{ allowed, reason, plan_id, included_calls, used_billable, cost_spent_cents }` where
   `reason` is `ok` | `quota_exceeded` | `cost_fuse`. Free tier hard-stops at `included_calls` and
   trips a cost fuse (~3000 cents). Paid tiers are never hard-blocked here (overage is a roadmap item).
-- `northstar_weekly(_since?)`: weekly trusted reads (`billable`) and total calls per account. This is
-  the canonical North Star series.
+- `northstar_weekly(_since?)`: weekly trusted reads (`billable`) and total calls per account,
+  internal accounts excluded since A1 (signature and default unchanged).
+- `northstar_weekly_keys(_week_start?)`: the North Star number. One row per ISO week (Monday
+  00:00 UTC to the next Monday, computed in UTC whatever the session time zone) and external key
+  with at least one trusted read, with that key's count; the number for a week is the count of its
+  rows. Any date selects its week; the default is this week. Returns
+  `{ iso_week, week_start, key_id, trusted_reads }`.
+- `read_interface(_endpoint)`: `mcp` for `/api/mcp`, `api` for `/api/v1/*`, `testbench` for
+  anything else (a testbench, quickstart or sample read, or no endpoint), which never counts.
+- `is_trusted_read(_endpoint, _product_returned, _confidence, _calibration_version)`: the one
+  definition of a trusted read: through `api` or `mcp`, a product came back, confidence at least
+  0.7, and a non-empty calibration version.
 - `trust_rate_by_method(_since?)`: per-method call count, gate-pass count, and gate-pass rate. This
   is gate-pass, not correctness; the metrics page shows it next to precision-at-gate from
   `golden_eval_runs` and must never conflate the two.

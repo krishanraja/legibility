@@ -102,9 +102,12 @@ that does not resolve.
 ### Metrics (admin only)
 
 `/dashboard/metrics` is the North Star surface, gated to Legibility admins. It
-shows trusted-reads-per-account, the moat metric (golden precision at gate,
+leads with the North Star number for this ISO week (external keys with a trusted
+read, from `northstar_weekly_keys`, or "not measured" when the read fails), then
+trusted-reads-per-account, the moat metric (golden precision at gate,
 with its Wilson lower bound and calibration version), gate-pass rate by
-method (labelled clearly as gate-pass, NOT correctness), and the kill
+method (labelled clearly as gate-pass, NOT correctness), the internal list
+(the accounts and keys left out of the number, kept by an admin), and the kill
 dashboard. It reads near zero until real accounts make repeat trusted calls,
 and the page says so. Keep that honesty: do not dress a zero up as traction.
 

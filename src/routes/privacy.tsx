@@ -124,6 +124,13 @@ function Privacy() {
             entries follow their TTL (a few days by default, shorter for volatile fields like
             price). Account data is kept while your account is active.
           </p>
+          <p>
+            Where you came from, a Founding 200 test linked to your account and any trial on it are
+            kept with your account and deleted when it is deleted. A Founding 200 test that never
+            becomes an account, the hashed IP counts behind the daily limits, and the record of each
+            x402 payment (which holds no wallet address) are kept, and nothing deletes them
+            automatically yet. Contact us to have a test you ran deleted.
+          </p>
         </Section>
 
         <Section n="08" title="Your rights and takedowns">

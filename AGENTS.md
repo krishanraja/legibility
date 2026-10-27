@@ -34,7 +34,9 @@ extraction lives in a separate `legibility-worker` deploy that this app proxies 
 - Dev server: `bun run dev` (Vite on `http://localhost:3000`). The warnings it prints about
   `*.test.ts` route files "not exporting a Route" are expected and harmless.
 - Full CI gate order (mirror before pushing): `bun run format:check`, `bunx tsc --noEmit`,
-  `bun run lint`, `bunx vitest run --coverage`, `bun run build`, `bun scripts/check-geo.ts`.
+  `bun run lint`, `bunx vitest run --coverage`, `bun run build`,
+  `bun scripts/build-llms-full.ts --check`, `bun scripts/check-geo.ts` (CI also runs gitleaks and,
+  with the database secret, the calibration and plan checks).
 - Coverage is enforced at **100%** on the money-path surface (`src/lib/api/**`,
   `api-keys.server.ts`); `vitest.config.ts` treats a drop as a guardrail trip, not something to
   lower. The truth tests under `src/test/truth/**` hit the live network/DB and are excluded from
@@ -46,7 +48,7 @@ extraction lives in a separate `legibility-worker` deploy that this app proxies 
 
 - Copy `.env.example` to `.env` (gitignored) to run locally. Only the six `SUPABASE_*` /
   `VITE_SUPABASE_*` public vars are needed for the dev server to boot and render pages.
-- Real Supabase, Stripe, and worker (`PLINTH_EXTRACTOR_URL` / `PLINTH_EXTRACTOR_TOKEN`) secrets
+- Real Supabase, Stripe, and worker (`LEGIBILITY_EXTRACTOR_URL` / `LEGIBILITY_EXTRACTOR_TOKEN`) secrets
   are **not** present in this environment. Without them: pages render, MCP discovery
   (`initialize`, `tools/list`, `ping`) works, request validation works, and `tools/call` with no
   key correctly returns an HTTP 402 x402 payment quote. But live product reads,

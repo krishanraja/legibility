@@ -12,6 +12,7 @@ import {
   isRealInput,
   isTrusted,
   mcpConfigFor,
+  offerText,
   parseFoundingForm,
   parseFoundingInput,
   refusalFor,
@@ -20,6 +21,7 @@ import {
   verificationOptions,
   verifyTurnstile,
 } from "./founding";
+import { TRIAL_DEFAULTS } from "./trial";
 
 // Synthetic only.
 const KEY = "k".repeat(40);
@@ -259,6 +261,20 @@ describe("the words", () => {
   it("keeps free beside the trial and says what Free allows", () => {
     expect(COPY.offer).toContain("30-day free trial in exchange for feedback");
     expect(COPY.offer).toContain("up to 1,000 trusted reads a month");
+  });
+
+  it("c7. the offer follows FOUNDING_AUTO_TRIAL, so the page never promises the other", () => {
+    // Off (the default): a new key is a Free key, and the page says what Free allows.
+    expect(offerText(false)).toBe(COPY.offer);
+    expect(offerText(false)).not.toContain("5,000");
+    // On: a new key comes with the default trial, and the page says that trial, not Free's 1,000.
+    expect(offerText(true)).toBe(COPY.offerWithTrial);
+    expect(offerText(true)).toContain("30-day free trial in exchange for feedback");
+    expect(offerText(true)).toContain(
+      `up to ${TRIAL_DEFAULTS.allowance.toLocaleString("en-US")} trusted reads over ${TRIAL_DEFAULTS.days} days`,
+    );
+    expect(offerText(true)).toContain("stays on the Free plan");
+    expect(offerText(true)).not.toContain("1,000 trusted reads a month");
   });
 
   it("the forbidden list catches what it names", () => {

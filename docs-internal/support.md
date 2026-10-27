@@ -79,6 +79,16 @@ Check the Exa balance before escalating.
 Expected. Free is a hard 1,000-trusted-read cap. The 402 body points to
 `/dashboard/billing`. Upgrade to Starter or Growth to raise the cap.
 
+### "I hit a 402 `trial_used_up`"
+
+The account had a 30-day trial and has used its reads, and this month's
+Free reads are used too. Nothing was charged. Check the grant on
+`/dashboard/waitlist`, Trials (allowance, days left, fuse). The account
+gets Free reads again next month, or can add a plan. A second trial is not
+possible: there is one per account. While a trial is live, a call it cannot
+serve still goes through on Free reads, so this 402 only appears when both
+are used up.
+
 ### "x402 payment failed"
 
 1. Confirm the network: Base Sepolia. x402 is testnet-only right now. There
@@ -100,24 +110,24 @@ and route it to the founder.
 Real HTTP responses from `/api/v1/*`. Error bodies are JSON with at least
 `error` and `message`.
 
-| HTTP                  | error                          | What happened                                                        | What to say                                                                |
-| --------------------- | ------------------------------ | -------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| 200 + `product: null` | (none)                         | Below the calibrated 0.7 gate                                        | Free, no quota used. Pass `min_confidence` or use a GTIN / structured URL. |
-| 400                   | invalid_json                   | Body was not valid JSON                                              | Fix the request body.                                                      |
-| 401                   | unauthorized                   | Missing or bad lgk\_ key                                             | Send a valid key as a Bearer token.                                        |
-| 402                   | (quota)                        | Monthly quota exhausted                                              | Upgrade. The body links `/dashboard/billing`.                              |
-| 422                   | invalid_request                | read: not exactly one of `url`/`gtin`. resolve: `name` under 2 chars | Send one reference, or a real name.                                        |
-| 429                   | rate_limited                   | Per-key burst or sustained rate exceeded                             | Honor `retry-after`. Upgrade for higher limits.                            |
-| 502                   | upstream_unavailable           | The extraction worker did not respond                                | Retry. If persistent, page on-call.                                        |
-| 503                   | external_worker_not_configured | Worker URL/token unset in this env                                   | Ops issue: set `PLINTH_EXTRACTOR_URL` and `PLINTH_EXTRACTOR_TOKEN`.        |
+| HTTP                  | error                          | What happened                                                        | What to say                                                                 |
+| --------------------- | ------------------------------ | -------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| 200 + `product: null` | (none)                         | Below the calibrated 0.7 gate                                        | Free, no quota used. Pass `min_confidence` or use a GTIN / structured URL.  |
+| 400                   | invalid_json                   | Body was not valid JSON                                              | Fix the request body.                                                       |
+| 401                   | unauthorized                   | Missing or bad lgk\_ key                                             | Send a valid key as a Bearer token.                                         |
+| 402                   | quota_exceeded / cost_fuse     | Free quota or the Free usage safety limit reached                    | Upgrade. The body links `/dashboard/billing`.                               |
+| 402                   | trial_used_up                  | A trial and this month's Free reads are both used up                 | Nothing was charged. Add a plan, or wait for next month's Free reads.       |
+| 422                   | invalid_request                | read: not exactly one of `url`/`gtin`. resolve: `name` under 2 chars | Send one reference, or a real name.                                         |
+| 429                   | rate_limited                   | Per-key burst or sustained rate exceeded                             | Honor `retry-after`. Upgrade for higher limits.                             |
+| 502                   | upstream_unavailable           | The extraction worker did not respond                                | Retry. If persistent, page on-call.                                         |
+| 503                   | external_worker_not_configured | Worker URL/token unset in this env                                   | Ops issue: set `LEGIBILITY_EXTRACTOR_URL` and `LEGIBILITY_EXTRACTOR_TOKEN`. |
 
-The public `/docs/errors` page also lists 403 `key_revoked`, 404
-`not_resolvable`, and 451 `takedown`. 403 (revoked key or suspended account)
-and 451 (URL under a takedown) are real states. 404 `not_resolvable` is
-documented as the "could not resolve" case, but note the current worker
-returns a 200 envelope with `product: null` for a below-gate read rather
-than a 404. If a customer quotes a 404 as a hard error, confirm which
-surface and input they hit.
+The public `/docs/errors` page renders from `src/content/api-reference.ts`
+and lists the same codes as this table. Since 2026-10-21 it no longer lists
+403 `key_revoked`, 404 `not_resolvable` or 451 `takedown`, because the API
+never returned them: a revoked key is a 401, a below-gate read is a 200
+envelope with `product: null`, and there is no takedown error. If a customer
+quotes one of those, they are reading an old copy of the page.
 
 ## Canned responses
 
@@ -144,4 +154,4 @@ refund case. Pro-rata refund on cancellation if a customer requests within
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

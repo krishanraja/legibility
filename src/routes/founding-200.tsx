@@ -83,6 +83,7 @@ function FoundingPage() {
   const { entry } = Route.useSearch();
   const { user, loading } = useAuth();
   const [siteKey, setSiteKey] = useState<string | null | undefined>(undefined);
+  const [autoTrial, setAutoTrial] = useState(false);
   const [values, setValues] = useState<RunFormValues>({
     input: "",
     use_case: "",
@@ -104,7 +105,10 @@ function FoundingPage() {
 
   useEffect(() => {
     getFoundingSetup()
-      .then((s) => setSiteKey(s.siteKey))
+      .then((s) => {
+        setSiteKey(s.siteKey);
+        setAutoTrial(s.autoTrial);
+      })
       .catch(() => setSiteKey(null));
     recordFoundingView().catch(() => undefined);
   }, []);
@@ -166,7 +170,7 @@ function FoundingPage() {
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main id="main-content" className="mx-auto max-w-3xl space-y-10 px-6 py-16">
-        <Intro />
+        <Intro autoTrial={autoTrial} />
         {entry && welcome?.ok && input ? (
           <Welcome
             apiKey={welcome.key}

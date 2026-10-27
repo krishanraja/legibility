@@ -22,10 +22,10 @@ export const MAX_BYTES = 20 * 1024 * 1024;
 export const MIN_ID_KEY_LENGTH = 32;
 
 /**
- * The events section today holds email_verified and key_created (A2). The engine also counts
- * beta_page_viewed, testbench_started and testbench_completed (A3) and bounces, complaints,
- * unsubscribes and referral enrolments, none of which the app records yet, so it cannot vouch
- * for the section. A3 turns this on.
+ * The events section holds email_verified and key_created (A2) and the Founding 200 page's
+ * beta_page_viewed, testbench_started, testbench_completed and founding_200_submitted (A3). The
+ * engine also counts bounces, complaints, unsubscribes and referral enrolments, which the app
+ * does not record, so it cannot vouch for the section. It stays false until those are recorded.
  */
 export const EVENTS_COVERED = false;
 

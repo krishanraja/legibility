@@ -4,13 +4,16 @@
 // result shows inline; only then are they asked for an email, which gets a fixed-template
 // verification link and nothing they typed. After verification they get a key and the report.
 //
-// Until A8 (the 30-day trial) is live, every word here is what the Free plan allows: up to
-// 1,000 trusted reads a month, no enforced end date, no unlimited use, no waived charges, no
-// price. No booking link anywhere (Ruling, Krish, 2026-10-27: reply to book).
+// The offer follows FOUNDING_AUTO_TRIAL (A8). Off, the default, a new key is a Free key and
+// every word is what the Free plan allows: up to 1,000 trusted reads a month, no enforced end
+// date, no unlimited use, no waived charges, no price; a trial is Krish's click. On, a new key
+// comes with the default trial, and the page says what that trial is. No booking link anywhere
+// (Ruling, Krish, 2026-10-27: reply to book).
 import { createHmac } from "node:crypto";
 
 import { API_BASE, DEMO_GTIN, MCP_URL } from "@/config/product";
 import type { Touch } from "@/lib/api/attribution";
+import { TRIAL_DEFAULTS } from "@/lib/api/trial";
 
 /**
  * The limits, proposed for Krish's approval in the A3 pull request. Every one is counted in
@@ -195,12 +198,17 @@ export function verificationOptions(origin: string, entryId: string, touch: Touc
 
 // ---------------------------------------------------------------------------- the words
 
-/** The one offer, worded as the Free plan allows until the 30-day trial (A8) is live. */
+/**
+ * The words. `offer` is the Free plan's wording, shown while FOUNDING_AUTO_TRIAL is off (a new
+ * key is a Free key); `offerWithTrial` is shown only while it is on (a new key comes with the
+ * default trial). Pick between them with offerText, never by hand.
+ */
 export const COPY = {
   title: "The Founding 200",
   lead: "Try Legibility on one of your own products in about two minutes. You do not need an account to run the test.",
   offer:
     "Founding 200 members get a 30-day free trial in exchange for feedback, plus a test report on their own products. The trial runs on the Free plan: up to 1,000 trusted reads a month, and no card.",
+  offerWithTrial: `Founding 200 members get a 30-day free trial in exchange for feedback, plus a test report on their own products. A new key comes with up to ${TRIAL_DEFAULTS.allowance.toLocaleString("en-US")} trusted reads over ${TRIAL_DEFAULTS.days} days and no card; after that it stays on the Free plan.`,
   scope:
     "Legibility reads structured product pages (schema.org JSON-LD), Shopify stores and barcodes. Below a 0.7 confidence it returns no product rather than a guess.",
   emailAsk:
@@ -213,6 +221,15 @@ export const COPY = {
   callOffer: (contact: string) =>
     `Want a test report on more of your products and a 25-minute call? Email ${contact} and Krish will set it up with you.`,
 } as const;
+
+/**
+ * The offer the page shows, from FOUNDING_AUTO_TRIAL: the trial's own allowance only when a
+ * new key really gets it, so turning the flag on or off can never leave the page promising
+ * the other.
+ */
+export function offerText(autoTrial: boolean): string {
+  return autoTrial ? COPY.offerWithTrial : COPY.offer;
+}
 
 /** Phrases no page or message here may contain (A3 test 7). */
 export const FORBIDDEN_COPY: RegExp[] = [

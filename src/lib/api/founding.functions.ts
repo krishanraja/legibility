@@ -34,10 +34,17 @@ async function event(type: string, source: string) {
   if (error) console.error("[founding] event not recorded", type, error.code);
 }
 
-/** What the page needs to render: the challenge's public site key. */
-export const getFoundingSetup = createServerFn({ method: "GET" }).handler(async () => ({
-  siteKey: process.env.TURNSTILE_SITE_KEY ?? null,
-}));
+/**
+ * What the page needs to render: the challenge's public site key, and whether a new key comes
+ * with the default trial (FOUNDING_AUTO_TRIAL), which decides the offer the page states.
+ */
+export const getFoundingSetup = createServerFn({ method: "GET" }).handler(async () => {
+  const { autoTrialEnabled } = await import("@/lib/api/trial");
+  return {
+    siteKey: process.env.TURNSTILE_SITE_KEY ?? null,
+    autoTrial: autoTrialEnabled(process.env),
+  };
+});
 
 /** beta_page_viewed, once per hashed IP per UTC day. Never fails the page. */
 export const recordFoundingView = createServerFn({ method: "POST" }).handler(async () => {

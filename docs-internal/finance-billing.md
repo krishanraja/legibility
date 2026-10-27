@@ -37,18 +37,18 @@ are internal and nothing customer-facing renders them, so they are left
 alone deliberately rather than by oversight.
 
 **Status (2026-09-23):** live products and prices exist in Stripe
-(Starter `price_1Tki9C4w6vAdI2o574L46LZW`, Growth
-`price_1Tki9I4w6vAdI2o5NtBRlfk6`), wired to `plans.stripe_price_id`.
-The live webhook endpoint `we_1UIxHl4w6vAdI2o5Fy6Rq25w` points at
+for Starter and Growth, wired to `plans.stripe_price_id` (read the ids
+from that column or the Stripe dashboard).
+The live webhook endpoint points at
 `https://legibility.io/api/stripe/webhook` on all five handled events, and
 the deployed handler was checked against it: an unsigned POST and a
 wrongly signed POST are both rejected 400, and GET is 405. A billing
-portal configuration (`bpc_1UIxS14w6vAdI2o5hHkD2b0H`) now exists; the
+portal configuration now exists; the
 account had none, so `createPortalSession` would have failed at the first
 click.
 
 **Checkout cannot complete today, and the blocker is not in this repo.**
-Account `acct_1Sapu84w6vAdI2o5` reports `charges_enabled: false` with the
+The live account reports `charges_enabled: false` with the
 `card_payments` capability **inactive**, while `details_submitted` is true
 and `requirements` is null. Stripe's Checkout API refuses with "No valid
 payment method types for this Checkout Session". The API cannot clear it:
@@ -59,7 +59,7 @@ remaining step before a first charge is possible.** No charge and no
 subscription has ever been created on this account, so the live canary
 above remains unrun.
 
-**Webhook endpoints.** `we_1TkiCp4w6vAdI2o5Bqk7j1Y4` was deleted on
+**Webhook endpoints.** A second endpoint was deleted on
 2026-09-23. It pointed at `https://plinth-tan.vercel.app/api/stripe/webhook`,
 the retired deployment, whose Vercel project no longer exists and returns
 404; it was still enabled on the same five events as the live endpoint, so
@@ -70,16 +70,21 @@ standing source of delivery-failure noise hiding a real failure.
 Two endpoints on this account belong to other products and are left alone
 deliberately, but both currently 404 and are worth a decision:
 
-- `we_1TJGOf4w6vAdI2o57jKSGRJ2` to
-  `cgkcplcamsijghalintq.supabase.co/functions/v1/stripe-webhook`. That is
-  the old shared Supabase project, now a different tenant; the function is
-  gone.
-- `we_1TuLim4w6vAdI2o5nZe8ojB8` to the n8n workflow
+- One to a `stripe-webhook` edge function on the old shared Supabase
+  project, now CTRL's; the function is gone.
+- One to the n8n workflow
   `plinth-stripe-revenue`. n8n returns 404 for a production webhook whose
   workflow is deactivated, so this one may be dormant rather than dead and
   is recoverable by reactivating the workflow.
 
 Subscriptions are flat monthly in v1. Free requires **no card**.
+
+**The 30-day trial (A8)** is not a Stripe product. An admin grants it
+(`/dashboard/waitlist`, Trials): a number of trusted reads (default 5,000)
+over at most 30 days, its own cost fuse, one per account, no card, nothing
+charged. When it is used up the Free plan decides, and after day 30 the
+account is on Free. It writes no `subscriptions` row and creates nothing in
+Stripe. Detail: `docs-internal/data-model.md`, "The 30-day trial".
 
 ## Quota enforcement
 
@@ -129,9 +134,12 @@ paragraph is part of the change, not a follow-up to it.
 - Per-call USDC settles directly to `X402_RECIPIENT`; we do not custody funds.
 - x402 and Stripe are independent payment paths. Paying over x402 does not
   credit a Stripe account.
-- For accounting, x402 revenue is reconciled from on-chain settlement
-  events (each call's `X-PAYMENT-RESPONSE` carries the tx hash), once real
-  settlements exist.
+- For accounting, x402 revenue is read from `x402_settlements` (one row
+  per payment attempt: status, network, `amount_usd` with its dated USDC
+  rate, tool; A5), vouched for only from the date in `capture_sources`.
+  The ledger stores no transaction hash and no wallet address, so tying a
+  row to a chain transaction means matching the recipient wallet's
+  on-chain history by time and amount. No real settlement exists yet.
 
 ## COGS
 
@@ -188,4 +196,4 @@ See [support.md](./support.md). Process via Stripe; mirror to `invoices`.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

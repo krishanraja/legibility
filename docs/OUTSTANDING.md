@@ -3,13 +3,33 @@
 The 2026-07 fix run is complete and verified. The engine now works (it returns real trusted objects
 and separates products from non-products at measured precision), billing runs on the trusted-read
 unit with quota enforced, and the trust instrumentation and monitoring are live. What remains is a
-short list of items that need a human action or an external clock. Last updated 2026-07-06.
+short list of items that need a human action or an external clock. Last updated 2026-10-27.
+
+## Founder actions from the growth engine's app contract (A1 to A8, 2026-10-27)
+
+All eight are live (PRs 45 to 51, every migration through `20261027170000` applied). What is left
+needs Krish:
+
+- [ ] **Create the Turnstile keys** to open the Founding 200 page, which shows "paused" until then
+      (`docs-internal/ops.md`, "Open the Founding 200 page").
+- [ ] **Create the MCP Registry publishing key, publish `server.json`, and submit the directory
+      listings by 5 November** (`docs-internal/ops.md`, "Publish to the MCP Registry").
+- [ ] **Mark the three key events in Google Analytics admin**: `generate_lead`, `sign_up` and
+      `test_run`.
+- [ ] **Give the growth export a dedicated token.** Today it accepts the growth engine's Control
+      Center bearer, so rotating that bearer breaks it (`docs-internal/ops.md`, "Growth export
+      token").
+- [ ] **Confirm or change the trial defaults.** A8 shipped with the proposed defaults under the A1
+      to A8 go-ahead: 5,000 trusted reads, the clock from the grant, Free from day 30, and
+      automatic trials for Founding 200 sign-ups off (`FOUNDING_AUTO_TRIAL`).
+- [ ] **Add the engine, CI, demo and smoke accounts to the internal list** as each is created
+      (`/dashboard/metrics`). Today the list holds one account, Krish's.
 
 ## Founder actions (blocking GA)
 
 - [ ] **Rotate the exposed secrets.** Delete the old `sk_live` Stripe secret keys that were pasted
-      in chat (Stripe Dashboard, Developers, API keys), and reset the `cgkc` Supabase service-role
-      key. Creating a new key does not revoke the old one, and nothing in production depends on the
+      in chat (Stripe Dashboard, Developers, API keys), and reset the service-role key of the old
+      Supabase project (used until 2026-09-23, now CTRL's). Creating a new key does not revoke the old one, and nothing in production depends on the
       old ones anymore. A `gitleaks` gate is now in CI to stop future leaks.
 
 - [ ] **Add a Bright Data payment method and zone.** The Web Unlocker fallback for bot-hostile
@@ -22,11 +42,11 @@ short list of items that need a human action or an external clock. Last updated 
       search returns nothing when the Exa account is out of credits. Fund Exa to make name-resolve
       live.
 
-- [ ] **Activate card payments on the Stripe account.** The live account
-      `acct_1Sapu84w6vAdI2o5` reports `charges_enabled: false` and
+- [ ] **Activate card payments on the Stripe account.** The live account reports
+      `charges_enabled: false` and
       `capabilities.card_payments: inactive`, with no outstanding requirement listed. Only
-      `transfers` is active. Everything downstream is wired (secret key, webhook endpoint
-      `we_1UIxHl4w6vAdI2o5Fy6Rq25w` on all five events the handler switches on, and the
+      `transfers` is active. Everything downstream is wired (secret key, the live webhook endpoint
+      on all five events the handler switches on, and the
       `starter` and `growth` rows now carry their live price ids), so checkout will build a
       session and fail at payment until the account itself can charge. That is Stripe
       onboarding, not code.
@@ -58,7 +78,8 @@ short list of items that need a human action or an external clock. Last updated 
 - [x] **Enable leaked password protection.** Done 2026-08-06 via the Supabase Management API.
       `password_hibp_enabled` is now true and the minimum password length is raised from 6 to 10. The corresponding Supabase security advisor WARN is cleared.
 
-- [x] **Repoint `PLINTH_EXTRACTOR_URL` at `legibility-worker.vercel.app`.** Done 2026-08-07 for
+- [x] **Repoint the worker URL at `legibility-worker.vercel.app`.** (The variable was
+      `PLINTH_EXTRACTOR_URL` then; it is `LEGIBILITY_EXTRACTOR_URL` since 2026-09-23.) Done 2026-08-07 for
       both production and preview. The value is now
       `https://legibility-worker.vercel.app/extract`. The path was confirmed by probing rather
       than assumed: `/extract` returns 401 (exists, needs the bearer token) and every other
@@ -87,7 +108,9 @@ short list of items that need a human action or an external clock. Last updated 
       `x-vercel-protection-bypass: <secret>` (and optionally
       `x-vercel-set-bypass-cookie: true`) on every Playwright, axe and Lighthouse request.
 
-- [ ] **Repoint the Stripe webhook URL** to the new origin.
+- [x] **Repoint the Stripe webhook URL** to the new origin. Done 2026-09-23: the live endpoint
+      points at `https://legibility.io/api/stripe/webhook` and the one at the deleted deployment
+      was removed (`docs-internal/finance-billing.md`).
 
 - [ ] **Counsel review of the interim legal** (`/terms`, `/privacy`) before paid GA.
 
@@ -144,5 +167,5 @@ short list of items that need a human action or an external clock. Last updated 
   copy-paste curls that succeed verbatim, and the beta-theater and vapor-webhook copy removed. GET on
   POST-only API routes now returns `405`.
 
-The full fix map is in the audit `FIX-STATUS.md`. See `KILL-CRITERIA.md` for the North Star and the
-now-live kill dashboard, and the repo `_STATE.md` for the live build ledger.
+See `KILL-CRITERIA.md` for the kill metric and the live kill dashboard, `NORTH_STAR.md` for the
+North Star, and `NOW.md` at the repository root for where things stand today.

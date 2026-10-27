@@ -6,26 +6,36 @@ update this file in the same change.
 
 ## Tables
 
-| Table                | Purpose                                                                     | RLS posture                                                                         |
-| -------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `profiles`           | Per-user profile (display_name, company, email, approved, approved_at)      | Owner read/write via `auth.uid() = id`                                              |
-| `user_roles`         | App roles (`admin`, `user`)                                                 | Read via `has_role()` security-definer fn only; never selected client-side directly |
-| `waitlist`           | Pre-launch sign-ups (email, company, use*case, status, source, approved*\*) | Insert open to anon; select admin-only                                              |
-| `plans`              | Plan catalogue (Free / Starter / Growth)                                    | Public read                                                                         |
-| `subscriptions`      | Owner to plan, status, period, Stripe ids                                   | Owner read; service_role writes                                                     |
-| `api_keys`           | Hashed key (sha256), prefix, last_four, name, last_used_at, revoked_at      | Owner read; insert/revoke via server fn                                             |
-| `usage_events`       | Per-call meter + calibration observation (see columns below)                | Owner read; service_role inserts                                                    |
-| `product_cache`      | Typed product superset, ttl, confidence, field_confidence, legibility_id    | Service-role only; never read directly from the client                              |
-| `outcome_reports`    | Downstream outcome-closure labels (the moat label channel)                  | Owner insert/read own via `auth.uid() = user_id`                                    |
-| `golden_eval_runs`   | Recorded pre-release eval (precision at gate, adversarial, recall, ECE)     | Service-role only, no policies                                                      |
-| `ops_daily`          | Daily usage rollup (trust rate, errors, latency, cost, active accounts)     | Service-role only                                                                   |
-| `ops_alerts`         | Kill-floor and error alerts raised by the monitoring cron                   | Service-role only                                                                   |
-| `audit_log`          | Admin/security audit trail (action, actor, target, meta)                    | Service-role writes; admin read                                                     |
-| `invoices`           | Stripe invoice mirror for in-app history                                    | Owner read                                                                          |
-| `takedown_requests`  | Email, url, reason, status, notes                                           | Insert open; admin read/triage                                                      |
-| `resolutions`        | Reserved for an async resolve job model (resolve is sync; unused)           | Owner read; service_role writes                                                     |
-| `webhooks`           | Reserved; webhooks are not built (roadmap only)                             | Owner CRUD                                                                          |
-| `webhook_deliveries` | Reserved; webhooks are not built (roadmap only)                             | Owner read                                                                          |
+| Table                 | Purpose                                                                     | RLS posture                                                                         |
+| --------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `profiles`            | Per-user profile (display_name, company, email, approved, approved_at)      | Owner read/write via `auth.uid() = id`                                              |
+| `user_roles`          | App roles (`admin`, `user`)                                                 | Read via `has_role()` security-definer fn only; never selected client-side directly |
+| `waitlist`            | Pre-launch sign-ups (email, company, use*case, status, source, approved*\*) | Insert open to anon; select admin-only                                              |
+| `plans`               | Plan catalogue (Free / Starter / Growth)                                    | Public read                                                                         |
+| `subscriptions`       | Owner to plan, status, period, Stripe ids                                   | Owner read; service_role writes                                                     |
+| `api_keys`            | Hashed key (sha256), prefix, last_four, name, last_used_at, revoked_at      | Owner read; insert/revoke via server fn                                             |
+| `usage_events`        | Per-call meter + calibration observation (see columns below)                | Owner read; service_role inserts                                                    |
+| `product_cache`       | Typed product superset, ttl, confidence, field_confidence, legibility_id    | Service-role only; never read directly from the client                              |
+| `outcome_reports`     | Downstream outcome-closure labels (the moat label channel)                  | Owner insert/read own via `auth.uid() = user_id`                                    |
+| `golden_eval_runs`    | Recorded pre-release eval (precision at gate, adversarial, recall, ECE)     | Service-role only, no policies                                                      |
+| `ops_daily`           | Daily usage rollup (trust rate, errors, latency, cost, active accounts)     | Service-role only                                                                   |
+| `ops_alerts`          | Kill-floor and error alerts raised by the monitoring cron                   | Service-role only                                                                   |
+| `audit_log`           | Admin/security audit trail (action, actor, target, meta)                    | Service-role writes; admin read                                                     |
+| `invoices`            | Stripe invoice mirror for in-app history                                    | Owner read                                                                          |
+| `takedown_requests`   | Email, url, reason, status, notes                                           | Insert open; admin read/triage                                                      |
+| `resolutions`         | Reserved for an async resolve job model (resolve is sync; unused)           | Owner read; service_role writes                                                     |
+| `webhooks`            | Reserved; webhooks are not built (roadmap only)                             | Owner CRUD                                                                          |
+| `webhook_deliveries`  | Reserved; webhooks are not built (roadmap only)                             | Owner read                                                                          |
+| `internal_accounts`   | Accounts left out of the North Star, with a class (A1)                      | Service-role only                                                                   |
+| `internal_keys`       | A class label for one key on an internal account (A1)                       | Service-role only                                                                   |
+| `attribution_touches` | Enrolment and key-creation touches: where a builder came from (A2)          | Service-role only                                                                   |
+| `growth_events`       | Server-side growth events for the export (A2, A3)                           | Service-role only                                                                   |
+| `founding_runs`       | One row per Founding 200 test run: hashed IP, domain, status, cost (A3)     | Service-role only                                                                   |
+| `founding_entries`    | What a Founding 200 entrant typed and the result, linked at sign-up (A3)    | Service-role only                                                                   |
+| `founding_page_views` | One row per hashed IP per UTC day on the Founding 200 page (A3)             | Service-role only                                                                   |
+| `x402_settlements`    | One row per x402 payment attempt, no wallet address (A5)                    | Service-role only                                                                   |
+| `capture_sources`     | When each export section began to be recorded (A5)                          | Service-role only                                                                   |
+| `trial_grants`        | At most one 30-day trial per account (A8)                                   | Service-role only                                                                   |
 
 ## Roles
 
@@ -104,14 +114,16 @@ referrer's path or query.
     product token without its version (on the key's first use).
 - `growth_events`: server-side growth events (`type`, `account_id`, `source` = the channel label,
   `occurred_at`): `email_verified` (once per account, `record_email_verified`, which also tells
-  the browser to send `sign_up` exactly once) and `key_created`. The export (A4) reads this.
+  the browser to send `sign_up` exactly once) and `key_created`, plus the Founding 200 page's
+  events (A3, below). The export (A4) reads this. No `trial_granted` or `trial_ended` event is
+  emitted: a grant is visible only in `trial_grants`, and the export carries neither.
 - `account_acquisition_source(account)`: `internal` for an account on the internal list, else the
   enrolment touch's label, else `direct`. Labels, in order: `introduction` (an invitation id with
   `utm_medium=introduction`), `invitation`, `directory:<directory>`, `utm:<utm_source>`,
   `referrer:<host>`, `direct`.
 
-GA4 and PostHog receive `generate_lead` (the home page's lead form today; the Founding 200 form
-in A3), `sign_up` and `test_run` (A3), with the invitation id and the label only
+GA4 and PostHog receive `generate_lead` (the home page's lead form and the Founding 200 email
+step), `sign_up` and `test_run` (the Founding 200 run), with the invitation id and the label only
 (`trackGrowth` in `src/lib/analytics.ts`). They are cross-checks; the export never reads them.
 
 ## The Founding 200 page (A3)
@@ -180,7 +192,11 @@ percentile and maximum `cost_usd` a REST or MCP call over 30 days, shown on the 
 allowance x the higher of average and p95 x 3, never below Free's 3,000 cents
 (`trialFuseCents`, `src/lib/api/trial.ts`). Defaults: 5,000 reads, 30 days. With
 `FOUNDING_AUTO_TRIAL=true` a new Founding 200 key gets the default trial automatically; off by
-default. x402 calls never reach the entitlement check, so they are outside "nothing charged".
+default. x402 calls never reach the entitlement check, so they are outside "nothing charged". The
+Founding 200 page's offer follows the same flag (`offerText`, `src/lib/api/founding.ts`): it
+names the trial's 5,000 reads only while a new key gets them, and the Free plan's 1,000 a month
+otherwise. Neither a grant nor its end emits an event: `trial_granted` and `trial_ended` are not
+recorded anywhere, so the export cannot carry them.
 
 ## The growth export (A4)
 
@@ -190,7 +206,9 @@ row-level source the growth engine composes into its snapshot, shaped exactly to
 (growth-legibility `src/guards/wire.mjs`, `validateSnapshot`, vendored for the tests at a pinned
 commit in `src/test/vendor/growth-legibility/`).
 
-- Auth: `Authorization: Bearer <token>`. The app holds only the token's SHA-256
+- Auth: `Authorization: Bearer <token>`. Today the token is the growth engine's Control Center
+  bearer, so rotating that bearer breaks the export; the runbook for a dedicated token is in
+  `docs-internal/ops.md`, "Growth export token". The app holds only the token's SHA-256
   (`GROWTH_EXPORT_TOKEN_SHA256`), compared in constant time; 401 with no detail otherwise, and to
   everyone when the hash is unset. Opaque ids are HMAC-SHA-256 under `EXPORT_ID_KEY` (503 when it
   is unset), prefixed `acct_`, `key_`, `read_`, `evt_`, `sess_`, stable across exports.
@@ -202,11 +220,14 @@ commit in `src/test/vendor/growth-legibility/`).
   `usage_events.method` column (`unknown` before A4); `failure_reason` is `http_<status>`,
   `no_product`, `below_gate` or null; `session_id` is a hash of the key (or account) and the UTC
   date, since the MCP server is stateless.
-- Accounts: every `auth.users` row at capture. `use_case` is `""` and `relevant_context` false
-  until A3's page records them; `production_agent` is false until there is reviewed evidence.
+- Accounts: every `auth.users` row at capture. `use_case` and `relevant_context` come from the
+  account's linked Founding 200 entry (A3, above; `""` and false without one);
+  `production_agent` is false until there is reviewed evidence.
 - Coverage: `accounts` and `reads` are true when the rows counted first match the rows exported
-  (`reconciliation`); `events` is false until A3 records the page events the engine counts;
-  `settlements` is true from A5 for a window that starts after settlement capture began. `window.complete` is true because a window is never cut short.
+  (`reconciliation`); `events` stays false, because bounces, complaints, unsubscribes and
+  referrals, which the engine also counts, are not recorded; `settlements` is true from A5 for a
+  window that starts after settlement capture began. `window.complete` is true because a window
+  is never cut short.
   The reads reconciliation compares the table with itself: the entitlement check counts the same
   `usage_events` rows, so a metering insert that failed is invisible to both.
 - With `fields=attribution`, each account gains `attribution: { enrolment, first_key }` (each null
@@ -230,8 +251,10 @@ Billing and North Star (all `REVOKE`d from `public`/`anon`/`authenticated`, serv
 
 - `entitlement_check(_user_id)`: monthly quota + free cost fuse, evaluated before the worker call.
   Returns `{ allowed, reason, plan_id, included_calls, used_billable, cost_spent_cents }` where
-  `reason` is `ok` | `quota_exceeded` | `cost_fuse`. Free tier hard-stops at `included_calls` and
-  trips a cost fuse (~3000 cents). Paid tiers are never hard-blocked here (overage is a roadmap item).
+  `reason` is `ok` | `quota_exceeded` | `cost_fuse` | `trial_used_up`, and `plan_id` is `trial`
+  while a live grant decides (see "The 30-day trial" above). Free tier hard-stops at
+  `included_calls` and trips a cost fuse (3,000 cents). Paid tiers are never hard-blocked here
+  (overage is a roadmap item).
 - `northstar_weekly(_since?)`: weekly trusted reads (`billable`) and total calls per account,
   internal accounts excluded since A1 (signature and default unchanged).
 - `northstar_weekly_keys(_week_start?)`: the North Star number. One row per ISO week (Monday
@@ -268,6 +291,13 @@ channel (Resend via `pg_net`) is a roadmap item, wired when the channel and key 
 - `ops_daily` / `golden_eval_runs` / `outcome_reports`: kept (small, longitudinal, and the moat
   record).
 - `waitlist`: kept until launch, then archived.
+- Kept with the account and deleted with it (foreign keys cascade from `auth.users`):
+  `attribution_touches`, `growth_events` rows that name an account, `founding_entries` linked to
+  an account, `trial_grants`, `internal_accounts`.
+- Kept with no automatic purge today: `founding_entries` never linked to an account (what the
+  entrant typed and the result), `founding_runs` and `founding_page_views` (IP hashes, domains,
+  cost), `growth_events` with no account, `x402_settlements` and `capture_sources`. No cron
+  deletes any of them; delete by hand on request.
 
 ## Product cache shape (typed Product superset)
 
@@ -295,7 +325,11 @@ We do not store buyer PII. The cache keys on public references (URLs and GTINs).
 stores the key id, tool, the requested `domain` (a public hostname, or `gtin:` / `name:`), and an
 `envelope_hash`, never the request body beyond what is needed for the cache. `outcome_reports`
 stores only the agent's own key identity plus the outcome label and an optional observed price.
+`founding_entries` is the exception: it stores what a Founding 200 entrant typed (a product URL or
+barcode, what they are building, the stores they care about), which may identify them; it is
+service-role only, never exported (the use case goes out scrubbed), and kept as "Retention" says.
+`founding_runs` and `founding_page_views` store only an HMAC of the IP.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

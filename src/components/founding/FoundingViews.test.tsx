@@ -30,6 +30,7 @@ const MISS = reportFrom({ product: null, confidence: 0.1, method: null, cost_usd
 
 const states = {
   intro: <Intro />,
+  introAutoTrial: <Intro autoTrial />,
   form: (
     <RunForm
       values={{ input: "", use_case: "", interface: "rest", stores: "" }}
@@ -91,6 +92,13 @@ describe("the Founding 200 page", () => {
   it("states the one offer with free beside the trial", () => {
     expect(html.intro).toContain("30-day free trial in exchange for feedback");
     expect(html.intro).toContain("up to 1,000 trusted reads a month");
+  });
+
+  it("c7. with FOUNDING_AUTO_TRIAL on, the page states the trial a new key gets, not Free's", () => {
+    expect(html.introAutoTrial).toContain("30-day free trial in exchange for feedback");
+    expect(html.introAutoTrial).toContain("up to 5,000 trusted reads over 30 days");
+    expect(html.introAutoTrial).not.toContain("1,000 trusted reads a month");
+    expect(html.intro).not.toContain("5,000");
   });
 
   it("6. after verification: the key once, the report, and a curl and MCP config with their own input", () => {

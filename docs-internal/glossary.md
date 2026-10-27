@@ -66,22 +66,50 @@ schema.org Product. We add `confidence`, `field_confidence`, `source`,
 **Stamped cost.** The `cost_usd` field returned in every response.
 Lets an agent budget and decide whether to keep calling.
 
-**Trusted read.** A call that returned a product object at overall confidence
+**Billable read.** A keyed call that returned a product AND overall
+confidence >= 0.7, by any endpoint (`usage_events.billable`). It draws down
+quota and is the unit billing counts. The kill metric in
+`docs/KILL-CRITERIA.md` counts billable reads per active account.
 
-> = 0.7. This is the unit that matters: the North Star counts trusted reads per
-> active account per week, billing charges only trusted reads (see Billable),
-> and the cache stores only trusted reads. A null or below-gate response is not
-> a trusted read: it is free and does not consume quota.
+**Trusted read (North Star).** Stricter: a billable read made through the
+REST API (`/api/v1/*`) or MCP (`/api/mcp`) and carrying a non-empty
+calibration version (`is_trusted_read()`). A testbench, quickstart or sample
+read never counts. The North Star number is the count of external keys with
+at least one trusted read in the ISO week (`northstar_weekly_keys()`),
+internal accounts left out. A null or below-gate response is neither: it is
+free and does not consume quota.
+
+**Channel label.** Where an account came from, as one short label:
+`internal`, `introduction`, `invitation`, `directory:<name>`,
+`utm:<source>`, `referrer:<host>` or `direct`
+(`account_acquisition_source()`).
+
+**Internal list.** The accounts (and their keys) left out of the North Star:
+Krish's own, the growth engine, CI, demos, smoke tests and the like belong on
+it. Kept by an admin on `/dashboard/metrics` (`internal_accounts`,
+`internal_keys`).
+
+**Invitation id.** The growth engine's id for one invitation, carried in a
+link's `utm_content` as `legibility:...` and kept with the touch, so a
+builder can be traced to the invitation that brought them.
+
+**Opaque id.** An id in the growth export: an HMAC of the database id under
+`EXPORT_ID_KEY`, with a prefix (`acct_`, `key_`, `read_`, `evt_`, `sess_`).
+Stable across exports, and never the database id itself.
+
+**Trial.** A 30-day free trial an admin grants to one account, once: a
+number of trusted reads (default 5,000) and its own cost fuse, no card,
+nothing charged, then the Free plan (`trial_grants`).
 
 **Wedge.** One of the five differentiators in [README.md](./README.md).
 If a piece of copy or a product decision does not ladder to a wedge,
 ask why we're shipping it.
 
-**x402.** Open HTTP 402 micropayment standard. Legibility accepts USDC on
-Base. The live surface runs on Base Sepolia (testnet): the verify-and-settle
-flow is proven there, but there is no live mainnet settlement yet. Mainnet is
-roadmap.
+**x402.** Open HTTP 402 micropayment standard. Legibility accepts test USDC
+on Base Sepolia (testnet): the verify-and-settle flow is proven there, and
+there is no mainnet settlement yet. Each attempt is one `x402_settlements`
+row.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

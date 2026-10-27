@@ -2,7 +2,7 @@
 
 ## Auth model
 
-- Email auth via Supabase Auth (project `cgkcplcamsijghalintq`).
+- Email auth via Supabase Auth (the project named in `supabase/config.toml`).
 - Sessions managed by Supabase; never persisted server-side.
 - Customer API keys: `lgk_` prefix + 32 random bytes. sha256-hashed at
   rest. Shown ONCE at creation. One key per account in v1.
@@ -11,13 +11,13 @@
 
 ## Worker auth (fail closed)
 
-- The extraction worker (`legibility-worker`) shares `PLINTH_EXTRACTOR_TOKEN`
-  with the app. It refuses to serve without it: on boot, an unset token
+- The extraction worker (`legibility-worker`) shares `LEGIBILITY_EXTRACTOR_TOKEN`
+  with the app (the worker's own variable name lives in its repository). It refuses to serve without it: on boot, an unset token
   calls `process.exit(1)` (see `worker/src/server.ts`). Local dev must opt
   in explicitly with `LEGIBILITY_ALLOW_INSECURE_DEV=1`, never silently.
 - `/extract` checks the bearer with a length-guarded constant-time compare
   (`timingSafeEqual`); a bad or absent token returns 401.
-- The app fails closed too: if `PLINTH_EXTRACTOR_URL` / `PLINTH_EXTRACTOR_TOKEN`
+- The app fails closed too: if `LEGIBILITY_EXTRACTOR_URL` / `LEGIBILITY_EXTRACTOR_TOKEN`
   are unset, `read_product` returns a clean 503 (`external_worker_not_configured`)
   rather than calling out unauthenticated.
 
@@ -37,10 +37,34 @@ store role on `profiles`.
 - Service-role only, RLS on with NO `authenticated`/`anon` policies:
   `product_cache`, `golden_eval_runs`, `ops_daily`, `ops_alerts`. Raw
   extraction data and the monitoring rollups are never client-readable.
-- The North Star / monitoring RPCs (`northstar_weekly`, `trust_rate_by_method`,
-  `entitlement_check`, `compute_ops_daily`, `check_kill_floor`, `kill_dashboard`)
-  are security-definer with `EXECUTE` revoked from `PUBLIC`, `anon`, and
-  `authenticated`; only the service role runs them.
+- Also service-role only (RLS on, no policies, grants to `anon` and
+  `authenticated` revoked), added on 2026-10-27 for A1 to A8:
+  `internal_accounts`, `internal_keys`, `attribution_touches`, `growth_events`,
+  `founding_runs`, `founding_entries`, `founding_page_views`,
+  `x402_settlements`, `capture_sources`, `trial_grants`.
+- The North Star / monitoring RPCs (`northstar_weekly`, `northstar_weekly_keys`,
+  `trust_rate_by_method`, `entitlement_check`, `compute_ops_daily`,
+  `check_kill_floor`, `kill_dashboard`) and the A1 to A8 RPCs
+  (`record_key_creation`, `record_key_client`, `record_email_verified`,
+  `account_acquisition_source`, `growth_export_counts`, `growth_export_rows`,
+  `growth_export_settlements`, `claim_founding_run`, `complete_founding_run`,
+  `record_founding_view`, `claim_founding_entry`, `record_x402_settlement`,
+  `grant_trial`, `end_trial`, `trial_cost_per_call`) are security-definer with
+  `EXECUTE` revoked from `PUBLIC`, `anon`, and `authenticated`; only the
+  service role runs them.
+
+## The growth export and the Founding 200 page
+
+- `GET /api/internal/growth/export` takes one bearer token, held only as its
+  SHA-256 (`GROWTH_EXPORT_TOKEN_SHA256`) and compared in constant time; 401
+  with no detail otherwise, and to everyone when the hash is unset. Its ids
+  are HMACs under `EXPORT_ID_KEY` (503 when unset). It never carries an email,
+  a name, an IP, a product input, a key, a wallet address or a database id.
+  Rotation: `docs-internal/ops.md`, "Growth export token".
+- The Founding 200 page checks Cloudflare Turnstile server-side on every run
+  and fails closed: no secret, a network error or a bad token refuses the run.
+  The IP is never stored; the daily limits key on an HMAC of it under
+  `EXPORT_ID_KEY`, so rotating that key resets the limits.
 
 ## Secrets handling
 
@@ -62,8 +86,8 @@ rotation queue in `docs/security-rotation.md` and are the founder's to delete:
 
 - The chat-pasted `sk_live` Stripe secret key(s): delete in the Stripe dashboard,
   replace with a fresh restricted key.
-- The `cgkcplcamsijghalintq` Supabase service-role key: reset, then update both
-  Vercel projects and the local vault.
+- The service-role key of the old Supabase project (now CTRL's): reset it.
+  Nothing in Legibility uses that project any more.
 
 Rotate the worker token by setting the new value on the worker first, deploying,
 then the app, so the fail-closed sequence never opens a gap.
@@ -87,7 +111,8 @@ then the app, so the fail-closed sequence never opens a gap.
   and does not consume quota (`usage_events.billable = product returned AND
 confidence >= 0.7`), so abuse that only produces misses cannot cost the customer
   and is bounded by the free cost fuse.
-- Takedown blocklist enforced at extraction time (see `legal-trust.md`).
+- Takedowns purge the cache; there is no blocklist in this app (see
+  `legal-trust.md`).
 - No bulk endpoints, no result pagination in v1.
 - IP-level throttling of repeated unauthenticated 401s is not implemented yet
   (roadmap); today the fail-closed 401s on the app and worker are the floor.
@@ -108,4 +133,4 @@ changes.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

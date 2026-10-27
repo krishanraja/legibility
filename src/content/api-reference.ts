@@ -84,7 +84,7 @@ export const MCP_ERRORS: McpErrorRow[] = [
   {
     status: 402,
     code: -32098,
-    when: "Keyed call: monthly quota reached or the Free usage safety limit hit.",
+    when: "Keyed call: monthly quota reached, the Free usage safety limit hit, or a 30-day trial and this month's Free reads are both used up (nothing was charged).",
   },
   { status: 429, code: -32099, when: "Keyed call: over your plan's per-minute budget." },
   { status: 405, code: -32000, when: "GET instead of POST." },

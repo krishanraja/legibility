@@ -99,8 +99,14 @@ function Terms() {
             included allowance are measured and shown to you, but they are not charged
             automatically: we will not invoice you for usage above your plan without telling you
             first. The Free tier stops at its allowance rather than charging anything. Autonomous
-            agents may also pay per call via x402 (USDC on Base); x402 payments are independent of
-            any Stripe account.
+            agents may also pay per call via x402, which today settles in test USDC on Base Sepolia,
+            a test network; x402 payments are independent of any Stripe account.
+          </p>
+          <p>
+            We may give an account a free trial of up to 30 days, for example as a Founding 200
+            member. A trial covers a stated number of trusted reads, there is one per account, it
+            needs no card, and nothing is charged for it. When it ends or is used up, the account is
+            on the Free plan.
           </p>
         </Section>
 
@@ -138,7 +144,7 @@ function Terms() {
         </Section>
 
         <p className="mt-12 text-xs text-muted-foreground">
-          Interim terms. Last updated: 19 October 2026. Pending final counsel review before paid GA.
+          Interim terms. Last updated: 27 October 2026. Pending final counsel review before paid GA.
         </p>
       </main>
       <SiteFooter />

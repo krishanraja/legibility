@@ -44,6 +44,10 @@ registry entry, so a directory reviewer sees the same words everywhere.
   Krish's action: the registry verifies the domain over HTTP at `/.well-known/mcp-registry-auth`,
   which serves the public half of his publishing key from `MCP_REGISTRY_AUTH_PUBLIC_KEY` (404
   until set), so no DNS change is needed. Bump `SERVER_INFO.version` and `server.json` together.
+  The steps are in `docs-internal/ops.md`, "Publish to the MCP Registry".
+- `/docs/mcp` (`src/components/docs/McpDocs.tsx`), the documentation link the manifest gives
+  reviewers, renders the same `TOOLS` list with titles, the key auth and a link to the manifest,
+  and says x402 settles on testnet only.
 
 ## Tools
 
@@ -149,7 +153,9 @@ Two independent paths. A `tools/call` (or any billed REST tool) needs one of the
   base64 `X-PAYMENT` header. Legibility verifies and settles via the facilitator
   (`X402_FACILITATOR`, default `https://x402.org/facilitator`), then returns `200` with an
   `X-PAYMENT-RESPONSE` header carrying the settlement.
-- x402 calls are paid on-chain, so they skip account metering and rate limiting.
+- x402 calls are paid on-chain, so they skip account metering and rate limiting. Every attempt,
+  settled or failed, writes one `x402_settlements` row (no wallet address, payload or header; see
+  `docs-internal/data-model.md`, "x402 payments").
 - **Network is Base Sepolia (testnet). There is no live settlement yet:** the on-chain path is
   wired and testable but not carrying real money, pending a funded recipient. We do not custody
   funds; payment goes straight to `X402_RECIPIENT`.
@@ -180,6 +186,11 @@ The billing unit is the **trusted read**, not the call.
   fuse returns `402 { error: "cost_fuse", ... }`. Enforcing before the fetch means a free account
   cannot run unbounded real-cost extractions. The check fails safe: on an RPC error a free caller is
   blocked, a paid caller is allowed.
+- **The 30-day trial (A8).** Precedence in `entitlement_check`: a paid subscription wins; else a
+  live trial grant serves reads while under its allowance and its own cost fuse (`plan_id`
+  `trial`); else the Free plan decides as before. Only when the grant is used up and Free refuses
+  too is the answer `402 { error: "trial_used_up", ... }`, whose message says nothing was charged.
+  A trial is never worse than Free, and it never touches Stripe.
 
 Plans (trusted reads per calendar month, UTC):
 
@@ -202,6 +213,7 @@ JSON error bodies with a stable shape: `{ error, message }`. Codes in use:
 | 400  | `invalid_json`                   | body is not valid JSON                                       |
 | 401  | `unauthorized`                   | missing or invalid `lgk_` key                                |
 | 402  | `quota_exceeded` / `cost_fuse`   | free account over its monthly quota or the free cost fuse    |
+| 402  | `trial_used_up`                  | a trial and this month's Free reads are both used up         |
 | 402  | (x402 `PaymentRequirements`)     | MCP `tools/call` with no key and no settled payment          |
 | 405  | `method_not_allowed`             | wrong HTTP method on a POST-only route (with `Allow` header) |
 | 422  | `invalid_request`                | wrong arity or a malformed argument                          |
@@ -248,4 +260,4 @@ ships.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

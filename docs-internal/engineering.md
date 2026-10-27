@@ -6,7 +6,8 @@
 - **Hosting:** Vercel (Node / Fluid Compute functions, not edge). `main` auto-deploys; PRs get
   preview deploys. `src/server.ts` is the Nitro entry.
 - **Styling:** Tailwind v4 via `src/styles.css`, semantic tokens only (Editorial Warm).
-- **Backend:** Supabase, project `cgkcplcamsijghalintq` (own project; Lovable has been ejected).
+- **Backend:** Supabase, the project named in `supabase/config.toml` (own project since
+  2026-09-23; the earlier one now belongs to CTRL; Lovable has been ejected).
   Postgres 17, RLS on every table, PostgREST, Auth, `pg_cron` for the cache purge and the daily
   ops rollup / kill-floor check.
 - **Extraction:** a separate worker (see below). The core extractor path is deterministic-first;
@@ -19,7 +20,7 @@
 agent / MCP client
   -> app on Vercel  (src/routes/api/v1/*, /api/mcp)
        auth (lgk_ key) -> rate limit -> entitlement_check (402 quota/cost fuse)
-       -> worker on Vercel  (POST /extract, Bearer PLINTH_EXTRACTOR_TOKEN)
+       -> worker on Vercel  (POST /extract, Bearer LEGIBILITY_EXTRACTOR_TOKEN)
             fetch (browser UA, never throws)
             deterministic extractors: JSON-LD, Shopify, OpenGraph, barcode/GTIN
             [unblock fallback: Bright Data Web Unlocker, blocked pages only, DORMANT]
@@ -30,7 +31,7 @@ agent / MCP client
        meter into usage_events (billable + calibration stamps), mint/return legibility_id
 ```
 
-The app never extracts; it proxies to the worker over HTTPS with `PLINTH_EXTRACTOR_TOKEN`. Keeping
+The app never extracts; it proxies to the worker over HTTPS with `LEGIBILITY_EXTRACTOR_TOKEN`. Keeping
 extraction out of the SSR app keeps the app functions small and lets the worker run heavy work
 elsewhere.
 
@@ -39,20 +40,27 @@ elsewhere.
 ```
 src/
   routes/
-    _authenticated/     route gate, dashboard pages (keys, usage, billing, metrics, overview)
+    _authenticated/     route gate, dashboard pages (overview, keys, usage, billing, webhooks,
+                        metrics, waitlist with its Trials tab)
     api/
       v1/               REST tools: read_product, resolve_product, compare_products,
                         brief_product, report_outcome
       mcp.ts            MCP JSON-RPC server (free discovery, paid read + resolve)
+      internal/growth/export.ts   the growth engine's row-level export (A4)
       stripe/webhook.ts Stripe webhook (manual HMAC verify)
       health.ts         /api/health probe
+    [.]well-known.*     /.well-known/mcp.json and /.well-known/mcp-registry-auth (A6, A7)
+    founding-200.tsx    the Founding 200 page (A3)
     terms.tsx, privacy.tsx, docs.*.tsx   public pages
-  components/           UI (site/, auth/, ui/ shadcn primitives)
+  components/           UI (site/, auth/, admin/, founding/, docs/, answers/, ui/ shadcn)
   config/product.ts     APP_ORIGIN and product-level config
   lib/
     auth.tsx            AuthProvider + useAuth
     api/                billing.functions.ts, x402.server.ts, keys.functions.ts,
-                        meter.ts (stampFromResponse), metrics.functions.ts
+                        meter.ts (stampFromResponse), metrics.functions.ts, and the A1 to A8
+                        rules: internal-accounts, attribution, growth-export, founding,
+                        mcp-tools, x402-ledger, trial; their server functions are
+                        internal, attribution, founding and trials .functions.ts
   integrations/supabase/  client(s), api-keys.server, rate-limit.server,
                           entitlement.server, generated types
 supabase/migrations/    SQL, append-only
@@ -75,7 +83,8 @@ docs-internal/          this directory      docs/  public-facing decision record
 ## read_product path (representative)
 
 `read_product` validates the `lgk_` key, enforces the per-plan rate limit, calls `entitlement_check`
-(402 with an upgrade link on `quota_exceeded` / `cost_fuse`, BEFORE any worker cost), proxies
+(402 with an upgrade link on `quota_exceeded`, `cost_fuse` or `trial_used_up`, BEFORE any
+worker cost), proxies
 `{ url | gtin, min_confidence? }` to the worker, and meters the call into `usage_events`. The metering
 row is a calibration observation, not just a billable count: it stamps `confidence`, `product_returned`,
 `billable` (product present AND confidence >= 0.7), `domain`/method, `envelope_hash`, `request_id`, and
@@ -85,7 +94,7 @@ row is a calibration observation, not just a billable count: it stamps `confiden
 
 A separate deploy (`krishanraja/legibility-worker`, Vercel, Node). `worker/src/`:
 
-- **`server.ts`** exposes `POST /extract` (Bearer `PLINTH_EXTRACTOR_TOKEN`, constant-time check,
+- **`server.ts`** exposes `POST /extract` (Bearer, the shared worker token, constant-time check,
   fails closed without the token) and `GET /health`.
 - **`extract.ts`** deterministic extractors: JSON-LD (schema.org Product across arrays / `@graph`),
   OpenGraph, and Shopify (`/products/{handle}.json` for fields plus `/meta.json` for currency so a
@@ -126,16 +135,22 @@ the A-reduced coverage scope (structured data + verified OpenGraph; bot-hard ret
 
 ## Env vars (app)
 
-- `PLINTH_EXTRACTOR_URL`, `PLINTH_EXTRACTOR_TOKEN` -- the worker.
-- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` -- billing.
-- `X402_RECIPIENT` -- the Base Sepolia (testnet) payee. `X402_FACILITATOR`, `X402_NETWORK`,
+- `LEGIBILITY_EXTRACTOR_URL`, `LEGIBILITY_EXTRACTOR_TOKEN`: the worker.
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`: billing.
+- `X402_RECIPIENT`: the Base Sepolia (testnet) payee. `X402_FACILITATOR`, `X402_NETWORK`,
   `X402_ASSET`, `X402_PRICE_ATOMIC` are optional (sane Base Sepolia defaults live in `x402.server.ts`).
-- `APP_ORIGIN` (in `src/config/product.ts`) / `APP_BASE_URL` -- absolute base for redirect and quota
-  links. Point at `https://legibility.io` once DNS resolves; today the live surface is
-  `legibility.io`.
+- `APP_ORIGIN` (in `src/config/product.ts`, `https://legibility.io`) is the one public origin.
+  `APP_BASE_URL` optionally overrides it for Stripe checkout and portal return links only.
+- `CHECK_SIGNING_SECRET`, `RESEND_API_KEY`, `RESEND_FROM`, `RESEND_REPLY_TO`: the free check's
+  capture and its email.
+- `GROWTH_EXPORT_TOKEN_SHA256`, `EXPORT_ID_KEY`: the growth export (A4) and the Founding 200 IP
+  hash. `MCP_CONTACT_EMAIL`, `MCP_REGISTRY_AUTH_PUBLIC_KEY`: the MCP manifest and registry (A6,
+  A7). `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`: the Founding 200 challenge (A3).
+  `FOUNDING_AUTO_TRIAL`: automatic trials (A8). `VERCEL_GIT_COMMIT_SHA` is set by Vercel.
+  Each is described in `.env.example`.
 - Supabase URL + publishable key (`VITE_*`) for the client; service role for server-only admin.
 
-Worker env: `PLINTH_EXTRACTOR_TOKEN`, `EXA_API_KEY` (resolve), `BROWSERLESS_API_KEY` (render),
+Worker env (names as the worker repository defines them): the shared worker token, `EXA_API_KEY` (resolve), `BROWSERLESS_API_KEY` (render),
 `ANTHROPIC_API_KEY` + `PLINTH_LLM_VERIFY` (content-validity verifier), `BRIGHTDATA_API_TOKEN` +
 `BRIGHTDATA_ZONE` (Web Unlocker, dormant), Supabase service role. `process.env.*` is server-only:
 read it inside the handler, never at shared-module scope.
@@ -149,11 +164,15 @@ bun run build      # also regenerates routeTree.gen.ts
 bun run lint
 ```
 
-Ship: branch, PR, green CI (`.github/workflows/ci.yml`: gitleaks `secret-scan`, plus install, em-dash
-grep on `src/`, tsc, build; lint runs non-blocking pending a one-time prettier pass), squash-merge.
-Vercel deploys `main` automatically. Migrations are applied to `cgkc` via the Supabase Management API /
-MCP and mirrored into `supabase/migrations/`.
+Ship: branch, PR, green CI, squash-merge. CI (`.github/workflows/ci.yml`) is gitleaks
+`secret-scan` plus a `verify` job where every step is a hard gate: install, the em dash check,
+format check, tsc, lint, vitest with coverage (including the PGlite migration tests in
+`src/test/db/`), build, the calibration and plan database checks (when the service-role secret is
+present), the `llms-full.txt` check and the GEO check. `docs-internal/contributing.md` has the
+detail. Vercel deploys `main` automatically. A migration is written in `supabase/migrations/`,
+tested in PGlite, applied to the project named in `supabase/config.toml`, and only then is code
+that reads it merged.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

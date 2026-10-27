@@ -59,6 +59,8 @@ Coverage today: Shopify stores (currency resolved through the storefront's own m
 
 - MCP endpoint: https://legibility.io/api/mcp (JSON-RPC 2.0 over HTTP POST, protocol 2025-06-18). initialize, tools/list and ping are free and need no key.
 - MCP discovery document: https://legibility.io/.well-known/mcp.json states the endpoint, transport, auth methods and tool list in one fetch.
+- MCP tools: read_product ("Read a product") and resolve_product ("Resolve a product name"). Each declares an outputSchema and read-only annotations; a conforming result comes back as structuredContent beside the same JSON as text, and anything else as an error result.
+- MCP Registry name: io.legibility/mcp, with one streamable-http remote at https://legibility.io/api/mcp. It is not yet published to the registry.
 - Paying per call with no account: tools/call without a key returns HTTP 402 with x402 payment requirements (USDC on Base Sepolia, a testnet). Sign the quoted amount, resend with an X-PAYMENT header, and the result comes back with X-PAYMENT-RESPONSE. The payment settles before the read runs. No mainnet settlement yet.
 - With an API key instead: Authorization: Bearer lgk_... on MCP or on REST at https://legibility.io/api/v1/<tool>. Only trusted reads are billed.
 

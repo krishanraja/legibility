@@ -29,18 +29,18 @@ every PR. End commit messages with the `Co-Authored-By` trailer.
 
 ## Where to put things
 
-| Adding...                            | Goes in                                                                                                                                                              |
-| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| A public page                        | `src/routes/<name>.tsx`                                                                                                                                              |
-| A docs page                          | `src/routes/docs.<name>.tsx` + sidebar link                                                                                                                          |
-| A dashboard page                     | `src/routes/_authenticated/dashboard.<name>.tsx`                                                                                                                     |
-| A REST endpoint                      | `src/routes/api/v1/<name>.ts`                                                                                                                                        |
-| An inbound provider webhook receiver | `src/routes/api/<provider>/<name>.ts` (for example `api/stripe/webhook.ts`). Legibility receives provider webhooks; it does NOT send outbound webhooks to customers. |
-| A client-callable server function    | `src/lib/api/<area>.functions.ts`                                                                                                                                    |
-| A server-only helper                 | `src/lib/api/<area>.server.ts` or `src/integrations/...server.ts`                                                                                                    |
-| A migration                          | Supabase Management API / MCP, mirror to `supabase/migrations/`                                                                                                      |
-| An image / font / binary asset       | `src/assets/` or `public/`                                                                                                                                           |
-| Engine, scorer, calibration, eval    | the `legibility-worker` repo, not here                                                                                                                               |
+| Adding...                            | Goes in                                                                                                                                                                      |
+| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A public page                        | `src/routes/<name>.tsx`                                                                                                                                                      |
+| A docs page                          | `src/routes/docs.<name>.tsx` + sidebar link                                                                                                                                  |
+| A dashboard page                     | `src/routes/_authenticated/dashboard.<name>.tsx`                                                                                                                             |
+| A REST endpoint                      | `src/routes/api/v1/<name>.ts`                                                                                                                                                |
+| An inbound provider webhook receiver | `src/routes/api/<provider>/<name>.ts` (for example `api/stripe/webhook.ts`). Legibility receives provider webhooks; it does NOT send outbound webhooks to customers.         |
+| A client-callable server function    | `src/lib/api/<area>.functions.ts`                                                                                                                                            |
+| A server-only helper                 | `src/lib/api/<area>.server.ts` or `src/integrations/...server.ts`                                                                                                            |
+| A migration                          | Write the SQL in `supabase/migrations/`, test it in PGlite (`src/test/db/`), apply it to the project named in `supabase/config.toml`, and only then merge code that reads it |
+| An image / font / binary asset       | `src/assets/` or `public/`                                                                                                                                                   |
+| Engine, scorer, calibration, eval    | the `legibility-worker` repo, not here                                                                                                                                       |
 
 ## The eval harness (the engine's ground truth)
 
@@ -99,10 +99,19 @@ means "about 70 percent likely to be correct."
    to an in-process Postgres (PGlite) with Supabase's roles, default grants,
    `auth.users` and the `pg_cron` calls stubbed, so a migration's triggers,
    grants and week arithmetic are tested as SQL with no network or secrets.
-7. **Build:** `bun run build`. Hard gate.
-8. **GEO artifacts:** `bun scripts/check-geo.ts`. Hard gate. Validates robots.txt
-   group semantics, the sitemap, and that public plan claims match the JSON-LD
-   offers.
+7. **Build:** `bun run build`. Hard gate. It also rewrites `public/sitemap.xml`;
+   revert that file if the only change is a date.
+8. **Database checks:** `bun scripts/sync-calibration.ts --check` and
+   `bun scripts/sync-plans.ts --check`. Hard gates that compare the published
+   calibration figures and plan figures with the live tables. They run only
+   when the `SUPABASE_SERVICE_ROLE_KEY` secret is present (skipped on forks).
+9. **llms-full.txt:** `bun scripts/build-llms-full.ts --check`. Hard gate: the
+   long form is generated from `public/llms.txt` and the failure-reason
+   content. After editing `llms.txt`, regenerate with
+   `bun scripts/build-llms-full.ts`.
+10. **GEO artifacts:** `bun scripts/check-geo.ts`. Hard gate. Validates robots.txt
+    group semantics, the sitemap, and that public plan claims match the JSON-LD
+    offers.
 
 Get CI green before asking for review.
 
@@ -126,9 +135,9 @@ Get CI green before asking for review.
 ## Asking the user
 
 Use the questions tool when scope or preference is genuinely ambiguous. Do
-not ask about settled defaults (Vercel hosting, the `cgkc` Supabase project,
-the standalone `legibility-worker` extraction worker).
+not ask about settled defaults (Vercel hosting, the Supabase project named in
+`supabase/config.toml`, the standalone `legibility-worker` extraction worker).
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

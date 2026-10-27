@@ -1,7 +1,7 @@
 # Phase 0: live-state reconciliation
 
 **Run:** 2026-08-06. **Against:** `PLINTH_BRIEF_v2.md`, this repo at `75703fb`, Supabase
-`cgkcplcamsijghalintq`, and the live deploys.
+the old Supabase project (now CTRL's), and the live deploys.
 **Spend:** $0.00. No Plinth API calls, no Exa, no Bright Data. The cohort probe used direct
 `curl` against public retailer URLs. Ceiling was $5.
 

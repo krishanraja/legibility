@@ -92,8 +92,11 @@ mobile.
 
 ### Dashboard
 
-`/dashboard` (`dashboard.tsx`) is a left-nav shell over six tabs: Overview,
-API keys, Usage, Billing, Webhooks, Metrics. The active tab is marked with
+`/dashboard` (`dashboard.tsx`) is a left-nav shell over seven tabs: Overview,
+API keys, Usage, Billing, Webhooks, Metrics and Waitlist. Metrics and Waitlist
+are admin surfaces: everyone else sees an "admins only" message rather than a
+hidden tab. Waitlist holds two views, the waitlist itself and Trials (A8),
+where an admin grants or ends a 30-day trial. The active tab is marked with
 `bg-surface text-signal`. Every copy-pasteable curl in the dashboard and
 docs comes from `demoCurl()` in `src/config/product.ts` and must succeed
 verbatim once a real key is substituted. Never point a sample at a domain
@@ -110,6 +113,26 @@ method (labelled clearly as gate-pass, NOT correctness), the internal list
 (the accounts and keys left out of the number, kept by an admin), and the kill
 dashboard. It reads near zero until real accounts make repeat trusted calls,
 and the page says so. Keep that honesty: do not dress a zero up as traction.
+
+### The Founding 200 page
+
+`/founding-200` (`src/routes/founding-200.tsx`, views in
+`src/components/founding/FoundingViews.tsx`) is run-first: one product URL or
+barcode, the result inline with no account, and only then an email for a
+sign-in link; after it, the key once, the report, and a curl and an MCP config
+with the builder's own input. The words live in `src/lib/api/founding.ts`
+(`COPY`, `REFUSALS`); the offer follows `FOUNDING_AUTO_TRIAL` (`offerText`).
+`FORBIDDEN_COPY` keeps every state free of a booking link, an em dash, a
+mainnet claim, "unlimited", a waived charge or a dollar price, and the tests
+render every state against it. A call is offered only to an entrant whose
+product was read with confidence, by email to the role address. Without the
+Turnstile keys the page says the test is paused.
+
+### The MCP docs page
+
+`/docs/mcp` (`src/components/docs/McpDocs.tsx`) renders the tool list the
+server serves (`TOOLS`), the key auth and a link to `/.well-known/mcp.json`.
+It says x402 is on testnet and claims no mainnet date.
 
 ## Voice
 
@@ -137,4 +160,4 @@ and the page says so. Keep that honesty: do not dress a zero up as traction.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

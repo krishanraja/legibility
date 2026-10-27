@@ -6,20 +6,26 @@ signals that say stop. The metrics are no longer theoretical: they are computed 
 and `outcome_reports`, rolled up daily into `ops_daily`, and watched by `kill_dashboard()` on
 `pg_cron`.
 
-## North Star
+## Kill metric
 
-**Weekly count of trusted reads per active account.** A read counts if it returned a product object
+The North Star number itself (production agents making trusted reads this week) is defined in
+[`NORTH_STAR.md`](NORTH_STAR.md) and measured by `northstar_weekly_keys()`: external keys with at
+least one trusted read through the API or MCP in the ISO week. The kill metric below is a
+different, looser measure, kept for the kill decision.
+
+**Weekly count of billable reads per active account.** A read counts if it returned a product object
 at or above the **0.7 trust gate**. Because confidence is now an isotonic-calibrated probability, the
 gate reads literally: at or above 0.7 means "about 70 percent or more likely correct." An account is
 active in a week if it made at least one call that week. This is the exact unit that
 `northstar_weekly` computes.
 
 Internal accounts (Krish's own, the growth engine, the testbench, directory reviewers, registry,
-CI, demo and smoke keys) are on the internal list and are left out of both `northstar_weekly` and
-`northstar_weekly_keys`, the per-key weekly series behind the number in
+CI, demo and smoke keys) belong on the internal list, and everything on it is left out of both
+`northstar_weekly` and `northstar_weekly_keys`. Today it holds one account, Krish's; the others are
+added as they are created. `northstar_weekly_keys` is the per-key weekly series behind the number in
 [`NORTH_STAR.md`](NORTH_STAR.md). See `docs-internal/data-model.md`, "The internal list".
 
-Target for the beta: a typical active account makes **7 or more** trusted reads per week (roughly one
+Target for the beta: a typical active account makes **7 or more** billable reads per week (roughly one
 per day). That signals the data is trusted enough to wire into a real workflow, which is the whole
 thesis.
 

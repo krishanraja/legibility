@@ -2,10 +2,13 @@
 
 ## Status of legal pages
 
-- `/terms`: interim text live (extraction and caching, price band, confidence, billing, x402,
-  refunds), marked interim and pending counsel.
-- `/privacy`: interim text live (what we collect, the cache, processors, retention, takedowns),
-  marked interim and pending counsel.
+- `/terms`: interim text live (extraction and caching, price band, confidence, billing, the
+  30-day trial, x402 on Base Sepolia testnet, refunds), marked interim and pending counsel.
+  Last updated 27 October 2026.
+- `/privacy`: interim text live (what we collect, the `lg_touch` cookie and where a visitor came
+  from, Google Analytics and PostHog, the Founding 200 test and its hashed IP, the cache,
+  processors including Cloudflare Turnstile, retention, takedowns), marked interim and pending
+  counsel. Last updated 27 October 2026.
 - `/takedown`: live form, writes to `takedown_requests`.
 
 The interim pages are honest about real behaviour. Counsel review is required before paid GA.
@@ -16,7 +19,9 @@ The interim pages are honest about real behaviour. Counsel review is required be
 2. Acknowledge within 24h.
 3. Verify the requester has standing (rights holder or authorised agent).
 4. Purge cache rows keyed on the URL.
-5. Add URL to the takedown blocklist (future calls return 451).
+5. This app keeps no blocklist and returns no 451 (the public errors page dropped the 451 on
+   2026-10-21 because the API never returned it). A later call can read and cache the URL again,
+   so do not promise blocking; it would need building first.
 6. Notify the requester. Log the action.
 
 The `product_cache` purge cron (every 30 minutes) also reaps any row flagged
@@ -110,7 +115,7 @@ pool, lend, or rehypothecate received USDC.
 
 ## Data residency
 
-Supabase (project `cgkcplcamsijghalintq`) hosts the primary database; the app and the
+Supabase (the project named in `supabase/config.toml`) hosts the primary database; the app and the
 extractor worker both run on Vercel. The worker is deployable per region; v1 runs in a
 single region. Customers with residency requirements should be quoted on the Custom
 plan. The live surface today is `legibility.io`, delegated to Vercel with SSL issued.
@@ -122,4 +127,4 @@ revocations, admin actions, refund issuances. Retention: 7 years.
 
 ---
 
-Last reviewed: 2026-07-06.
+Last reviewed: 2026-10-27.

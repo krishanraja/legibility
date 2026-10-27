@@ -294,7 +294,7 @@ Mapping the partner's result to the enum (give them this rule):
 
 Do not mark a partner live until both are observed in the database, not
 reported over Slack. Run these against the app Supabase project
-(`cgkcplcamsijghalintq`) with the partner's `user_id`.
+(the project named in `supabase/config.toml`) with the partner's `user_id`.
 
 ```sql
 -- (a) They store ids AND we can join outcomes to real reads.
@@ -327,7 +327,7 @@ compounding calibration asset.
 
 ### 5.1 The three numbers to pull
 
-Against Supabase `cgkcplcamsijghalintq`, per partner `user_id`.
+Against the Supabase project named in `supabase/config.toml`, per partner `user_id`.
 
 ```sql
 -- 1) North Star: weekly trusted reads for this partner (target >= 7/week).

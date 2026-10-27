@@ -109,6 +109,13 @@ surprise. Paid-plan **metered overage is not yet reported to Stripe** (roadmap; 
 live canary), and **webhooks do not exist** (roadmap only). Subscribe and manage from the dashboard
 at `/dashboard/billing`.
 
+**30-day trial.** An admin can give an account one free trial of up to 30 days (default 5,000
+trusted reads, its own cost fuse, no card, nothing charged), from `/dashboard/waitlist`, Trials.
+While it is live the account reads under the trial; when the trial is used up the Free plan
+decides, so a trial is never worse than Free. Only if both are used up does the API return `402`
+`trial_used_up`. After day 30 the account is on Free. Founding 200 sign-ups get the trial
+automatically only when `FOUNDING_AUTO_TRIAL=true` (off). Nothing about a trial touches Stripe.
+
 ## Trust, calibration, and instrumentation
 
 - **Content validity.** The worker separates real products from 404s, block pages, and homepage
@@ -136,7 +143,7 @@ at `/dashboard/billing`.
   extraction (JSON-LD, OpenGraph, Shopify, barcode) with a browser User-Agent, runs the
   content-validity check, and scores calibrated confidence. `extractProduct` never throws: a hard
   domain returns a null envelope, not an error. The app proxies tool calls to it.
-- **Data:** Supabase (project `cgkcplcamsijghalintq`): keys, usage, plans, subscriptions, cache
+- **Data:** Supabase (the project named in `supabase/config.toml`): keys, usage, plans, subscriptions, cache
   (`product_cache` carries `field_confidence`, `calibration_version`, and `legibility_id`), plus the
   instrumentation tables (`outcome_reports`, `golden_eval_runs`) and the metrics RPCs.
 - **Health:** `GET /api/health`.
@@ -154,6 +161,10 @@ bun run build         # build (also regenerates routeTree.gen.ts)
 bun run lint          # eslint
 ```
 
-Workflow: branch, PR, green CI (install, em-dash check, tsc, build), squash-merge. Vercel
-auto-deploys `main` and builds previews on PRs. House style: no em dashes (CI enforces this on
-`src/`).
+Workflow: branch, PR, green CI, squash-merge. CI is a gitleaks secret scan plus, as hard gates:
+the em dash check, `bun run format:check`, `bunx tsc --noEmit`, `bun run lint`,
+`bunx vitest run --coverage` (100% on the money path, plus the PGlite migration tests), `bun run
+build`, the calibration and plan checks against the database (when its secret is present),
+`bun scripts/build-llms-full.ts --check` and `bun scripts/check-geo.ts`
+(`docs-internal/contributing.md` has each one). Vercel auto-deploys `main` and builds previews on
+PRs. House style: no em dashes in `src/`, `docs/`, `docs-internal/`, `public/` or this file.

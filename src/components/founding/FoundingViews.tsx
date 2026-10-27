@@ -6,6 +6,7 @@ import {
   COPY,
   curlFor,
   mcpConfigFor,
+  offerText,
   type FoundingInput,
   type FoundingReport,
 } from "@/lib/api/founding";
@@ -17,12 +18,13 @@ import {
  * server.
  */
 
-export function Intro() {
+/** `autoTrial` is FOUNDING_AUTO_TRIAL as the server reads it; the offer follows it. */
+export function Intro({ autoTrial = false }: { autoTrial?: boolean }) {
   return (
     <header>
       <h1 className="font-display text-5xl">{COPY.title}</h1>
       <p className="mt-4 text-lg text-foreground">{COPY.lead}</p>
-      <p className="mt-4 text-muted-foreground">{COPY.offer}</p>
+      <p className="mt-4 text-muted-foreground">{offerText(autoTrial)}</p>
       <p className="mt-3 text-sm text-muted-foreground">{COPY.scope}</p>
     </header>
   );

@@ -81,7 +81,6 @@ Broken, blocked or waiting:
 - Drip a little Base Sepolia USDC to a buyer wallet for the first on-chain `200` (`docs/OUTSTANDING.md`, "optional / verification"); mainnet settlement is what the North Star needs.
 - Fund Exa for fuzzy-name resolve; decide on a Bright Data payment method and zone; line up 2 to 3 design partners; counsel review of `/terms` and `/privacy`; the paid GA decision (`docs/OUTSTANDING.md`).
 - Rewriting the GTM playbook for the new buyer is "a commercial judgement about who this is sold to" and waits on Krish (`docs/gtm/README.md`).
-- North Star check (2026-10-23): holds.
 - North Star check (2026-10-27): holds. A1 makes the number measurable (external keys with a trusted read per ISO week); it stays U4 until the migration is applied and the internal list is filled.
 
 ## Read next

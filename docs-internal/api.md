@@ -19,6 +19,32 @@ Live host today is `https://legibility.io`, set as `APP_ORIGIN` in `src/config/p
 which is the one place it is defined. Do not reference `onplinth.io`,
 `plinth-tan.vercel.app` or `plinth.sh`: they are dead.
 
+## MCP: what the server says about itself (A6, A7)
+
+One source, `src/lib/api/mcp-tools.ts`, feeds `tools/list`, the discovery document and the
+registry entry, so a directory reviewer sees the same words everywhere.
+
+- Each tool has a plain `title`, an `outputSchema` (the envelope below; only what the app can
+  vouch for is constrained, further fields are allowed) and annotations: `readOnlyHint: true`,
+  `destructiveHint: false`, `openWorldHint: true`. No `idempotentHint`: each call is metered.
+- A `tools/call` that returns a conforming envelope carries it as `structuredContent` beside
+  the same JSON as text. An upstream failure, or a body that does not match the schema, is a
+  result with `isError: true` and no `structuredContent`.
+- Descriptions state the real scope (JSON-LD, Shopify, GTIN, verified OpenGraph), the 0.7 gate,
+  the honest `product: null`, and x402 on testnet. `overclaims()` is the lint ("any website",
+  "all stores", "guaranteed", "mainnet" and the like); the unit tests and `scripts/check-geo.ts`
+  both run it.
+- `serverInfo` is `{ name: "legibility-mcp", title: "Legibility", version: "0.4.0" }`.
+- `/.well-known/mcp.json` is served from code, no longer a static file. Its contact is a role
+  address on the legibility.io domain from `MCP_CONTACT_EMAIL`; anything else, or nothing, is
+  left out.
+- `server.json` (repository root) is the MCP Registry entry: name `io.legibility/mcp`, version
+  `0.4.0`, one `streamable-http` remote at `https://legibility.io/api/mcp`, valid against the
+  registry's `2025-12-11` schema (vendored in `src/test/vendor/mcp-registry/`). Publishing is
+  Krish's action: the registry verifies the domain over HTTP at `/.well-known/mcp-registry-auth`,
+  which serves the public half of his publishing key from `MCP_REGISTRY_AUTH_PUBLIC_KEY` (404
+  until set), so no DNS change is needed. Bump `SERVER_INFO.version` and `server.json` together.
+
 ## Tools
 
 | Tool               | Status | Sync/async | Body                                                                                                     |

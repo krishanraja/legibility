@@ -332,3 +332,62 @@ describe("initialize: the first client that uses a key (A2)", () => {
     expect((await res.json()).result.serverInfo.name).toBe("legibility-mcp");
   });
 });
+
+describe("A7: titles, output schemas, annotations and structured results", () => {
+  it("tools/list shows every title, annotation and output schema", async () => {
+    const body = await (await call({ id: 2, method: "tools/list" })).json();
+    for (const t of body.result.tools) {
+      expect(typeof t.title).toBe("string");
+      expect(t.annotations).toMatchObject({
+        readOnlyHint: true,
+        destructiveHint: false,
+        openWorldHint: true,
+      });
+      expect(t.outputSchema.required).toEqual(["product", "confidence"]);
+    }
+  });
+
+  it("initialize reports the server's title and registry version", async () => {
+    const body = await (await call({ id: 1, method: "initialize", params: {} })).json();
+    expect(body.result.serverInfo).toEqual({
+      name: "legibility-mcp",
+      title: "Legibility",
+      version: "0.4.0",
+    });
+  });
+
+  it("a keyed call returns structuredContent beside the text", async () => {
+    h.validateApiKey.mockResolvedValue(PRINCIPAL);
+    h.rateCheck.mockResolvedValue({ allowed: true, limit: 60, used: 1, reset: 60 });
+    h.entitlementCheck.mockResolvedValue({ allowed: true });
+    process.env.LEGIBILITY_EXTRACTOR_URL = "https://worker.example.test/extract";
+    process.env.LEGIBILITY_EXTRACTOR_TOKEN = "worker-token-for-tests";
+    stubWorker(ENVELOPE);
+    const body = await (
+      await call(
+        { id: 3, method: "tools/call", params: { name: "read_product", arguments: { gtin: "1" } } },
+        AUTH,
+      )
+    ).json();
+    expect(body.result.isError).toBe(false);
+    expect(body.result.structuredContent).toEqual(JSON.parse(ENVELOPE));
+    expect(body.result.content[0].text).toBe(ENVELOPE);
+  });
+
+  it("an upstream failure is an error result with no structuredContent", async () => {
+    h.validateApiKey.mockResolvedValue(PRINCIPAL);
+    h.rateCheck.mockResolvedValue({ allowed: true, limit: 60, used: 1, reset: 60 });
+    h.entitlementCheck.mockResolvedValue({ allowed: true });
+    process.env.LEGIBILITY_EXTRACTOR_URL = "https://worker.example.test/extract";
+    process.env.LEGIBILITY_EXTRACTOR_TOKEN = "worker-token-for-tests";
+    stubWorker(JSON.stringify({ error: "upstream_unavailable" }), 502);
+    const body = await (
+      await call(
+        { id: 4, method: "tools/call", params: { name: "read_product", arguments: { gtin: "1" } } },
+        AUTH,
+      )
+    ).json();
+    expect(body.result.isError).toBe(true);
+    expect(body.result.structuredContent).toBeUndefined();
+  });
+});

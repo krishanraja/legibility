@@ -1,40 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+// The tools, their titles, output schemas and annotations, and the server's name and version
+// live in src/lib/api/mcp-tools.ts, which the discovery document and server.json read too.
+import {
+  PROTOCOL_VERSION as PROTOCOL,
+  SERVER_INFO,
+  TOOLS,
+  toolCallResult,
+} from "@/lib/api/mcp-tools";
+
 // MCP server (JSON-RPC 2.0 over HTTP POST). Discovery (initialize / tools/list / ping) is free.
 // tools/call requires EITHER a valid lgk_ API key (Bearer) OR a settled x402 payment
 // (X-PAYMENT header, verified + settled on Base Sepolia via a facilitator). Keyed calls are
 // rate-limited and metered; x402 calls are paid on-chain so they skip account metering.
-
-const PROTOCOL = "2025-06-18";
-
-const TOOLS = [
-  {
-    name: "read_product",
-    description:
-      "Resolve a product URL or GTIN into a typed Schema.org Product object with per-field and overall confidence, a price band, source method, and the per-call cost.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        url: { type: "string", description: "Product page URL" },
-        gtin: { type: "string", description: "GTIN / UPC / EAN barcode" },
-        min_confidence: { type: "number", description: "Override the 0.7 trust gate (0 to 1)" },
-      },
-    },
-  },
-  {
-    name: "resolve_product",
-    description:
-      "Resolve a fuzzy product name into a typed product object (neural search then extraction). Returns the resolved product and its source URL.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        name: { type: "string", description: "Fuzzy product name" },
-        min_confidence: { type: "number", description: "Override the 0.7 trust gate (0 to 1)" },
-      },
-      required: ["name"],
-    },
-  },
-];
 
 function rpc(id: unknown, result: unknown, extraHeaders?: Record<string, string>) {
   return new Response(JSON.stringify({ jsonrpc: "2.0", id: id ?? null, result }), {
@@ -101,7 +79,7 @@ export const Route = createFileRoute("/api/mcp")({
             return rpc(id, {
               protocolVersion: (params?.protocolVersion as string) ?? PROTOCOL,
               capabilities: { tools: {} },
-              serverInfo: { name: "legibility-mcp", version: "0.3" },
+              serverInfo: SERVER_INFO,
             });
           }
           case "notifications/initialized":
@@ -280,10 +258,11 @@ export const Route = createFileRoute("/api/mcp")({
               }
             }
 
-            return toolResult(
+            // A7: a conforming envelope comes back as structuredContent beside its text; an
+            // upstream failure or a body that does not match the output schema is an error.
+            return rpc(
               id,
-              text,
-              false,
+              toolCallResult(text, status),
               xPaymentResponse ? { "x-payment-response": xPaymentResponse } : undefined,
             );
           }

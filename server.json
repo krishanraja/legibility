@@ -1,0 +1,14 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.legibility/mcp",
+  "title": "Legibility",
+  "description": "Typed product data from a product URL, barcode or name, with calibrated confidence and cost.",
+  "version": "0.4.0",
+  "websiteUrl": "https://legibility.io",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://legibility.io/api/mcp"
+    }
+  ]
+}

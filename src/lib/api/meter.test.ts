@@ -144,3 +144,17 @@ describe("stampFromResponse: passthrough fields", () => {
     expect(s.calibration_version).toBeNull();
   });
 });
+
+describe("stampFromResponse: extraction method (A4)", () => {
+  it("keeps a plain method token from the envelope", () => {
+    const s = stampFromResponse(JSON.stringify({ product: {}, method: "jsonld" }), {});
+    expect(s.method).toBe("jsonld");
+  });
+
+  it("drops a method that is not a short plain token", () => {
+    expect(stampFromResponse(JSON.stringify({ method: "has space" }), {}).method).toBeNull();
+    expect(stampFromResponse(JSON.stringify({ method: "x".repeat(101) }), {}).method).toBeNull();
+    expect(stampFromResponse(JSON.stringify({ method: 3 }), {}).method).toBeNull();
+    expect(stampFromResponse("not json", {}).method).toBeNull();
+  });
+});

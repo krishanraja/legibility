@@ -11,6 +11,7 @@ export type EnvelopeStamp = {
   domain: string | null;
   envelope_hash: string;
   calibration_version: string | null;
+  method: string | null;
   cost_usd: number;
   cached: boolean;
 };
@@ -19,6 +20,10 @@ export type EnvelopeStamp = {
 // product (a real object AND confidence at or above the gate). Nulls and low-confidence
 // reads charge nothing and do not count against the monthly quota.
 const BILLABLE_GATE = 0.7;
+
+// A4: the extraction method the worker reports (jsonld, shopify, barcode, ...), kept only when
+// it is a short plain token, so the export can never carry anything else in its place.
+const METHOD = /^[A-Za-z0-9][A-Za-z0-9_.:-]{0,99}$/;
 
 type MeterInput = { url?: unknown; gtin?: unknown; name?: unknown };
 
@@ -52,6 +57,7 @@ export function stampFromResponse(text: string, input: MeterInput): EnvelopeStam
     envelope_hash: createHash("sha256").update(text).digest("hex"),
     calibration_version:
       typeof env?.calibration_version === "string" ? env.calibration_version : null,
+    method: typeof env?.method === "string" && METHOD.test(env.method) ? env.method : null,
     cost_usd: typeof env?.cost_usd === "number" ? env.cost_usd : 0,
     cached: Boolean(env?.cached),
   };

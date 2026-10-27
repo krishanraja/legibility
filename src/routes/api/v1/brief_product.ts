@@ -114,6 +114,7 @@ export const Route = createFileRoute("/api/v1/brief_product")({
               domain: stamp.domain,
               envelope_hash: stamp.envelope_hash,
               calibration_version: stamp.calibration_version,
+              method: stamp.method,
             }),
             supabaseAdmin
               .from("api_keys")

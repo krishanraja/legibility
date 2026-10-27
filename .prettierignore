@@ -13,3 +13,7 @@ coverage
 AGENTS.md
 docs/HARNESS_CONTEXT.md
 .claude/hooks/harness-closeout.mjs
+
+# The growth engine's validator, vendored byte for byte at a pinned commit; its sha256 is
+# checked against that commit's contracts/manifest.json, so it must never be reformatted.
+src/test/vendor/

@@ -114,6 +114,40 @@ GA4 and PostHog receive `generate_lead` (the home page's lead form today; the Fo
 in A3), `sign_up` and `test_run` (A3), with the invitation id and the label only
 (`trackGrowth` in `src/lib/analytics.ts`). They are cross-checks; the export never reads them.
 
+## The growth export (A4)
+
+`GET /api/internal/growth/export?start=<UTC instant>&end=<UTC instant>[&fields=attribution]`
+(`src/routes/api/internal/growth/export.ts`, rules in `src/lib/api/growth-export.ts`). The
+row-level source the growth engine composes into its snapshot, shaped exactly to its contract
+(growth-legibility `src/guards/wire.mjs`, `validateSnapshot`, vendored for the tests at a pinned
+commit in `src/test/vendor/growth-legibility/`).
+
+- Auth: `Authorization: Bearer <token>`. The app holds only the token's SHA-256
+  (`GROWTH_EXPORT_TOKEN_SHA256`), compared in constant time; 401 with no detail otherwise, and to
+  everyone when the hash is unset. Opaque ids are HMAC-SHA-256 under `EXPORT_ID_KEY` (503 when it
+  is unset), prefixed `acct_`, `key_`, `read_`, `evt_`, `sess_`, stable across exports.
+- Window: `start` before `end`, `end` not in the future, at most 92 days (400 otherwise). Over
+  100,000 rows in a section or 20 MB in all is 413 `window_too_large`, never a truncated body.
+  Never a redirect; `Cache-Control: no-store`.
+- Reads: every `usage_events` row in `[start, end)`. `interface` from `read_interface()`
+  (`testbench` for anything not `/api/v1/*` or `/api/mcp`); `method` from the new
+  `usage_events.method` column (`unknown` before A4); `failure_reason` is `http_<status>`,
+  `no_product`, `below_gate` or null; `session_id` is a hash of the key (or account) and the UTC
+  date, since the MCP server is stateless.
+- Accounts: every `auth.users` row at capture. `use_case` is `""` and `relevant_context` false
+  until A3's page records them; `production_agent` is false until there is reviewed evidence.
+- Coverage: `accounts` and `reads` are true when the rows counted first match the rows exported
+  (`reconciliation`); `events` is false until A3 records the page events the engine counts;
+  `settlements` is false until A5. `window.complete` is true because a window is never cut short.
+  The reads reconciliation compares the table with itself: the entitlement check counts the same
+  `usage_events` rows, so a metering insert that failed is invisible to both.
+- With `fields=attribution`, each account gains `attribution: { enrolment, first_key }` (each null
+  or the eight touch fields) and each read `key_id`. The engine refuses them until its validator
+  accepts them (growth-legibility Phase 1B), so they are sent only on request.
+- Database side (migration `20261027140000`): `growth_export_counts()` and `growth_export_rows()`
+  (one JSON value, so no API row cap can truncate a section), `export_instant()` (UTC,
+  milliseconds, truncated), service role only.
+
 ## Functions
 
 Role and usage:

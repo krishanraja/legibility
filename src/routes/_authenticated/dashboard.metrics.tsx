@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { InternalList } from "@/components/admin/InternalList";
 import { getMetrics } from "@/lib/api/metrics.functions";
 
 // PLAN P4.1: admin-only North Star surface. Shows the weekly trusted-reads-per-account
@@ -11,12 +12,13 @@ type Metrics = Awaited<ReturnType<typeof getMetrics>>;
 function MetricsPage() {
   const [m, setM] = useState<Metrics | null>(null);
   const [loading, setLoading] = useState(true);
-  useEffect(() => {
+  const load = useCallback(() => {
     getMetrics()
       .then(setM)
       .catch(() => setM({ admin: false }))
       .finally(() => setLoading(false));
   }, []);
+  useEffect(load, [load]);
 
   if (loading) return <div className="font-mono text-xs text-muted-foreground">loading…</div>;
   if (!m || !m.admin) {
@@ -43,7 +45,16 @@ function MetricsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Tile
+          label="North Star: external keys this week"
+          value={m.thisWeek ? String(m.thisWeek.keys) : "not measured"}
+          sub={
+            m.thisWeek
+              ? `${m.thisWeek.isoWeek ?? "this ISO week"}, ${m.thisWeek.trustedReads} trusted reads, internal excluded`
+              : "northstar_weekly_keys did not answer"
+          }
+        />
         <Tile label="Trusted reads (8wk)" value={String(totalTrusted)} />
         <Tile
           label="Moat metric: precision at gate"
@@ -74,6 +85,10 @@ function MetricsPage() {
             ])}
           />
         )}
+      </Section>
+
+      <Section title="Internal list (left out of the North Star)">
+        <InternalList onChange={load} />
       </Section>
 
       <Section title="Kill dashboard (monthly review, one query)">

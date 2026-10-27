@@ -62,6 +62,7 @@ Broken, blocked or waiting:
 
 ## What changed recently
 
+- **2026-10-27: A1, the internal list and `northstar_weekly_keys`, in review (not merged, not applied).** The North Star's source excludes Krish's own keys and nothing did. Migration `20261027120000_internal_accounts_and_northstar_keys.sql` adds `internal_accounts` and `internal_keys` (service role only; a key may only be internal on an internal account), one definition of a trusted read (`is_trusted_read`, testbench reads never count), `northstar_weekly_keys` (one row per ISO week and external key, in UTC; the number is the row count) and `northstar_weekly` with internal accounts left out. `/dashboard/metrics` shows this week's number and keeps the list; membership is added there at run time, never by a seed. The SQL is tested against every migration in a real in-process Postgres. First item of the growth engine's app brief (growth-legibility `docs/handoff/APP-PHASE-1.md`).
 - 2026-10-23 **The North Star now has a number, a weekly ladder and an urgency rating, so every session knows how far behind it is and how hard to push.** Ruling (Krish, 2026-10-23): every repository chases one aggressive number on a weekly ladder, and urgency U1 to U5 sets its intensity. The number and ladder are in `docs/NORTH_STAR.md`; where it stands is the first line under "Where it is right now". Contract: ai-harness `contract/north-star-metric.md`.
 - **2026-10-23: magic-link sign-in works again.** The Supabase auth sender now sits on the Resend-verified domain; a sign-in request for an existing account returned 200 and the account's send time was stamped (auth config and user readback). No code changed.
 - **2026-10-21: a readable error when the magic-link email fails** (`e62a623`). supabase-js turned a failed send into a bare "{}" toast. The cause sits outside the code, in the Supabase SMTP sender, and is still open.
@@ -74,12 +75,14 @@ Broken, blocked or waiting:
 
 ## What is next and what is waiting on Krish
 
-- **Next action:** activate card payments on the live Stripe account (only Stripe onboarding can clear it), then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
+- **Next action:** apply `20261027120000_internal_accounts_and_northstar_keys.sql` to the project in `supabase/config.toml` (Krish's yes), merge A1, and add Krish's own accounts to the internal list on `/dashboard/metrics` (his call on membership). The number becomes measurable from that moment. Then A2 (attribution capture), which must be live before the first invitation goes out.
+- Activate card payments on the live Stripe account (only Stripe onboarding can clear it), then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
 - Rotate the exposed secrets named in `docs/OUTSTANDING.md` and `docs/security-rotation.md`.
 - Drip a little Base Sepolia USDC to a buyer wallet for the first on-chain `200` (`docs/OUTSTANDING.md`, "optional / verification"); mainnet settlement is what the North Star needs.
 - Fund Exa for fuzzy-name resolve; decide on a Bright Data payment method and zone; line up 2 to 3 design partners; counsel review of `/terms` and `/privacy`; the paid GA decision (`docs/OUTSTANDING.md`).
 - Rewriting the GTM playbook for the new buyer is "a commercial judgement about who this is sold to" and waits on Krish (`docs/gtm/README.md`).
 - North Star check (2026-10-23): holds.
+- North Star check (2026-10-27): holds. A1 makes the number measurable (external keys with a trusted read per ISO week); it stays U4 until the migration is applied and the internal list is filled.
 
 ## Read next
 

@@ -14,6 +14,11 @@ gate reads literally: at or above 0.7 means "about 70 percent or more likely cor
 active in a week if it made at least one call that week. This is the exact unit that
 `northstar_weekly` computes.
 
+Internal accounts (Krish's own, the growth engine, the testbench, directory reviewers, registry,
+CI, demo and smoke keys) are on the internal list and are left out of both `northstar_weekly` and
+`northstar_weekly_keys`, the per-key weekly series behind the number in
+[`NORTH_STAR.md`](NORTH_STAR.md). See `docs-internal/data-model.md`, "The internal list".
+
 Target for the beta: a typical active account makes **7 or more** trusted reads per week (roughly one
 per day). That signals the data is trusted enough to wire into a real workflow, which is the whole
 thesis.

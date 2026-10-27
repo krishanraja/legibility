@@ -187,6 +187,53 @@ export type Database = {
         };
         Relationships: [];
       };
+      internal_accounts: {
+        Row: {
+          account_id: string;
+          added_at: string;
+          added_by: string | null;
+          class: string;
+        };
+        Insert: {
+          account_id: string;
+          added_at?: string;
+          added_by?: string | null;
+          class: string;
+        };
+        Update: {
+          account_id?: string;
+          added_at?: string;
+          added_by?: string | null;
+          class?: string;
+        };
+        Relationships: [];
+      };
+      internal_keys: {
+        Row: {
+          added_at: string;
+          class: string;
+          key_id: string;
+        };
+        Insert: {
+          added_at?: string;
+          class: string;
+          key_id: string;
+        };
+        Update: {
+          added_at?: string;
+          class?: string;
+          key_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "internal_keys_key_id_fkey";
+            columns: ["key_id"];
+            isOneToOne: true;
+            referencedRelation: "api_keys";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       invoices: {
         Row: {
           amount_cents: number;
@@ -987,6 +1034,15 @@ export type Database = {
         };
         Returns: boolean;
       };
+      is_trusted_read: {
+        Args: {
+          _calibration_version: string;
+          _confidence: number;
+          _endpoint: string;
+          _product_returned: boolean;
+        };
+        Returns: boolean;
+      };
       kill_dashboard: {
         Args: never;
         Returns: {
@@ -1005,6 +1061,15 @@ export type Database = {
           week: string;
         }[];
       };
+      northstar_weekly_keys: {
+        Args: { _week_start?: string };
+        Returns: {
+          iso_week: string;
+          key_id: string;
+          trusted_reads: number;
+          week_start: string;
+        }[];
+      };
       rate_check: {
         Args: { _user_id: string };
         Returns: {
@@ -1014,6 +1079,7 @@ export type Database = {
           used: number;
         }[];
       };
+      read_interface: { Args: { _endpoint: string }; Returns: string };
       trust_rate_by_method: {
         Args: { _since?: string };
         Returns: {

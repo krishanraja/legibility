@@ -69,6 +69,10 @@ function Privacy() {
             events we send them carry only the campaign tag and the channel name, never your email,
             IP address, product inputs or keys.
           </p>
+          <p>
+            If you leave your email on the home page after a free check, PostHog links that email to
+            your earlier visits on this site, so we can follow up on the check you ran.
+          </p>
         </Section>
 
         <Section n="03" title="The product cache">

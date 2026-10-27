@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS public.founding_entries (
   real_input BOOLEAN NOT NULL,
   trusted BOOLEAN NOT NULL,
   result JSONB,
-  -- When the builder asked for a key by email: founding_200_submitted is recorded once.
+  -- Set once, when the builder asks for the sign-in link (the founding_200_submitted event).
   submitted_at TIMESTAMPTZ,
   source TEXT NOT NULL DEFAULT 'direct' CHECK (source ~ '^[a-z0-9][a-z0-9._:-]{0,79}$')
 );

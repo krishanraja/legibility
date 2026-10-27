@@ -36,7 +36,7 @@ Objection it answers: "AI product data is guesswork." Legibility returns `produc
 
 ## Where it is right now (as of 2026-10-27)
 
-<!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": null, "current_as_of": null, "current_source": null, "urgency": 4, "urgency_reason": "not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified)"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: not measured yet (1 account and 11 calls this week; whether any is a production agent making trusted reads is unverified), against 1 this week, on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
+<!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": 0, "current_as_of": "2026-10-27", "current_source": "northstar_weekly_keys() on the production database, internal accounts excluded (migration 20261027120000 applied 2026-10-27)", "urgency": 4, "urgency_reason": "0 against 1 this week, under 40%"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: 0 against 1 this week (measured 27 Oct with `northstar_weekly_keys`, internal accounts excluded), on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
 
 Lifecycle: beta. `README.md` says "Status: live" and "Private beta": the app serves at legibility.io, but no card payment can complete and x402 runs on testnet only.
 
@@ -75,13 +75,13 @@ Broken, blocked or waiting:
 
 ## What is next and what is waiting on Krish
 
-- **Next action:** apply `20261027120000_internal_accounts_and_northstar_keys.sql` to the project in `supabase/config.toml` (Krish's yes), merge A1, and add Krish's own accounts to the internal list on `/dashboard/metrics` (his call on membership). The number becomes measurable from that moment. Then A2 (attribution capture), which must be live before the first invitation goes out.
+- **Next action:** A2 (attribution capture), which must be live before the first invitation goes out. Done 27 Oct: migration `20261027120000_internal_accounts_and_northstar_keys.sql` is applied to production and recorded, and Krish's one account is on the internal list (class `krish`, with an `audit_log` row), so the number is measured from now on.
 - Activate card payments on the live Stripe account (only Stripe onboarding can clear it), then allow the live canary that closes the last billing gaps and turns on metered overage (`docs/OUTSTANDING.md`).
 - Rotate the exposed secrets named in `docs/OUTSTANDING.md` and `docs/security-rotation.md`.
 - Drip a little Base Sepolia USDC to a buyer wallet for the first on-chain `200` (`docs/OUTSTANDING.md`, "optional / verification"); mainnet settlement is what the North Star needs.
 - Fund Exa for fuzzy-name resolve; decide on a Bright Data payment method and zone; line up 2 to 3 design partners; counsel review of `/terms` and `/privacy`; the paid GA decision (`docs/OUTSTANDING.md`).
 - Rewriting the GTM playbook for the new buyer is "a commercial judgement about who this is sold to" and waits on Krish (`docs/gtm/README.md`).
-- North Star check (2026-10-27): holds. A1 makes the number measurable (external keys with a trusted read per ISO week); it stays U4 until the migration is applied and the internal list is filled.
+- North Star check (2026-10-27): holds.
 
 ## Read next
 

@@ -16,6 +16,8 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReadabilityRouteImport } from './routes/readability'
 import { Route as TakedownRouteImport } from './routes/takedown'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as DotwellKnownMcpRegistryAuthRouteImport } from './routes/[.]well-known.mcp-registry-auth'
+import { Route as DotwellKnownMcpDotjsonRouteImport } from './routes/[.]well-known.mcp[.]json'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AboutBotRouteImport } from './routes/about.bot'
 import { Route as AnswersIndexRouteImport } from './routes/answers.index'
@@ -83,6 +85,17 @@ const TakedownRoute = TakedownRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DotwellKnownMcpRegistryAuthRoute =
+  DotwellKnownMcpRegistryAuthRouteImport.update({
+    id: '/.well-known/mcp-registry-auth',
+    path: '/.well-known/mcp-registry-auth',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotwellKnownMcpDotjsonRoute = DotwellKnownMcpDotjsonRouteImport.update({
+  id: '/.well-known/mcp.json',
+  path: '/.well-known/mcp.json',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
@@ -270,6 +283,8 @@ export interface FileRoutesByFullPath {
   '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
+  '/.well-known/mcp-registry-auth': typeof DotwellKnownMcpRegistryAuthRoute
+  '/.well-known/mcp.json': typeof DotwellKnownMcpDotjsonRoute
   '/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/about/bot': typeof AboutBotRoute
   '/answers/$slug': typeof AnswersSlugRoute
@@ -311,6 +326,8 @@ export interface FileRoutesByTo {
   '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
+  '/.well-known/mcp-registry-auth': typeof DotwellKnownMcpRegistryAuthRoute
+  '/.well-known/mcp.json': typeof DotwellKnownMcpDotjsonRoute
   '/about/bot': typeof AboutBotRoute
   '/answers/$slug': typeof AnswersSlugRoute
   '/answers/feed.xml': typeof AnswersFeedDotxmlRoute
@@ -354,6 +371,8 @@ export interface FileRoutesById {
   '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
   '/terms': typeof TermsRoute
+  '/.well-known/mcp-registry-auth': typeof DotwellKnownMcpRegistryAuthRoute
+  '/.well-known/mcp.json': typeof DotwellKnownMcpDotjsonRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteWithChildren
   '/about/bot': typeof AboutBotRoute
   '/answers/$slug': typeof AnswersSlugRoute
@@ -398,6 +417,8 @@ export interface FileRouteTypes {
     | '/readability'
     | '/takedown'
     | '/terms'
+    | '/.well-known/mcp-registry-auth'
+    | '/.well-known/mcp.json'
     | '/dashboard'
     | '/about/bot'
     | '/answers/$slug'
@@ -439,6 +460,8 @@ export interface FileRouteTypes {
     | '/readability'
     | '/takedown'
     | '/terms'
+    | '/.well-known/mcp-registry-auth'
+    | '/.well-known/mcp.json'
     | '/about/bot'
     | '/answers/$slug'
     | '/answers/feed.xml'
@@ -481,6 +504,8 @@ export interface FileRouteTypes {
     | '/readability'
     | '/takedown'
     | '/terms'
+    | '/.well-known/mcp-registry-auth'
+    | '/.well-known/mcp.json'
     | '/_authenticated/dashboard'
     | '/about/bot'
     | '/answers/$slug'
@@ -525,6 +550,8 @@ export interface RootRouteChildren {
   ReadabilityRoute: typeof ReadabilityRoute
   TakedownRoute: typeof TakedownRoute
   TermsRoute: typeof TermsRoute
+  DotwellKnownMcpRegistryAuthRoute: typeof DotwellKnownMcpRegistryAuthRoute
+  DotwellKnownMcpDotjsonRoute: typeof DotwellKnownMcpDotjsonRoute
   AboutBotRoute: typeof AboutBotRoute
   AnswersSlugRoute: typeof AnswersSlugRoute
   AnswersFeedDotxmlRoute: typeof AnswersFeedDotxmlRoute
@@ -594,6 +621,20 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/mcp-registry-auth': {
+      id: '/.well-known/mcp-registry-auth'
+      path: '/.well-known/mcp-registry-auth'
+      fullPath: '/.well-known/mcp-registry-auth'
+      preLoaderRoute: typeof DotwellKnownMcpRegistryAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/mcp.json': {
+      id: '/.well-known/mcp.json'
+      path: '/.well-known/mcp.json'
+      fullPath: '/.well-known/mcp.json'
+      preLoaderRoute: typeof DotwellKnownMcpDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/dashboard': {
@@ -906,6 +947,8 @@ const rootRouteChildren: RootRouteChildren = {
   ReadabilityRoute: ReadabilityRoute,
   TakedownRoute: TakedownRoute,
   TermsRoute: TermsRoute,
+  DotwellKnownMcpRegistryAuthRoute: DotwellKnownMcpRegistryAuthRoute,
+  DotwellKnownMcpDotjsonRoute: DotwellKnownMcpDotjsonRoute,
   AboutBotRoute: AboutBotRoute,
   AnswersSlugRoute: AnswersSlugRoute,
   AnswersFeedDotxmlRoute: AnswersFeedDotxmlRoute,

@@ -18,6 +18,7 @@ import { resolve } from "node:path";
 import { loadAnswersFromDisk } from "../src/lib/answers-fs";
 import { answerUrl, validateAnswers } from "../src/lib/answers";
 import { DEFAULT_OG_IMAGE, ANSWERS_OG_IMAGE } from "../src/lib/seo";
+import { mcpManifest, overclaims, TOOLS } from "../src/lib/api/mcp-tools";
 
 const ROOT = resolve(import.meta.dir, "..");
 const ORIGIN = "https://legibility.io";
@@ -199,14 +200,19 @@ function checkPlanClaims() {
 /* ------------------------------------------------------------ dead brand strings */
 
 function checkDeadBrands() {
-  const files = [
-    "public/llms.txt",
-    "public/robots.txt",
-    "public/sitemap.xml",
-    "public/.well-known/mcp.json",
-  ];
+  const files = ["public/llms.txt", "public/robots.txt", "public/sitemap.xml"];
   // "plinth" may only appear as an explicit do-not-cite disclaimer, never as a live URL.
   const liveUrl = /https?:\/\/[^\s"']*plinth[^\s"']*/gi;
+  // The discovery document is served from code now (src/lib/api/mcp-tools.ts), so it is
+  // checked as the route renders it.
+  const manifest = JSON.stringify(mcpManifest(null));
+  const hitsInManifest = manifest.match(liveUrl);
+  if (hitsInManifest) {
+    fail(
+      "brand",
+      `/.well-known/mcp.json still contains live old-brand URLs: ${hitsInManifest.join(", ")}`,
+    );
+  }
   for (const f of files) {
     const text = read(f);
     const hits = text.match(liveUrl);
@@ -409,13 +415,17 @@ function checkAgentDiscovery() {
   ]) {
     if (!llms.includes(needle)) fail("agents", `llms.txt does not mention ${needle}`);
   }
-  try {
-    const mcp = JSON.parse(read("public/.well-known/mcp.json"));
-    if (mcp?.mcp?.endpoint !== `${ORIGIN}/api/mcp`) {
-      fail("agents", ".well-known/mcp.json endpoint is not the live MCP URL");
-    }
-  } catch {
-    fail("agents", "public/.well-known/mcp.json is missing or not JSON");
+  const mcp = mcpManifest(null);
+  if (mcp.mcp.endpoint !== `${ORIGIN}/api/mcp`) {
+    fail("agents", ".well-known/mcp.json endpoint is not the live MCP URL");
+  }
+  if (!existsSync(resolve(ROOT, "src/routes/[.]well-known.mcp[.]json.ts"))) {
+    fail("agents", "the /.well-known/mcp.json route is missing");
+  }
+  // A7: no tool description or title may overstate what the tool reads.
+  for (const t of TOOLS) {
+    const found = overclaims(`${t.title} ${t.description}`);
+    if (found.length) fail("agents", `${t.name} overclaims: ${found.join(", ")}`);
   }
   if (!read("public/robots.txt").includes("/.well-known/mcp.json")) {
     fail("agents", "robots.txt does not point agents at /.well-known/mcp.json");

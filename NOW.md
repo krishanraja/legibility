@@ -47,7 +47,7 @@ Live and recorded as verified:
 - The answer hub at `/answers`, with five seed posts, an RSS feed and a weekly brief workflow that spends nothing on models (`c9c2a54`; `docs/ANSWER-HUB.md`).
 - The public errors and rate-limits pages now render from `src/content/api-reference.ts`, checked by tests against the code (`346c1c3`).
 - Magic-link sign-in sends again: the auth sender is on the Resend-verified domain, and a sign-in request for an existing account on 23 Oct returned 200 and stamped its send time (Supabase auth readback, 23 Oct).
-- CI on `main` passed on 21 Oct (GitHub Actions readback, 22 Oct).
+- CI on `main` passed on 27 Oct (#52, GitHub Actions readback).
 
 Built but not live:
 
@@ -64,7 +64,7 @@ Broken, blocked or waiting:
 
 - **2026-10-27: the growth engine's app contract, A1 to A8 (growth-legibility `docs/handoff/APP-PHASE-1.md`), built in seven pull requests.** Where each stands:
   - **A1, the internal list and `northstar_weekly_keys`: live** (PR 45, migration `20261027120000` applied). Krish's account is on the list; the number is measured per ISO week and external key (0 this week).
-  - **A2, attribution capture: live** (PR 46, `20261027130000` applied). Landing touch in a 30-day first-party cookie, enrolment and key touches, first client, GA4 and PostHog `generate_lead` and `sign_up`. Waiting on Krish: mark the three key events in GA admin.
+  - **A2, attribution capture: live** (PR 46, `20261027130000` applied). Landing touch in a 30-day first-party cookie, enrolment and key touches, first client, GA4 and PostHog `generate_lead` and `sign_up`. `test_run` follows from A3. Waiting on Krish: mark those three as key events in GA admin.
   - **A4, the row-level export: live** (PR 47, `20261027140000` applied). `GET /api/internal/growth/export`; the token is held only as its hash and the ids are keyed, and both are set. The token is today the growth engine's Control Center bearer, so rotating that bearer breaks the export until a dedicated token replaces it (`docs-internal/ops.md`). Events coverage stays false until bounces, complaints, unsubscribes and referrals are recorded; no `trial_granted` or `trial_ended` event is emitted.
   - **A6 and A7, role contact, tool metadata and `server.json`: live** (PR 48, no migration). Waiting on Krish: create his registry publishing key, publish `server.json` and submit the directory listings by 5 November (steps in `docs-internal/ops.md`).
   - **A3, the run-first Founding 200 page: merged** (PR 49, `20261027150000` applied), **paused** until Krish creates the Turnstile keys (steps in `docs-internal/ops.md`). His approval of its words and limits is recorded in that PR. `public/llms.txt` leaves the page out until it opens.

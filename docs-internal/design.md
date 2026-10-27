@@ -64,8 +64,9 @@ flatten it. If a new tint is needed, upload a new asset.
 The wordmark's left glyphs are near-black. It is legible on the cream
 `--background` the site actually ships. The `.dark` token block in
 `src/styles.css` is defined but never applied (nothing adds the class), so this
-is not a live problem; it would become one if dark mode is ever switched on. A 1200x630 OG social card is not wired yet (roadmap):
-`head()` sets og:title and og:description but no og:image.
+is not a live problem; it would become one if dark mode is ever switched on. Every route's `head()` uses `pageMeta()` (`src/lib/seo.ts`), which sets og:image to
+`public/og.png` (1200x630) unless the route passes its own; the answer hub uses
+`public/og-answers.png`.
 
 ## Shipped surfaces
 

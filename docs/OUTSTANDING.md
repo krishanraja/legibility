@@ -7,7 +7,7 @@ short list of items that need a human action or an external clock. Last updated 
 
 ## Founder actions from the growth engine's app contract (A1 to A8, 2026-10-27)
 
-All eight are live (PRs 45 to 51, every migration through `20261027170000` applied). What is left
+All eight are deployed (PRs 45 to 51, every migration through `20261027170000` applied); the Founding 200 page stays paused until the Turnstile keys exist, and `server.json` is not yet published. What is left
 needs Krish:
 
 - [ ] **Create the Turnstile keys** to open the Founding 200 page, which shows "paused" until then

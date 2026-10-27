@@ -87,8 +87,8 @@ means "about 70 percent likely to be correct."
    `docs-internal/`, `public/` and the README, restricted to text files, and
    fails on any hit. House style, mechanically enforced. Use a period, comma,
    colon, or "to" for ranges.
-3. **Typecheck:** `bunx tsc --noEmit`. Hard gate.
-4. **Format:** `bun run format:check`. Hard gate. Run `bun run format` to fix.
+3. **Format:** `bun run format:check`. Hard gate. Run `bun run format` to fix.
+4. **Typecheck:** `bunx tsc --noEmit`. Hard gate.
 5. **Lint:** `bun run lint`. Hard gate. The `continue-on-error` escape hatch was
    removed once the repo-wide prettier pass landed. Do not reintroduce it.
 6. **Unit tests + coverage:** `bunx vitest run --coverage`. Hard gate. The money

@@ -131,7 +131,7 @@ automatically only when `FOUNDING_AUTO_TRIAL=true` (off). Nothing about a trial 
   envelope hash, and `calibration_version`.
 - **Outcome closure.** Agents can report whether a Legibility answer led to a real buy via
   `POST /api/v1/report_outcome` (rows land in `outcome_reports`).
-- **North Star + metrics.** `northstar_weekly` and `trust_rate_by_method` RPCs, an admin
+- **North Star + metrics.** `northstar_weekly_keys` (the North Star number), `northstar_weekly` and `trust_rate_by_method` RPCs, an admin
   `/dashboard/metrics` page, and a daily `ops_daily` rollup with a kill-floor alert are all live.
   See [`docs/KILL-CRITERIA.md`](./docs/KILL-CRITERIA.md).
 

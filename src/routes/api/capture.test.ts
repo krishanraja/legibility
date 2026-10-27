@@ -305,12 +305,12 @@ describe("POST /api/capture", () => {
   });
 
   it("routes replies to the configured address, which is not the sender", async () => {
-    // The sending domain is whatever Resend has verified; the reply address is a person.
+    // The sending domain is whatever Resend has verified; the reply address is a role mailbox someone reads.
     // Conflating them sends the first real conversation this funnel produces to a mailbox
     // nobody watches.
-    process.env.RESEND_REPLY_TO = "krish@mindmake.co";
+    process.env.RESEND_REPLY_TO = "founders@legibility.io";
     await postSigned();
-    expect(h.sendCalls[0][2]).toMatchObject({ replyTo: "krish@mindmake.co" });
+    expect(h.sendCalls[0][2]).toMatchObject({ replyTo: "founders@legibility.io" });
     delete process.env.RESEND_REPLY_TO;
   });
 

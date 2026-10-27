@@ -69,8 +69,9 @@ The kill floor is now instrumented, not a manual read:
 - A **kill-floor alert fires when the trust rate drops below 0.60**. Outbound delivery (Resend via
   `pg_net`) is still to be wired, but the alert already computes and records, so the floor is
   observable in the DB today.
-- `kill_dashboard()` runs on `pg_cron` and surfaces the North Star, trust rate by method, and
-  precision at the gate on the admin `/dashboard/metrics` page.
+- `kill_dashboard()` is read on demand by the admin `/dashboard/metrics` page, where it surfaces
+  the North Star, trust rate by method and precision at the gate; `pg_cron` runs
+  `compute_ops_daily()` and `check_kill_floor()` daily.
 
 The 0.60 alert is an early-warning tripwire on a single week's trust rate. The three-part kill
 criteria above are the deliberate, eight-week decision. A single day under 0.60 is a signal to

@@ -143,6 +143,23 @@ an entrant whose input was read with confidence, and only by email to the role a
   `relevant_context` (a linked entry ran a real input). `coverage.events` stays false: bounces,
   complaints, unsubscribes and referrals, which the engine also counts, are not recorded.
 
+## x402 payments (A5)
+
+Every x402 attempt on MCP `tools/call` writes one row to `x402_settlements`
+(`src/lib/api/x402-ledger.ts`, called right after `settle()`), keyed by the SHA-256 of the
+payment's EIP-3009 nonce (or of the X-PAYMENT header when there is no nonce), so a retried
+payment never writes a second row; a failed attempt that later settles becomes `settled`.
+`network` is `base-sepolia`, or `base-mainnet` only when the payment was asked for on Base
+mainnet (`X402_NETWORK=base`); `payer` is `agent`; `amount_usd` uses a dated USDC to USD rate the
+row keeps (`USDC_USD`, the peg). Never stored: a wallet address, the payload, the header or a
+transaction hash. x402 calls still write no `usage_events` row, so they stay outside the North
+Star number and outside the trial's "nothing charged".
+
+`capture_sources` records when each export section began to be recorded (`settlements`: when
+migration `20261027160000` was applied). The export vouches for settlements only for a window
+that starts then or later. Move the date earlier only with evidence (for example the recipient
+wallet's on-chain history) that no payment went unrecorded before it.
+
 ## The growth export (A4)
 
 `GET /api/internal/growth/export?start=<UTC instant>&end=<UTC instant>[&fields=attribution]`
@@ -167,7 +184,7 @@ commit in `src/test/vendor/growth-legibility/`).
   until A3's page records them; `production_agent` is false until there is reviewed evidence.
 - Coverage: `accounts` and `reads` are true when the rows counted first match the rows exported
   (`reconciliation`); `events` is false until A3 records the page events the engine counts;
-  `settlements` is false until A5. `window.complete` is true because a window is never cut short.
+  `settlements` is true from A5 for a window that starts after settlement capture began. `window.complete` is true because a window is never cut short.
   The reads reconciliation compares the table with itself: the entitlement check counts the same
   `usage_events` rows, so a metering insert that failed is invisible to both.
 - With `fields=attribution`, each account gains `attribution: { enrolment, first_key }` (each null

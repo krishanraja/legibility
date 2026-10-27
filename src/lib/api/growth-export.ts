@@ -150,15 +150,31 @@ export type RawEvent = {
   source: string;
 };
 
-export type RawRows = { accounts: RawAccount[]; reads: RawRead[]; events: RawEvent[] };
-export type Counts = { accounts: number; reads: number; events: number };
+export type RawSettlement = {
+  id: string;
+  occurred_at: string;
+  network: "base-sepolia" | "base-mainnet";
+  status: "settled" | "failed";
+  payer: "agent" | "human";
+  amount_usd: number | string;
+};
+
+export type RawRows = {
+  accounts: RawAccount[];
+  reads: RawRead[];
+  events: RawEvent[];
+  /** A5: x402 payments in the window. */
+  settlements?: RawSettlement[];
+};
+export type Counts = { accounts: number; reads: number; events: number; settlements?: number };
 
 /** Whether a window is over the size limit before any row is read (a 413). */
 export function tooManyRows(counts: Counts): boolean {
   return (
     counts.accounts > MAX_ROWS_PER_SECTION ||
     counts.reads > MAX_ROWS_PER_SECTION ||
-    counts.events > MAX_ROWS_PER_SECTION
+    counts.events > MAX_ROWS_PER_SECTION ||
+    (counts.settlements ?? 0) > MAX_ROWS_PER_SECTION
   );
 }
 
@@ -213,6 +229,8 @@ export type BuildInput = {
   fields: ExportFields;
   /** Whether the app vouches for the events section; EVENTS_COVERED unless a test says. */
   eventsCovered?: boolean;
+  /** A5: when x402 calls began to be recorded (capture_sources); null means not yet. */
+  settlementsSince?: Date | null;
 };
 
 /** The export body, exactly the engine's contract (plus attribution only when asked). */
@@ -274,6 +292,22 @@ export function buildExport(input: BuildInput) {
     source: label(e.source),
   }));
 
+  const settlements = (rows.settlements ?? []).map((x) => ({
+    id: opaqueId("stl", x.id, idKey),
+    occurred_at: x.occurred_at,
+    network: x.network,
+    status: x.status,
+    payer: x.payer,
+    amount_usd: money(x.amount_usd),
+  }));
+  // Settlements are vouched for only for a window that starts after x402 calls began to be
+  // recorded, and only when every row counted was exported.
+  const since = input.settlementsSince ?? null;
+  const settlementsComplete =
+    since !== null &&
+    input.start.getTime() >= since.getTime() &&
+    (input.counts.settlements ?? 0) === settlements.length;
+
   // Metering is best-effort, so the reads are reconciled: the rows counted before the read
   // against the rows exported. Any difference and the section is not vouched for.
   const readsComplete = input.counts.reads === reads.length;
@@ -295,14 +329,13 @@ export function buildExport(input: BuildInput) {
       accounts: accountsComplete,
       reads: readsComplete,
       events: (input.eventsCovered ?? EVENTS_COVERED) && input.counts.events === events.length,
-      // x402 calls write no row until A5.
-      settlements: false,
+      settlements: settlementsComplete,
     },
     reconciliation: { reads_metered: input.counts.reads, reads_exported: reads.length },
     accounts,
     reads,
     events,
-    settlements: [] as never[],
+    settlements,
   };
 }
 

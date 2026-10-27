@@ -41,7 +41,11 @@ async function call(query: string, headers: Record<string, string> = {}, method 
 
 function db(counts: Record<string, number> = { accounts: 0, reads: 0, events: 0 }, rows = ROWS) {
   h.rpc.mockImplementation(async (fn: string) =>
-    fn === "growth_export_counts" ? { data: [counts], error: null } : { data: rows, error: null },
+    fn === "growth_export_counts"
+      ? { data: [counts], error: null }
+      : fn === "growth_export_settlements"
+        ? { data: [], error: null }
+        : { data: rows, error: null },
   );
 }
 
@@ -114,6 +118,22 @@ describe("GET /api/internal/growth/export", () => {
     expect(h.rpc).toHaveBeenCalledTimes(1);
   });
 
+  it("A5: settlements are exported and vouched for from when capture began", async () => {
+    db({
+      accounts: 0,
+      reads: 0,
+      events: 0,
+      settlements: 0,
+      settlements_since: "2026-09-01T00:00:00.000Z",
+    } as never);
+    const body = await (await call(WINDOW, AUTH)).json();
+    expect(body.coverage.settlements).toBe(true);
+    db({ accounts: 0, reads: 0, events: 0, settlements: 0, settlements_since: null } as never);
+    expect((await (await call(WINDOW, AUTH)).json()).coverage.settlements).toBe(false);
+    db({ accounts: 0, reads: 0, events: 0, settlements: 100_001 } as never);
+    expect((await call(WINDOW, AUTH)).status).toBe(413);
+  });
+
   it("5. 413 when the body would be over the byte limit", async () => {
     h.maxBytes = 10;
     expect((await call(WINDOW, AUTH)).status).toBe(413);
@@ -124,6 +144,12 @@ describe("GET /api/internal/growth/export", () => {
     expect((await call(WINDOW, AUTH)).status).toBe(503);
     h.rpc
       .mockResolvedValueOnce({ data: [{ accounts: 0, reads: 0, events: 0 }], error: null })
+      .mockResolvedValueOnce({ data: null, error: { message: "down" } })
+      .mockResolvedValueOnce({ data: [], error: null });
+    expect((await call(WINDOW, AUTH)).status).toBe(503);
+    h.rpc
+      .mockResolvedValueOnce({ data: [{ accounts: 0, reads: 0, events: 0 }], error: null })
+      .mockResolvedValueOnce({ data: ROWS, error: null })
       .mockResolvedValueOnce({ data: null, error: { message: "down" } });
     expect((await call(WINDOW, AUTH)).status).toBe(503);
   });

@@ -1221,7 +1221,17 @@ export type Database = {
       };
       growth_export_counts: {
         Args: { _captured_at: string; _end: string; _start: string };
-        Returns: { accounts: number; events: number; reads: number }[];
+        Returns: {
+          accounts: number;
+          events: number;
+          reads: number;
+          settlements: number;
+          settlements_since: string | null;
+        }[];
+      };
+      growth_export_settlements: {
+        Args: { _end: string; _start: string };
+        Returns: Json;
       };
       growth_export_rows: {
         Args: { _captured_at: string; _end: string; _start: string };
@@ -1269,6 +1279,19 @@ export type Database = {
           trusted_reads: number;
           week_start: string;
         }[];
+      };
+      record_x402_settlement: {
+        Args: {
+          _amount_usd: number;
+          _failure_reason: string | null;
+          _network: string;
+          _payment_id: string;
+          _rate_as_of: string;
+          _status: string;
+          _tool: string | null;
+          _usd_rate: number;
+        };
+        Returns: undefined;
       };
       record_founding_view: { Args: { _ip_hash: string; _source: string }; Returns: boolean };
       record_email_verified: {

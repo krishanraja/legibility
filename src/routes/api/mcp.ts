@@ -142,7 +142,11 @@ export const Route = createFileRoute("/api/mcp")({
               const desc = `Legibility ${name}`;
               const xpay = request.headers.get("x-payment");
               if (!xpay) return json402(quote402(resource, desc));
-              const s = await settle(xpay, paymentRequirements(resource, desc));
+              const reqs = paymentRequirements(resource, desc);
+              const s = await settle(xpay, reqs);
+              // A5: every attempt is one ledger row, keyed by the payment's own id.
+              const { recordSettlement } = await import("@/lib/api/x402-ledger");
+              await recordSettlement(xpay, reqs, s, name);
               if (!s.ok) return json402(quote402(resource, desc, { settle_error: s.reason }));
               xPaymentResponse = s.settleHeader;
             }

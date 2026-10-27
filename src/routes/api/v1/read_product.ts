@@ -32,7 +32,10 @@ export const Route = createFileRoute("/api/v1/read_product")({
         const authz = request.headers.get("authorization");
         const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
         const { validateApiKey } = await import("@/integrations/supabase/api-keys.server");
-        const principal = await validateApiKey(presented);
+        const { firstProductToken } = await import("@/lib/api/attribution");
+        const principal = await validateApiKey(presented, {
+          client: firstProductToken(request.headers.get("user-agent")),
+        });
         if (!principal) {
           return json(
             { error: "unauthorized", message: "Provide a valid lgk_ API key as a Bearer token." },

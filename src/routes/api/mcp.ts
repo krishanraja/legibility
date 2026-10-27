@@ -77,12 +77,33 @@ export const Route = createFileRoute("/api/mcp")({
         const { id, method, params } = body ?? {};
 
         switch (method) {
-          case "initialize":
+          case "initialize": {
+            // A2: the first client that uses a key. A client that sends its key on initialize
+            // names itself here (clientInfo.name). Best-effort and once per key; discovery
+            // stays free and never fails on it.
+            const authz = request.headers.get("authorization");
+            const presented = authz?.startsWith("Bearer ") ? authz.slice(7).trim() : null;
+            if (presented) {
+              const { mcpClientName } = await import("@/lib/api/attribution");
+              const clientInfo = params?.clientInfo as { name?: unknown } | undefined;
+              const client = mcpClientName(clientInfo?.name);
+              if (client) {
+                try {
+                  const { validateApiKey, recordKeyClient } =
+                    await import("@/integrations/supabase/api-keys.server");
+                  const principal = await validateApiKey(presented);
+                  if (principal) await recordKeyClient(principal.keyId, client);
+                } catch {
+                  /* attribution best-effort */
+                }
+              }
+            }
             return rpc(id, {
               protocolVersion: (params?.protocolVersion as string) ?? PROTOCOL,
               capabilities: { tools: {} },
               serverInfo: { name: "legibility-mcp", version: "0.3" },
             });
+          }
           case "notifications/initialized":
           case "initialized":
             return new Response(null, { status: 202 });

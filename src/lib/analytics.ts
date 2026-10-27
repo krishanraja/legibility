@@ -14,6 +14,8 @@
 // asynchronously, an extension or a content policy may block it entirely, and analytics that
 // throws while recording a funnel step would break the funnel it exists to measure.
 
+import { growthEventParams, type GrowthEvent } from "@/lib/api/attribution";
+
 type PostHogLike = {
   capture?: (event: string, properties?: Record<string, unknown>) => void;
   identify?: (id: string, properties?: Record<string, unknown>) => void;
@@ -61,6 +63,34 @@ export function identify(email: string, properties: Record<string, unknown> = {}
   if (typeof window === "undefined") return;
   try {
     posthog()?.identify?.(email, { email, ...properties });
+  } catch {
+    /* as above */
+  }
+}
+
+/**
+ * A2: the three growth events, sent to GA4 (gtag) and PostHog under the same names, with the
+ * invitation id and the channel label only. Never an email, an IP, a product input or a key:
+ * growthEventParams drops everything else and anything malformed.
+ *
+ *   generate_lead  a Founding 200 or enrolment form submitted
+ *   sign_up        a verified account created (once, decided by the server)
+ *   test_run       a completed run-first test or dashboard test
+ */
+export function trackGrowth(
+  event: GrowthEvent,
+  invitationId: string | null | undefined,
+  channel: string | null | undefined,
+) {
+  if (typeof window === "undefined") return;
+  const params = growthEventParams(invitationId, channel);
+  try {
+    (globalThis as { gtag?: (...args: unknown[]) => void }).gtag?.("event", event, params);
+  } catch {
+    /* as above */
+  }
+  try {
+    posthog()?.capture?.(event, params);
   } catch {
     /* as above */
   }

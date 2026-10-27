@@ -14,20 +14,36 @@ export function generateKeyMaterial() {
   return { key, prefix: key.slice(0, 12), last_four: key.slice(-4), key_hash: hashKey(key) };
 }
 
-// Validate a presented key: hash -> lookup non-revoked -> touch last_used_at. Returns the principal or null.
+// Validate a presented key: hash -> lookup non-revoked. Returns the principal or null.
+//
+// A2: `client` is the caller's client name (the REST User-Agent's first product token). On a
+// key's first use (last_used_at still null) it is kept as the first client that used the key.
 export async function validateApiKey(
   presented: string | null,
+  opts: { client?: string | null } = {},
 ): Promise<{ userId: string; keyId: string } | null> {
   if (!presented || !presented.startsWith("lgk_")) return null;
   const key_hash = hashKey(presented);
   const { data, error } = await supabaseAdmin
     .from("api_keys")
-    .select("id, user_id, revoked_at")
+    .select("id, user_id, revoked_at, last_used_at")
     .eq("key_hash", key_hash)
     .is("revoked_at", null)
     .maybeSingle();
   if (error || !data) return null;
   // last_used_at is touched alongside the awaited usage write in the caller (serverless
   // freezes the function after the response, so fire-and-forget writes are lost).
+  if (opts.client && data.last_used_at == null) await recordKeyClient(data.id, opts.client);
   return { userId: data.user_id, keyId: data.id };
+}
+
+// A2: keep the first client that used a key. Once only (the database ignores a second), and
+// best-effort: attribution never fails or slows a call by more than one write.
+export async function recordKeyClient(keyId: string, client: string | null): Promise<void> {
+  if (!client) return;
+  try {
+    await supabaseAdmin.rpc("record_key_client", { _key_id: keyId, _client: client });
+  } catch {
+    /* attribution best-effort */
+  }
 }

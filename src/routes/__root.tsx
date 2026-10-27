@@ -16,6 +16,7 @@ import { pageMeta } from "@/lib/seo";
 import appCss from "../styles.css?url";
 import { reportError } from "../lib/error-reporting";
 import { GA_INLINE, GA_SCRIPT_SRC } from "@/lib/google-tag";
+import { recordLanding } from "@/lib/attribution-client";
 import { AuthProvider } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -273,6 +274,8 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // A2: keep the touch a page load carries (utm tags or an MCP directory), once per load.
+  useEffect(() => recordLanding(), []);
 
   return (
     <QueryClientProvider client={queryClient}>

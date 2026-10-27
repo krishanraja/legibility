@@ -14,12 +14,14 @@ const isFn = vi.fn(() => ({ maybeSingle }));
 const eq = vi.fn(() => ({ is: isFn }));
 const select = vi.fn(() => ({ eq }));
 const from = vi.fn(() => ({ select }));
+const rpc = vi.fn();
 
 vi.mock("@/integrations/supabase/client.server", () => ({
-  supabaseAdmin: { from },
+  supabaseAdmin: { from, rpc },
 }));
 
-const { generateKeyMaterial, hashKey, validateApiKey } = await import("./api-keys.server");
+const { generateKeyMaterial, hashKey, recordKeyClient, validateApiKey } =
+  await import("./api-keys.server");
 
 beforeEach(() => vi.clearAllMocks());
 
@@ -125,5 +127,42 @@ describe("validateApiKey", () => {
       error: { message: "partial failure" },
     });
     expect(await validateApiKey("lgk_valid")).toBeNull();
+  });
+});
+
+describe("the first client that uses a key (A2)", () => {
+  it("is recorded on the key's first use", async () => {
+    maybeSingle.mockResolvedValue({
+      data: { id: "key-1", user_id: "user-1", last_used_at: null },
+      error: null,
+    });
+    rpc.mockResolvedValue({ data: true, error: null });
+    expect(await validateApiKey("lgk_valid", { client: "curl" })).toEqual({
+      userId: "user-1",
+      keyId: "key-1",
+    });
+    expect(rpc).toHaveBeenCalledWith("record_key_client", { _key_id: "key-1", _client: "curl" });
+  });
+
+  it("is not recorded once the key has been used, or with no client", async () => {
+    maybeSingle.mockResolvedValue({
+      data: { id: "key-1", user_id: "user-1", last_used_at: "2026-10-27T00:00:00Z" },
+      error: null,
+    });
+    await validateApiKey("lgk_valid", { client: "curl" });
+    maybeSingle.mockResolvedValue({
+      data: { id: "key-1", user_id: "user-1", last_used_at: null },
+      error: null,
+    });
+    await validateApiKey("lgk_valid", { client: null });
+    await validateApiKey("lgk_valid");
+    expect(rpc).not.toHaveBeenCalled();
+  });
+
+  it("never fails the call when the write fails", async () => {
+    rpc.mockRejectedValue(new Error("connection lost"));
+    await expect(recordKeyClient("key-1", "curl")).resolves.toBeUndefined();
+    await recordKeyClient("key-1", null);
+    expect(rpc).toHaveBeenCalledTimes(1);
   });
 });

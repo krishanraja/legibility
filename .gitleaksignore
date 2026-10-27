@@ -32,3 +32,6 @@ c9c2a543b85ed1e3a4b582f32be2e34bcf447688:src/content/answers/how-can-an-ai-agent
 c9c2a543b85ed1e3a4b582f32be2e34bcf447688:src/content/answers/how-do-i-connect-an-ai-agent-to-a-remote-mcp-server.md:curl-auth-header:40
 c9c2a543b85ed1e3a4b582f32be2e34bcf447688:public/llms-full.txt:curl-auth-header:293
 c9c2a543b85ed1e3a4b582f32be2e34bcf447688:public/llms-full.txt:curl-auth-header:454
+
+# A2 to A3 (2026-10-27): a schema comment ("asked for a key by email: founding_200_submitted") read as a key; the comment was reworded in the next commit.
+e0fa90e4fcf4148a87bf07c6390f97f188353470:supabase/migrations/20261027150000_founding_200.sql:generic-api-key:49

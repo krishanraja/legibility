@@ -44,6 +44,55 @@ export type Database = {
         };
         Relationships: [];
       };
+      attribution_touches: {
+        Row: {
+          account_id: string | null;
+          channel: string | null;
+          client: string | null;
+          created_at: string;
+          directory: string | null;
+          id: string;
+          invitation_id: string | null;
+          key_id: string | null;
+          kind: string;
+          occurred_at: string;
+          referrer_host: string | null;
+          utm_campaign: string | null;
+          utm_medium: string | null;
+          utm_source: string | null;
+        };
+        Insert: {
+          account_id?: string | null;
+          client?: string | null;
+          created_at?: string;
+          directory?: string | null;
+          id?: string;
+          invitation_id?: string | null;
+          key_id?: string | null;
+          kind: string;
+          occurred_at?: string;
+          referrer_host?: string | null;
+          utm_campaign?: string | null;
+          utm_medium?: string | null;
+          utm_source?: string | null;
+        };
+        Update: {
+          account_id?: string | null;
+          client?: string | null;
+          created_at?: string;
+          directory?: string | null;
+          id?: string;
+          invitation_id?: string | null;
+          key_id?: string | null;
+          kind?: string;
+          occurred_at?: string;
+          referrer_host?: string | null;
+          utm_campaign?: string | null;
+          utm_medium?: string | null;
+          utm_source?: string | null;
+        };
+        Relationships: [];
+      };
       audit_log: {
         Row: {
           action: string;
@@ -184,6 +233,30 @@ export type Database = {
           recall_jsonld?: number | null;
           recall_shopify?: number | null;
           split?: string | null;
+        };
+        Relationships: [];
+      };
+      growth_events: {
+        Row: {
+          account_id: string | null;
+          id: string;
+          occurred_at: string;
+          source: string;
+          type: string;
+        };
+        Insert: {
+          account_id?: string | null;
+          id?: string;
+          occurred_at?: string;
+          source?: string;
+          type: string;
+        };
+        Update: {
+          account_id?: string | null;
+          id?: string;
+          occurred_at?: string;
+          source?: string;
+          type?: string;
         };
         Relationships: [];
       };
@@ -1014,6 +1087,7 @@ export type Database = {
       };
     };
     Functions: {
+      account_acquisition_source: { Args: { _account_id: string }; Returns: string };
       check_kill_floor: { Args: never; Returns: undefined };
       compute_ops_daily: { Args: { _day?: string }; Returns: undefined };
       entitlement_check: {
@@ -1070,6 +1144,12 @@ export type Database = {
           week_start: string;
         }[];
       };
+      record_email_verified: {
+        Args: { _account_id: string };
+        Returns: { first: boolean; invitation_id: string | null; source: string }[];
+      };
+      record_key_client: { Args: { _client: string; _key_id: string }; Returns: boolean };
+      record_key_creation: { Args: { _key_id: string; _touch: Json }; Returns: undefined };
       rate_check: {
         Args: { _user_id: string };
         Returns: {

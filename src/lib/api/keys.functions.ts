@@ -23,14 +23,34 @@ export const createApiKey = createServerFn({ method: "POST" })
     }
 
     const mat = generateKeyMaterial();
-    const { error } = await supabaseAdmin.from("api_keys").insert({
-      user_id: userId,
-      name: data.name,
-      prefix: mat.prefix,
-      key_hash: mat.key_hash,
-      last_four: mat.last_four,
-    });
-    if (error) throw new Error("Could not create key.");
+    const { data: created, error } = await supabaseAdmin
+      .from("api_keys")
+      .insert({
+        user_id: userId,
+        name: data.name,
+        prefix: mat.prefix,
+        key_hash: mat.key_hash,
+        last_four: mat.last_four,
+      })
+      .select("id")
+      .single();
+    if (error || !created) throw new Error("Could not create key.");
+
+    // A2: attach this session's touch (the lg_touch cookie, validated again) to the key, or
+    // the account's enrolment touch when the session has none. Best-effort: a key is never
+    // refused because attribution could not be written.
+    try {
+      const { getRequest } = await import("@tanstack/react-start/server");
+      const { touchFromCookie } = await import("@/lib/api/attribution");
+      const touch = touchFromCookie(getRequest()?.headers.get("cookie"), new Date());
+      const { error: touchError } = await supabaseAdmin.rpc("record_key_creation", {
+        _key_id: created.id,
+        _touch: touch,
+      });
+      if (touchError) console.error("[keys] key touch not recorded", touchError.code);
+    } catch {
+      /* attribution best-effort */
+    }
     return { key: mat.key, prefix: mat.prefix, last_four: mat.last_four };
   });
 

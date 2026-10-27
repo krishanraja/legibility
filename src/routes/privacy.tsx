@@ -50,7 +50,32 @@ function Privacy() {
           </ul>
         </Section>
 
-        <Section n="02" title="The product cache">
+        <Section n="02" title="Cookies and where you came from">
+          <p>
+            When you arrive from a link that carries campaign tags (the utm parameters in a link we
+            sent or listed), or from an MCP directory that lists Legibility, we keep a first-party
+            cookie called lg_touch for 30 days. It holds only those tags, the name of the site that
+            sent you (never the page or anything after it), the directory, and the time you arrived.
+            It never holds your email, your IP address or anything you type.
+          </p>
+          <p>
+            If you then create an account or an API key, we record the same details against it, and
+            the name of the software that first uses the key (for example curl), so we know which
+            channel brought you. We use this only to understand which of our own invitations and
+            listings work.
+          </p>
+          <p>
+            We also measure how the site is used with Google Analytics and PostHog. The sign-up
+            events we send them carry only the campaign tag and the channel name, never your email,
+            IP address, product inputs or keys.
+          </p>
+          <p>
+            If you leave your email on the home page after a free check, PostHog links that email to
+            your earlier visits on this site, so we can follow up on the check you ran.
+          </p>
+        </Section>
+
+        <Section n="03" title="The product cache">
           <p>
             We cache the typed product objects we extract, keyed on public references (a URL or a
             GTIN). The cache holds factual, publicly available product data. It contains no buyer or
@@ -58,18 +83,19 @@ function Privacy() {
           </p>
         </Section>
 
-        <Section n="03" title="How we use data">
+        <Section n="04" title="How we use data">
           <p>
             We use the above only to operate, secure, meter, and bill the API, and to provide
             support. We do not sell personal data.
           </p>
         </Section>
 
-        <Section n="04" title="Processors we use">
+        <Section n="05" title="Processors we use">
           <ul className="list-disc space-y-1 pl-5">
             <li>Supabase: database and authentication.</li>
             <li>Vercel: application hosting.</li>
             <li>Stripe: subscription billing (we never see full card numbers).</li>
+            <li>Google Analytics and PostHog: measuring how the site is used.</li>
             <li>
               The public sources we extract from on your behalf, plus search and barcode providers
               used to resolve a query.
@@ -77,7 +103,7 @@ function Privacy() {
           </ul>
         </Section>
 
-        <Section n="05" title="Retention">
+        <Section n="06" title="Retention">
           <p>
             Usage events are retained for at least 90 days for billing and abuse prevention. Cache
             entries follow their TTL (a few days by default, shorter for volatile fields like
@@ -85,14 +111,14 @@ function Privacy() {
           </p>
         </Section>
 
-        <Section n="06" title="Your rights and takedowns">
+        <Section n="07" title="Your rights and takedowns">
           <p>
             Contact us to access or delete your account data. Rights holders can request removal of
             cached product data via the takedown form, which purges matching entries promptly.
           </p>
         </Section>
 
-        <Section n="07" title="Security">
+        <Section n="08" title="Security">
           <p>
             Keys are stored only as hashes. Row-level security isolates each account's data, and all
             traffic is over TLS.
@@ -100,7 +126,7 @@ function Privacy() {
         </Section>
 
         <p className="mt-12 text-xs text-muted-foreground">
-          Interim policy. Last updated: 19 October 2026. Pending final counsel review before paid
+          Interim policy. Last updated: 27 October 2026. Pending final counsel review before paid
           GA.
         </p>
       </main>

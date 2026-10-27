@@ -15,13 +15,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const h = vi.hoisted(() => ({
   validateApiKey: vi.fn(),
+  recordKeyClient: vi.fn(),
   rateCheck: vi.fn(),
   entitlementCheck: vi.fn(),
   settle: vi.fn(),
   inserts: [] as Record<string, unknown>[],
 }));
 
-vi.mock("@/integrations/supabase/api-keys.server", () => ({ validateApiKey: h.validateApiKey }));
+vi.mock("@/integrations/supabase/api-keys.server", () => ({
+  validateApiKey: h.validateApiKey,
+  recordKeyClient: h.recordKeyClient,
+}));
 
 vi.mock("@/integrations/supabase/rate-limit.server", () => ({
   rateCheck: h.rateCheck,
@@ -293,5 +297,38 @@ describe("MCP: keyed calls are metered", () => {
     h.entitlementCheck.mockResolvedValue({ allowed: false, reason: "quota_exceeded" });
     const res = await call(READ, AUTH);
     expect(res.status).toBe(402);
+  });
+});
+
+describe("initialize: the first client that uses a key (A2)", () => {
+  const init = (clientInfo: unknown) => ({
+    jsonrpc: "2.0",
+    id: 1,
+    method: "initialize",
+    params: { protocolVersion: "2025-06-18", clientInfo },
+  });
+
+  it("6. records clientInfo.name against the key that sent it", async () => {
+    h.validateApiKey.mockResolvedValue(PRINCIPAL);
+    const res = await call(init({ name: "Example Client", version: "1.0" }), AUTH);
+    expect(res.status).toBe(200);
+    expect(h.recordKeyClient).toHaveBeenCalledWith("key-1", "Example Client");
+  });
+
+  it("records nothing without a key, with a rejected key or with a malformed name", async () => {
+    await call(init({ name: "Example Client" }));
+    h.validateApiKey.mockResolvedValue(null);
+    await call(init({ name: "Example Client" }), AUTH);
+    h.validateApiKey.mockResolvedValue(PRINCIPAL);
+    await call(init({ name: "<script>" }), AUTH);
+    await call(init(undefined), AUTH);
+    expect(h.recordKeyClient).not.toHaveBeenCalled();
+  });
+
+  it("discovery never fails on it", async () => {
+    h.validateApiKey.mockRejectedValue(new Error("database down"));
+    const res = await call(init({ name: "Example Client" }), AUTH);
+    expect(res.status).toBe(200);
+    expect((await res.json()).result.serverInfo.name).toBe("legibility-mcp");
   });
 });

@@ -4,7 +4,9 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { capture, identify } from "@/lib/analytics";
+import { capture, identify, trackGrowth } from "@/lib/analytics";
+import { channelLabel } from "@/lib/api/attribution";
+import { currentTouch } from "@/lib/attribution-client";
 import { API_BASE, DEMO_GTIN } from "@/config/product";
 import { REASON_COPY, type FailureReason } from "@/lib/api/readability";
 import calibration from "@/data/calibration.json";
@@ -286,6 +288,9 @@ function CaptureEmail({ result, onSignIn }: { result: CheckResult; onSignIn: () 
       }
       identify(email, { last_checked_host: result.host });
       capture("capture_succeeded", { host: result.host, emailed: Boolean(body.emailed) });
+      // A2: a submitted lead form. Invitation id and channel label only.
+      const touch = currentTouch();
+      trackGrowth("generate_lead", touch?.invitation_id, channelLabel(touch));
       setDone(true);
     } catch {
       setError("That did not work. Try again.");

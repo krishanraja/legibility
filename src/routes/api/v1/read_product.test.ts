@@ -140,13 +140,20 @@ describe("read_product: configuration and auth", () => {
   it("only forwards the token part of the Bearer header", async () => {
     h.validateApiKey.mockResolvedValue(null);
     await post({ gtin: "1" }, { authorization: "Bearer   lgk_padded  " });
-    expect(h.validateApiKey).toHaveBeenCalledWith("lgk_padded");
+    expect(h.validateApiKey).toHaveBeenCalledWith("lgk_padded", expect.anything());
+  });
+
+  it("6. passes only the User-Agent's first product token as the key's client", async () => {
+    await post({ gtin: "1" }, { ...AUTH, "user-agent": "curl/8.4.0 (x86_64-pc-linux-gnu)" });
+    expect(h.validateApiKey).toHaveBeenCalledWith("lgk_valid", { client: "curl" });
+    await post({ gtin: "1" }, AUTH);
+    expect(h.validateApiKey).toHaveBeenLastCalledWith("lgk_valid", { client: null });
   });
 
   it("treats a non-Bearer scheme as no credential", async () => {
     h.validateApiKey.mockResolvedValue(null);
     await post({ gtin: "1" }, { authorization: "Basic abc" });
-    expect(h.validateApiKey).toHaveBeenCalledWith(null);
+    expect(h.validateApiKey).toHaveBeenCalledWith(null, expect.anything());
   });
 
   it("does not call the worker when auth fails", async () => {

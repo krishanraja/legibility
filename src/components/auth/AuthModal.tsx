@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { signInErrorMessage } from "./sign-in-error";
+import { currentTouch } from "@/lib/attribution-client";
 
 export function AuthModal({
   open,
@@ -26,9 +27,16 @@ export function AuthModal({
   async function send(e: React.FormEvent) {
     e.preventDefault();
     setSending(true);
+    // A2: the stored touch travels as sign-up metadata. Supabase keeps it only when this
+    // creates the account, and the database turns it into the enrolment touch, so it still
+    // counts when the magic link is opened in another browser.
+    const touch = currentTouch();
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/dashboard` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+        ...(touch ? { data: { attribution: touch } } : {}),
+      },
     });
     setSending(false);
     if (error) {

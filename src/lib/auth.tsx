@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { reportSignUp } from "@/lib/attribution-client";
 
 type AuthCtx = {
   user: User | null;
@@ -21,9 +22,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setLoading(false);
+      // A2: a new sign-in may be the account's first verified session. The server decides,
+      // once per account, and only then does the browser send sign_up. Deferred, because a
+      // Supabase call inside this callback can deadlock the client.
+      if (event === "SIGNED_IN" && s) setTimeout(reportSignUp, 0);
     });
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);

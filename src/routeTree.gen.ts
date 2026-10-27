@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as DocsRouteImport } from './routes/docs'
+import { Route as Founding200RouteImport } from './routes/founding-200'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReadabilityRouteImport } from './routes/readability'
 import { Route as TakedownRouteImport } from './routes/takedown'
@@ -65,6 +66,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const DocsRoute = DocsRouteImport.update({
   id: '/docs',
   path: '/docs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Founding200Route = Founding200RouteImport.update({
+  id: '/founding-200',
+  path: '/founding-200',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -279,6 +285,7 @@ const ApiInternalGrowthExportRoute = ApiInternalGrowthExportRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/docs': typeof DocsRouteWithChildren
+  '/founding-200': typeof Founding200Route
   '/privacy': typeof PrivacyRoute
   '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
@@ -322,6 +329,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/founding-200': typeof Founding200Route
   '/privacy': typeof PrivacyRoute
   '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
@@ -367,6 +375,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/docs': typeof DocsRouteWithChildren
+  '/founding-200': typeof Founding200Route
   '/privacy': typeof PrivacyRoute
   '/readability': typeof ReadabilityRoute
   '/takedown': typeof TakedownRoute
@@ -413,6 +422,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/docs'
+    | '/founding-200'
     | '/privacy'
     | '/readability'
     | '/takedown'
@@ -456,6 +466,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/founding-200'
     | '/privacy'
     | '/readability'
     | '/takedown'
@@ -500,6 +511,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/docs'
+    | '/founding-200'
     | '/privacy'
     | '/readability'
     | '/takedown'
@@ -546,6 +558,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   DocsRoute: typeof DocsRouteWithChildren
+  Founding200Route: typeof Founding200Route
   PrivacyRoute: typeof PrivacyRoute
   ReadabilityRoute: typeof ReadabilityRoute
   TakedownRoute: typeof TakedownRoute
@@ -593,6 +606,13 @@ declare module '@tanstack/react-router' {
       path: '/docs'
       fullPath: '/docs'
       preLoaderRoute: typeof DocsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/founding-200': {
+      id: '/founding-200'
+      path: '/founding-200'
+      fullPath: '/founding-200'
+      preLoaderRoute: typeof Founding200RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -943,6 +963,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   DocsRoute: DocsRouteWithChildren,
+  Founding200Route: Founding200Route,
   PrivacyRoute: PrivacyRoute,
   ReadabilityRoute: ReadabilityRoute,
   TakedownRoute: TakedownRoute,

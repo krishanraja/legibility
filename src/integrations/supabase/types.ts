@@ -188,6 +188,105 @@ export type Database = {
         };
         Relationships: [];
       };
+      founding_entries: {
+        Row: {
+          account_id: string | null;
+          claimed_at: string | null;
+          created_at: string;
+          id: string;
+          input: string;
+          input_kind: string;
+          interface: string;
+          real_input: boolean;
+          result: Json | null;
+          run_id: string | null;
+          source: string;
+          stores: string;
+          submitted_at: string | null;
+          trusted: boolean;
+          use_case: string;
+        };
+        Insert: {
+          account_id?: string | null;
+          claimed_at?: string | null;
+          created_at?: string;
+          id?: string;
+          input: string;
+          input_kind: string;
+          interface: string;
+          real_input: boolean;
+          result?: Json | null;
+          run_id?: string | null;
+          source?: string;
+          stores?: string;
+          submitted_at?: string | null;
+          trusted: boolean;
+          use_case?: string;
+        };
+        Update: {
+          account_id?: string | null;
+          claimed_at?: string | null;
+          created_at?: string;
+          id?: string;
+          input?: string;
+          input_kind?: string;
+          interface?: string;
+          real_input?: boolean;
+          result?: Json | null;
+          run_id?: string | null;
+          source?: string;
+          stores?: string;
+          submitted_at?: string | null;
+          trusted?: boolean;
+          use_case?: string;
+        };
+        Relationships: [];
+      };
+      founding_page_views: {
+        Row: {
+          day: string;
+          ip_hash: string;
+        };
+        Insert: {
+          day: string;
+          ip_hash: string;
+        };
+        Update: {
+          day?: string;
+          ip_hash?: string;
+        };
+        Relationships: [];
+      };
+      founding_runs: {
+        Row: {
+          cost_usd: number;
+          created_at: string;
+          day: string;
+          domain: string | null;
+          id: string;
+          ip_hash: string;
+          status: string;
+        };
+        Insert: {
+          cost_usd?: number;
+          created_at?: string;
+          day?: string;
+          domain?: string | null;
+          id?: string;
+          ip_hash: string;
+          status?: string;
+        };
+        Update: {
+          cost_usd?: number;
+          created_at?: string;
+          day?: string;
+          domain?: string | null;
+          id?: string;
+          ip_hash?: string;
+          status?: string;
+        };
+        Relationships: [];
+      };
       golden_eval_runs: {
         Row: {
           adversarial_rejection: number | null;
@@ -1092,6 +1191,22 @@ export type Database = {
     Functions: {
       account_acquisition_source: { Args: { _account_id: string }; Returns: string };
       check_kill_floor: { Args: never; Returns: undefined };
+      claim_founding_entry: { Args: { _account_id: string; _entry_id: string }; Returns: boolean };
+      claim_founding_run: {
+        Args: {
+          _cost_ceiling_usd: number;
+          _domain: string | null;
+          _ip_hash: string;
+          _per_day: number;
+          _per_domain: number;
+          _per_ip: number;
+        };
+        Returns: { allowed: boolean; reason: string; run_id: string | null }[];
+      };
+      complete_founding_run: {
+        Args: { _cost_usd: number; _run_id: string; _status: string };
+        Returns: undefined;
+      };
       compute_ops_daily: { Args: { _day?: string }; Returns: undefined };
       entitlement_check: {
         Args: { _user_id: string };
@@ -1155,6 +1270,7 @@ export type Database = {
           week_start: string;
         }[];
       };
+      record_founding_view: { Args: { _ip_hash: string; _source: string }; Returns: boolean };
       record_email_verified: {
         Args: { _account_id: string };
         Returns: { first: boolean; invitation_id: string | null; source: string }[];

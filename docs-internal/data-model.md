@@ -114,6 +114,35 @@ GA4 and PostHog receive `generate_lead` (the home page's lead form today; the Fo
 in A3), `sign_up` and `test_run` (A3), with the invitation id and the label only
 (`trackGrowth` in `src/lib/analytics.ts`). They are cross-checks; the export never reads them.
 
+## The Founding 200 page (A3)
+
+`/founding-200` (`src/routes/founding-200.tsx`, views in `src/components/founding/`, rules and
+words in `src/lib/api/founding.ts`, server side in `src/lib/api/founding.functions.ts`). A
+builder runs the test on one product URL or barcode with no account; the result shows inline;
+then an email gets a Supabase magic link (its fixed template, carrying only the entry id in the
+redirect and as sign-up metadata); after it, a key (`issueKey`, the same path as the dashboard)
+and the report, with a curl and an MCP config using their own input. A call is offered only to
+an entrant whose input was read with confidence, and only by email to the role address
+(`MCP_CONTACT_EMAIL`). No booking link anywhere.
+
+- `founding_runs`: one row per run (`ip_hash` = HMAC of the IP under `EXPORT_ID_KEY`, the
+  product `domain`, `status`, the worker's `cost_usd`). `claim_founding_run()` checks every limit
+  and records the run in one locked step: 5 runs per IP and 20 per product domain each UTC day
+  (barcodes have no domain), 200 runs a day in all, and a $3 a day ceiling on the worker's own
+  cost. Nothing is charged to anyone. Bot challenge: Cloudflare Turnstile, verified server-side
+  (`TURNSTILE_SECRET_KEY`); without it every run is refused.
+- `founding_entries`: what the builder typed (input, use case, REST or MCP, stores), the result
+  and whether it was trusted, `real_input` (not the demo barcode), `source` (A2 label). Linked to
+  an account by the sign-up trigger or by `claim_founding_entry()` after verification, once and
+  within seven days. The input never leaves the app.
+- `founding_page_views`: one row per hashed IP per UTC day, so `beta_page_viewed` counts visitors.
+- Events: `beta_page_viewed`, `testbench_started`, `testbench_completed`, `founding_200_submitted`
+  (once per entry), plus A2's `email_verified` and `key_created`. GA4 and PostHog get `test_run`
+  and `generate_lead`.
+- Export: `use_case` (latest linked entry, scrubbed of addresses, URLs, IPs and barcodes) and
+  `relevant_context` (a linked entry ran a real input). `coverage.events` stays false: bounces,
+  complaints, unsubscribes and referrals, which the engine also counts, are not recorded.
+
 ## The growth export (A4)
 
 `GET /api/internal/growth/export?start=<UTC instant>&end=<UTC instant>[&fields=attribution]`

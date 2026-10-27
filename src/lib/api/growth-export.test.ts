@@ -139,6 +139,9 @@ describe("buildExport", () => {
         enrolled_at: "2026-10-28T10:00:00.000Z",
         api_key_created_at: "2026-10-28T10:05:00.000Z",
         acquisition_source: "introduction",
+        // An address built at run time, so none is written into this file.
+        use_case: `A comparison agent; reach me at ${["me", "example.invalid"].join("@")} or https://x.example/p/1`,
+        relevant_context: true,
         enrolment_touch: {
           invitation_id: "legibility:x",
           utm_source: "outreach",
@@ -267,6 +270,15 @@ describe("buildExport", () => {
     expect(e.events[0].account_id).toBeNull();
     expect(e.events[1].account_id).toBe(e.accounts[1].id);
     expect(e.reads[3]).toMatchObject({ cost_usd: 0.004, failure_reason: null });
+  });
+
+  it("A3: carries the use case, scrubbed, and whether the builder ran a real input", () => {
+    const e = buildExport(input);
+    expect(e.accounts[0]).toMatchObject({ use_case: "", relevant_context: false });
+    expect(e.accounts[1]).toMatchObject({
+      use_case: "A comparison agent; reach me at [removed] or [removed]",
+      relevant_context: true,
+    });
   });
 
   it("attribution: an enrolment touch never carries a client; the first key's does", () => {

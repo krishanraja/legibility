@@ -828,6 +828,7 @@ export type Database = {
           endpoint: string | null;
           envelope_hash: string | null;
           id: number;
+          method: string | null;
           latency_ms: number | null;
           meta: Json;
           product_returned: boolean | null;
@@ -848,6 +849,7 @@ export type Database = {
           endpoint?: string | null;
           envelope_hash?: string | null;
           id?: number;
+          method?: string | null;
           latency_ms?: number | null;
           meta?: Json;
           product_returned?: boolean | null;
@@ -868,6 +870,7 @@ export type Database = {
           endpoint?: string | null;
           envelope_hash?: string | null;
           id?: number;
+          method?: string | null;
           latency_ms?: number | null;
           meta?: Json;
           product_returned?: boolean | null;
@@ -1100,6 +1103,14 @@ export type Database = {
           reason: string;
           used_billable: number;
         }[];
+      };
+      growth_export_counts: {
+        Args: { _captured_at: string; _end: string; _start: string };
+        Returns: { accounts: number; events: number; reads: number }[];
+      };
+      growth_export_rows: {
+        Args: { _captured_at: string; _end: string; _start: string };
+        Returns: Json;
       };
       has_role: {
         Args: {

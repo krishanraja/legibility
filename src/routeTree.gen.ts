@@ -49,6 +49,7 @@ import { Route as ApiV1Report_outcomeRouteImport } from './routes/api/v1/report_
 import { Route as ApiV1Resolve_productRouteImport } from './routes/api/v1/resolve_product'
 import { Route as DocsApiReadProductRouteImport } from './routes/docs.api.read-product'
 import { Route as DocsApiResolveProductRouteImport } from './routes/docs.api.resolve-product'
+import { Route as ApiInternalGrowthExportRouteImport } from './routes/api/internal/growth/export'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -256,6 +257,11 @@ const DocsApiResolveProductRoute = DocsApiResolveProductRouteImport.update({
   path: '/api/resolve-product',
   getParentRoute: () => DocsRoute,
 } as any)
+const ApiInternalGrowthExportRoute = ApiInternalGrowthExportRouteImport.update({
+  id: '/api/internal/growth/export',
+  path: '/api/internal/growth/export',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/docs/api/read-product': typeof DocsApiReadProductRoute
   '/docs/api/resolve-product': typeof DocsApiResolveProductRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/api/internal/growth/export': typeof ApiInternalGrowthExportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -336,6 +343,7 @@ export interface FileRoutesByTo {
   '/docs/api/read-product': typeof DocsApiReadProductRoute
   '/docs/api/resolve-product': typeof DocsApiResolveProductRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
+  '/api/internal/growth/export': typeof ApiInternalGrowthExportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -379,6 +387,7 @@ export interface FileRoutesById {
   '/docs/api/read-product': typeof DocsApiReadProductRoute
   '/docs/api/resolve-product': typeof DocsApiResolveProductRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
+  '/api/internal/growth/export': typeof ApiInternalGrowthExportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -422,6 +431,7 @@ export interface FileRouteTypes {
     | '/docs/api/read-product'
     | '/docs/api/resolve-product'
     | '/dashboard/'
+    | '/api/internal/growth/export'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -461,6 +471,7 @@ export interface FileRouteTypes {
     | '/docs/api/read-product'
     | '/docs/api/resolve-product'
     | '/dashboard'
+    | '/api/internal/growth/export'
   id:
     | '__root__'
     | '/'
@@ -503,6 +514,7 @@ export interface FileRouteTypes {
     | '/docs/api/read-product'
     | '/docs/api/resolve-product'
     | '/_authenticated/dashboard/'
+    | '/api/internal/growth/export'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -530,6 +542,7 @@ export interface RootRouteChildren {
   ApiV1Read_productRoute: typeof ApiV1Read_productRoute
   ApiV1Report_outcomeRoute: typeof ApiV1Report_outcomeRoute
   ApiV1Resolve_productRoute: typeof ApiV1Resolve_productRoute
+  ApiInternalGrowthExportRoute: typeof ApiInternalGrowthExportRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -814,6 +827,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsApiResolveProductRouteImport
       parentRoute: typeof DocsRoute
     }
+    '/api/internal/growth/export': {
+      id: '/api/internal/growth/export'
+      path: '/api/internal/growth/export'
+      fullPath: '/api/internal/growth/export'
+      preLoaderRoute: typeof ApiInternalGrowthExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -903,6 +923,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1Read_productRoute: ApiV1Read_productRoute,
   ApiV1Report_outcomeRoute: ApiV1Report_outcomeRoute,
   ApiV1Resolve_productRoute: ApiV1Resolve_productRoute,
+  ApiInternalGrowthExportRoute: ApiInternalGrowthExportRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -160,6 +160,28 @@ migration `20261027160000` was applied). The export vouches for settlements only
 that starts then or later. Move the date earlier only with evidence (for example the recipient
 wallet's on-chain history) that no payment went unrecorded before it.
 
+## The 30-day trial (A8)
+
+`trial_grants`: at most one per account, ever. A grant has an allowance of trusted reads counted
+from the grant (the clock starts at the grant), a hard stop, its own cost fuse, at most 30 days, an
+optional invitation id (so a hand-granted key traces: the export's `first_key` touch takes it when
+the key's own touch has none) and the admin who granted it. Made only by `grant_trial()` (service
+role), which the admin's click on `/dashboard/waitlist`, Trials, calls; `end_trial()` ends one early.
+
+`entitlement_check()` keeps its signature. A paid (non-free) subscription wins as before.
+Otherwise a live grant serves reads while it is under its allowance and its fuse (`plan_id`
+`trial`). When the grant would refuse, or there is none, the Free plan decides exactly as before;
+only if Free refuses too is the answer `trial_used_up` ("the trial is used up ... nothing was
+charged"). A trial is therefore never worse than Free, and after day 30 or exhaustion the account
+is on Free. It never touches Stripe, `subscriptions`, checkout, `plans` or `rate_check`.
+
+The fuse is sized from a read-only measurement, `trial_cost_per_call()` (calls, average, 95th
+percentile and maximum `cost_usd` a REST or MCP call over 30 days, shown on the Trials tab):
+allowance x the higher of average and p95 x 3, never below Free's 3,000 cents
+(`trialFuseCents`, `src/lib/api/trial.ts`). Defaults: 5,000 reads, 30 days. With
+`FOUNDING_AUTO_TRIAL=true` a new Founding 200 key gets the default trial automatically; off by
+default. x402 calls never reach the entitlement check, so they are outside "nothing charged".
+
 ## The growth export (A4)
 
 `GET /api/internal/growth/export?start=<UTC instant>&end=<UTC instant>[&fields=attribution]`

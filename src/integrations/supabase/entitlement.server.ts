@@ -3,10 +3,11 @@
 // on an RPC error a free-tier caller is blocked conservatively rather than let through
 // unlimited, while paid callers are allowed (never block a paying call on infra hiccup).
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { TRIAL_USED_UP_MESSAGE } from "@/lib/api/trial";
 
 export type Entitlement = {
   allowed: boolean;
-  reason: "ok" | "quota_exceeded" | "cost_fuse" | "degraded";
+  reason: "ok" | "quota_exceeded" | "cost_fuse" | "trial_used_up" | "degraded";
   plan_id: string;
   included_calls: number;
   used_billable: number;
@@ -46,6 +47,17 @@ export async function entitlementCheck(userId: string): Promise<Entitlement> {
 
 // The 402 body a route returns when quota or the cost fuse blocks a call.
 export function quotaBlockedBody(e: Entitlement, upgradeUrl: string) {
+  // A8: a trial that is used up, with the Free plan's reads used too. Nothing was charged.
+  if (e.reason === "trial_used_up") {
+    return {
+      error: "trial_used_up",
+      message: TRIAL_USED_UP_MESSAGE,
+      plan: e.plan_id,
+      used: e.used_billable,
+      included: e.included_calls,
+      upgrade_url: upgradeUrl,
+    };
+  }
   return {
     error: e.reason === "cost_fuse" ? "cost_fuse" : "quota_exceeded",
     message:

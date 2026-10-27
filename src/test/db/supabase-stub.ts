@@ -54,10 +54,13 @@ export function migrationFiles(): string[] {
  * A fresh database with every migration in the repository applied, in order. With dataDir it
  * lives on disk, so a test can close it and open it again to prove state survives a restart.
  */
-export async function migratedDatabase(dataDir?: string): Promise<PGlite> {
+export async function migratedDatabase(
+  dataDir?: string,
+  opts: { exclude?: string[] } = {},
+): Promise<PGlite> {
   const db = dataDir ? new PGlite(dataDir) : new PGlite();
   await db.exec(SUPABASE_STUB);
-  for (const file of migrationFiles()) {
+  for (const file of migrationFiles().filter((f) => !opts.exclude?.includes(f))) {
     try {
       await db.exec(readFileSync(resolve(MIGRATIONS_DIR, file), "utf8"));
     } catch (err) {

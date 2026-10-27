@@ -434,3 +434,44 @@ describe("A5: every x402 attempt is one ledger row", () => {
     );
   });
 });
+
+describe("A8: x402 stays outside the trial", () => {
+  it("8. an x402 call never gets the trial's 'nothing charged' message", async () => {
+    const CALL = {
+      id: 10,
+      method: "tools/call",
+      params: { name: "read_product", arguments: { gtin: "1" } },
+    };
+    h.validateApiKey.mockResolvedValue(null);
+    const quote = await (await call(CALL)).text();
+    h.settle.mockResolvedValue({ ok: false, reason: "insufficient_balance" });
+    const failed = await (await call(CALL, { "x-payment": "e30=" })).text();
+    for (const body of [quote, failed]) {
+      expect(body).not.toMatch(/nothing (was )?charged/i);
+      expect(body).not.toContain("trial");
+    }
+    expect(h.entitlementCheck).not.toHaveBeenCalled();
+  });
+
+  it("a keyed call whose trial is used up gets the trial words over MCP", async () => {
+    h.validateApiKey.mockResolvedValue(PRINCIPAL);
+    h.rateCheck.mockResolvedValue({ allowed: true, limit: 60, used: 1, reset: 60 });
+    h.entitlementCheck.mockResolvedValue({
+      allowed: false,
+      reason: "trial_used_up",
+      included_calls: 5000,
+    });
+    const body = await (
+      await call(
+        {
+          id: 11,
+          method: "tools/call",
+          params: { name: "read_product", arguments: { gtin: "1" } },
+        },
+        AUTH,
+      )
+    ).json();
+    expect(body.error.message).toContain("trial is used up");
+    expect(body.error.message).toContain("Nothing was charged");
+  });
+});

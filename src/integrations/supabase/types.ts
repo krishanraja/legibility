@@ -914,6 +914,39 @@ export type Database = {
         };
         Relationships: [];
       };
+      trial_grants: {
+        Row: {
+          account_id: string;
+          allowance: number;
+          cost_fuse_cents: number;
+          ended_at: string | null;
+          ends_at: string;
+          granted_by: string | null;
+          invitation_id: string | null;
+          starts_at: string;
+        };
+        Insert: {
+          account_id: string;
+          allowance: number;
+          cost_fuse_cents: number;
+          ended_at?: string | null;
+          ends_at: string;
+          granted_by?: string | null;
+          invitation_id?: string | null;
+          starts_at?: string;
+        };
+        Update: {
+          account_id?: string;
+          allowance?: number;
+          cost_fuse_cents?: number;
+          ended_at?: string | null;
+          ends_at?: string;
+          granted_by?: string | null;
+          invitation_id?: string | null;
+          starts_at?: string;
+        };
+        Relationships: [];
+      };
       usage_events: {
         Row: {
           api_key_id: string | null;
@@ -1237,6 +1270,18 @@ export type Database = {
         Args: { _captured_at: string; _end: string; _start: string };
         Returns: Json;
       };
+      grant_trial: {
+        Args: {
+          _account_id: string;
+          _allowance: number;
+          _cost_fuse_cents: number;
+          _days: number;
+          _granted_by: string | null;
+          _invitation_id: string | null;
+        };
+        Returns: { ends_at: string; starts_at: string }[];
+      };
+      end_trial: { Args: { _account_id: string }; Returns: boolean };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];
@@ -1310,6 +1355,15 @@ export type Database = {
         }[];
       };
       read_interface: { Args: { _endpoint: string }; Returns: string };
+      trial_cost_per_call: {
+        Args: never;
+        Returns: {
+          avg_usd: number | null;
+          calls: number;
+          max_usd: number | null;
+          p95_usd: number | null;
+        }[];
+      };
       trust_rate_by_method: {
         Args: { _since?: string };
         Returns: {

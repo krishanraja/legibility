@@ -238,6 +238,29 @@ export const claimFoundingEntry = createServerFn({ method: "POST" })
       const k = active?.[0];
       keyHint = k ? `${k.prefix}...${k.last_four}` : null;
     }
+    // A8: only when Krish has chosen automatic capped trials for sign-ups (FOUNDING_AUTO_TRIAL),
+    // a new key comes with the default trial. Otherwise it is a Free key and a trial is his
+    // click on the Trials tab. A second grant is refused by the database, so this is safe to
+    // reach twice.
+    if (issued) {
+      const { autoTrialEnabled, trialFuseCents, TRIAL_DEFAULTS } = await import("@/lib/api/trial");
+      if (autoTrialEnabled(process.env)) {
+        const m = (await supabaseAdmin.rpc("trial_cost_per_call")).data?.[0];
+        const { touchFromCookie } = await import("@/lib/api/attribution");
+        const { error: grantError } = await supabaseAdmin.rpc("grant_trial", {
+          _account_id: userId,
+          _allowance: TRIAL_DEFAULTS.allowance,
+          _days: TRIAL_DEFAULTS.days,
+          _cost_fuse_cents: trialFuseCents(
+            TRIAL_DEFAULTS.allowance,
+            m ? { calls: Number(m.calls), avg_usd: m.avg_usd, p95_usd: m.p95_usd } : null,
+          ),
+          _invitation_id: touchFromCookie(ctx.cookie, new Date())?.invitation_id ?? null,
+          _granted_by: null,
+        });
+        if (grantError) console.error("[founding] automatic trial not granted", grantError.code);
+      }
+    }
     const { contactFrom } = await import("@/lib/api/mcp-tools");
     return {
       ok: true,

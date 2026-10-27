@@ -8,6 +8,7 @@ import {
   TOOLS,
   toolCallResult,
 } from "@/lib/api/mcp-tools";
+import { TRIAL_USED_UP_MESSAGE } from "@/lib/api/trial";
 
 // MCP server (JSON-RPC 2.0 over HTTP POST). Discovery (initialize / tools/list / ping) is free.
 // tools/call requires EITHER a valid lgk_ API key (Bearer) OR a settled x402 payment
@@ -186,9 +187,11 @@ export const Route = createFileRoute("/api/mcp")({
                     error: {
                       code: -32098,
                       message:
-                        ent.reason === "cost_fuse"
-                          ? "Free usage safety limit reached."
-                          : `Monthly quota reached (${ent.included_calls} calls). Upgrade to continue.`,
+                        ent.reason === "trial_used_up"
+                          ? TRIAL_USED_UP_MESSAGE
+                          : ent.reason === "cost_fuse"
+                            ? "Free usage safety limit reached."
+                            : `Monthly quota reached (${ent.included_calls} calls). Upgrade to continue.`,
                     },
                   }),
                   { status: 402, headers: { "content-type": "application/json" } },

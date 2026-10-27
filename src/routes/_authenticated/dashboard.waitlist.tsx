@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { getWaitlist, setWaitlistStatus, type WaitlistRow } from "@/lib/api/waitlist.functions";
 import { REASON_COPY, type FailureReason } from "@/lib/api/readability";
+import { Trials } from "@/components/admin/Trials";
 
 /**
  * The waitlist, for whoever runs this.
@@ -90,6 +91,7 @@ function Row({ row, onChange }: { row: WaitlistRow; onChange: () => void }) {
 function WaitlistPage() {
   const [payload, setPayload] = useState<Payload | null>(null);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState<"waitlist" | "trials">("waitlist");
 
   const load = useCallback(() => {
     getWaitlist()
@@ -119,24 +121,44 @@ function WaitlistPage() {
   return (
     <div>
       <h1 className="font-display text-4xl">Waitlist</h1>
-      <p className="mt-3 text-muted-foreground">
-        Everyone who asked for a read, newest first, with the finding that prompted it. {pending}{" "}
-        pending of {rows.length}.
-      </p>
-
-      {rows.length === 0 ? (
-        <div className="mt-8 rounded-md border border-hairline bg-surface p-6">
-          <div className="font-display text-2xl">Nobody yet.</div>
-          <p className="mt-2 text-sm text-muted-foreground">
-            A row appears here when someone checks a domain and asks for the read.
-          </p>
+      {/* A8: the Trials tab, where a 30-day trial is granted by hand. */}
+      <div className="mt-6 flex gap-2 font-mono text-xs">
+        {(["waitlist", "trials"] as const).map((t) => (
+          <button
+            key={t}
+            onClick={() => setTab(t)}
+            className={`rounded-sm border px-3 py-1.5 ${tab === t ? "border-signal text-signal" : "border-hairline text-muted-foreground hover:text-foreground"}`}
+          >
+            {t === "waitlist" ? "Waitlist" : "Trials"}
+          </button>
+        ))}
+      </div>
+      {tab === "trials" ? (
+        <div className="mt-8">
+          <Trials />
         </div>
       ) : (
-        <div className="mt-8 divide-y divide-hairline border-y border-hairline">
-          {rows.map((r) => (
-            <Row key={r.id} row={r} onChange={load} />
-          ))}
-        </div>
+        <>
+          <p className="mt-3 text-muted-foreground">
+            Everyone who asked for a read, newest first, with the finding that prompted it.{" "}
+            {pending} pending of {rows.length}.
+          </p>
+
+          {rows.length === 0 ? (
+            <div className="mt-8 rounded-md border border-hairline bg-surface p-6">
+              <div className="font-display text-2xl">Nobody yet.</div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                A row appears here when someone checks a domain and asks for the read.
+              </p>
+            </div>
+          ) : (
+            <div className="mt-8 divide-y divide-hairline border-y border-hairline">
+              {rows.map((r) => (
+                <Row key={r.id} row={r} onChange={load} />
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -42,6 +42,11 @@ export const REST_ERRORS: ErrorRow[] = [
     when: "A Free account has hit its usage safety limit. Add a plan to continue.",
   },
   {
+    status: 402,
+    error: "trial_used_up",
+    when: "A 30-day trial has used its reads, and the Free plan's reads for this month are used too. Nothing was charged.",
+  },
+  {
     status: 405,
     error: "method_not_allowed",
     when: "Wrong HTTP method. The v1 tools accept POST only; the Allow header says which.",

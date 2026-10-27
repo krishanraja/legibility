@@ -272,6 +272,55 @@ describe("buildExport", () => {
     expect(e.reads[3]).toMatchObject({ cost_usd: 0.004, failure_reason: null });
   });
 
+  it("A5: exports settlements with opaque ids, vouched for only from when capture began", () => {
+    const settlements = [
+      {
+        id: "a".repeat(64),
+        occurred_at: "2026-10-30T11:00:00.000Z",
+        network: "base-sepolia" as const,
+        status: "settled" as const,
+        payer: "agent" as const,
+        amount_usd: "0.01",
+      },
+    ];
+    const withPay = {
+      ...input,
+      rows: { ...rows, settlements },
+      counts: { ...input.counts, settlements: 1 },
+    };
+    const covered = buildExport({ ...withPay, settlementsSince: new Date("2026-09-01T00:00:00Z") });
+    expect(covered.settlements).toEqual([
+      {
+        id: opaqueId("stl", "a".repeat(64), KEY),
+        occurred_at: "2026-10-30T11:00:00.000Z",
+        network: "base-sepolia",
+        status: "settled",
+        payer: "agent",
+        amount_usd: 0.01,
+      },
+    ]);
+    expect(covered.coverage.settlements).toBe(true);
+    expect(
+      buildExport({ ...withPay, settlementsSince: new Date("2026-10-15T00:00:00Z") }).coverage
+        .settlements,
+    ).toBe(false);
+    expect(buildExport({ ...withPay, settlementsSince: null }).coverage.settlements).toBe(false);
+    expect(
+      buildExport({
+        ...withPay,
+        counts: { ...withPay.counts, settlements: 2 },
+        settlementsSince: new Date("2026-09-01T00:00:00Z"),
+      }).coverage.settlements,
+    ).toBe(false);
+    expect(
+      tooManyRows({ accounts: 0, reads: 0, events: 0, settlements: MAX_ROWS_PER_SECTION + 1 }),
+    ).toBe(true);
+    // No settlements counted and none exported: an empty, vouched-for section.
+    const none = buildExport({ ...input, settlementsSince: new Date("2026-09-01T00:00:00Z") });
+    expect(none.settlements).toEqual([]);
+    expect(none.coverage.settlements).toBe(true);
+  });
+
   it("A3: carries the use case, scrubbed, and whether the builder ran a real input", () => {
     const e = buildExport(input);
     expect(e.accounts[0]).toMatchObject({ use_case: "", relevant_context: false });

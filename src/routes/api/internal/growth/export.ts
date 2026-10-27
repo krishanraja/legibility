@@ -52,15 +52,28 @@ export const Route = createFileRoute("/api/internal/growth/export")({
           accounts: Number(c.accounts),
           reads: Number(c.reads),
           events: Number(c.events),
+          settlements: Number(c.settlements ?? 0),
         };
         if (exp.tooManyRows(counts)) return json({ error: "window_too_large" }, 413);
 
-        const read = await supabaseAdmin.rpc("growth_export_rows", range);
-        if (read.error || !read.data) return json({ error: "export_unavailable" }, 503);
+        const [read, paid] = await Promise.all([
+          supabaseAdmin.rpc("growth_export_rows", range),
+          supabaseAdmin.rpc("growth_export_settlements", {
+            _start: range._start,
+            _end: range._end,
+          }),
+        ]);
+        if (read.error || !read.data || paid.error || !paid.data) {
+          return json({ error: "export_unavailable" }, 503);
+        }
+        const rows = {
+          ...(read.data as unknown as import("@/lib/api/growth-export").RawRows),
+          settlements: paid.data as unknown as import("@/lib/api/growth-export").RawSettlement[],
+        };
 
         const body = JSON.stringify(
           exp.buildExport({
-            rows: read.data as unknown as import("@/lib/api/growth-export").RawRows,
+            rows,
             counts,
             start: w.start,
             end: w.end,
@@ -68,6 +81,7 @@ export const Route = createFileRoute("/api/internal/growth/export")({
             appRevision: exp.appRevision(process.env),
             idKey,
             fields: w.fields,
+            settlementsSince: c.settlements_since ? new Date(c.settlements_since) : null,
           }),
         );
         if (Buffer.byteLength(body) > exp.MAX_BYTES) {

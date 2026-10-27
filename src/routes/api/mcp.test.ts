@@ -19,6 +19,7 @@ const h = vi.hoisted(() => ({
   rateCheck: vi.fn(),
   entitlementCheck: vi.fn(),
   settle: vi.fn(),
+  rpc: vi.fn(async () => ({ data: null, error: null })),
   inserts: [] as Record<string, unknown>[],
 }));
 
@@ -51,6 +52,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
       },
       update: () => ({ eq: () => Promise.resolve({ error: null }) }),
     }),
+    rpc: h.rpc,
   },
 }));
 
@@ -389,5 +391,46 @@ describe("A7: titles, output schemas, annotations and structured results", () =>
     ).json();
     expect(body.result.isError).toBe(true);
     expect(body.result.structuredContent).toBeUndefined();
+  });
+});
+
+describe("A5: every x402 attempt is one ledger row", () => {
+  const PAYMENT = Buffer.from(
+    JSON.stringify({
+      payload: { authorization: { nonce: `0x${"cd".repeat(32)}`, value: "10000" } },
+    }),
+  ).toString("base64");
+  const CALL = {
+    id: 9,
+    method: "tools/call",
+    params: { name: "read_product", arguments: { gtin: "1" } },
+  };
+
+  it("records a settled payment, then serves the call", async () => {
+    h.validateApiKey.mockResolvedValue(null);
+    h.settle.mockResolvedValue({ ok: true, settleHeader: "c2V0dGxlZA==" });
+    process.env.LEGIBILITY_EXTRACTOR_URL = "https://worker.example.test/extract";
+    process.env.LEGIBILITY_EXTRACTOR_TOKEN = "worker-token-for-tests";
+    stubWorker(ENVELOPE);
+    await call(CALL, { "x-payment": PAYMENT });
+    expect(h.rpc).toHaveBeenCalledWith(
+      "record_x402_settlement",
+      expect.objectContaining({
+        _status: "settled",
+        _network: "base-sepolia",
+        _tool: "read_product",
+      }),
+    );
+  });
+
+  it("records a failed payment as failed", async () => {
+    h.validateApiKey.mockResolvedValue(null);
+    h.settle.mockResolvedValue({ ok: false, reason: "insufficient_balance" });
+    const res = await call(CALL, { "x-payment": PAYMENT });
+    expect(res.status).toBe(402);
+    expect(h.rpc).toHaveBeenCalledWith(
+      "record_x402_settlement",
+      expect.objectContaining({ _status: "failed", _failure_reason: "insufficient_balance" }),
+    );
   });
 });

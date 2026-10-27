@@ -6,7 +6,7 @@ export function signInErrorMessage(error: { message?: string; status?: number })
   }
   const message = error.message?.trim() ?? "";
   if ((error.status ?? 0) >= 500 || !message || message === "{}") {
-    return "We could not send your sign-in email. Try again shortly, or write to hello@krishraja.com.";
+    return "We could not send your sign-in email. Try again shortly, or write to founders@legibility.io.";
   }
   return message;
 }

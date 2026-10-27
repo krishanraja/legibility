@@ -21,8 +21,9 @@ checkout wiring and the MCP server are deployed. No card payment can
 complete yet (the Stripe account cannot charge), and x402 is wired on Base
 Sepolia (testnet) with no settlement yet. The growth engine's app contract,
 A1 to A8 (internal list, attribution, growth export, Founding 200 page, x402
-ledger, MCP metadata and registry entry, 30-day trial), is live; what still
-needs Krish is in [../docs/OUTSTANDING.md](../docs/OUTSTANDING.md) and the
+ledger, MCP metadata and registry entry, 30-day trial), is deployed: the Founding 200
+page stays paused until the Turnstile keys exist, and `server.json` is not yet
+published. What still needs Krish is in [../docs/OUTSTANDING.md](../docs/OUTSTANDING.md) and the
 runbooks in [ops.md](./ops.md). The developer-facing front door is the
 repo-root [README.md](../README.md).
 

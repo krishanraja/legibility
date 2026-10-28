@@ -1,8 +1,8 @@
 ---
 repo: krishanraja/legibility
 product: Legibility
-as_of: 2026-10-27
-head: 48aca05
+as_of: 2026-10-28
+head: 44cf0b2
 lifecycle: beta
 production_url: https://legibility.io
 state_doc: docs/OUTSTANDING.md
@@ -34,7 +34,7 @@ What it proves for Mindmake: Krish sees a shift (assistants reading pages instea
 
 Objection it answers: "AI product data is guesswork." Legibility returns `product: null` at low confidence rather than a guess, and a null read costs the caller nothing (`README.md`, "Honest scope" and "Billing").
 
-## Where it is right now (as of 2026-10-27)
+## Where it is right now (as of 2026-10-28)
 
 <!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": 0, "current_as_of": "2026-10-27", "current_source": "northstar_weekly_keys() on the production database, internal accounts excluded (migration 20261027120000 applied 2026-10-27)", "urgency": 4, "urgency_reason": "0 against 1 this week, under 40%"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: 0 against 1 this week (measured 27 Oct with `northstar_weekly_keys`, internal accounts excluded), on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
 
@@ -79,7 +79,6 @@ Broken, blocked or waiting:
 - **2026-10-19: Mindmaker LLC and Mindmaker Ltd named in the footer, terms and privacy** (`a7709ac`; ruling in the commit).
 - **2026-10-18: the North Star was set** (`abd91f7`, `f3c6b77`): by March 2027, more revenue from agents paying per call in USDC on mainnet than from human sign-ups, with a hundred production agents depending on it every week.
 - **2026-10-03: TanStack Start bumped to clear an XSS advisory** that had made Vercel block every deploy (`95126cc`), and the public contact moved off the old brand's domain (`55a9ab0`); it is now a role address on legibility.io.
-- **2026-09-27: a Google Analytics tag on every page, beside PostHog** (`1403690`).
 
 ## What is next and what is waiting on Krish
 

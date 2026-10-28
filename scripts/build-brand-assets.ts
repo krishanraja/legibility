@@ -32,9 +32,14 @@ import { join, resolve } from "node:path";
 const ROOT = resolve(import.meta.dir, "..");
 const PUBLIC = resolve(ROOT, "public");
 
-export const NAVY = "#0E1B2C";
-export const CREAM = "#F4EFE6";
-export const SIGNAL = "#C2532A";
+// The sRGB render of the oklch tokens in src/styles.css, so the icons and cards match the page.
+// src/test/brand-colours.test.ts fails if a token moves and these do not.
+export const NAVY = "#071725"; // foreground
+export const CREAM = "#F4EDE5"; // background
+export const SIGNAL = "#C5521C"; // signal
+export const HAIRLINE = "#D2CDC5"; // hairline
+export const STONE = "#797065"; // stone
+export const MUTED_FOREGROUND = "#3D4955"; // muted-foreground
 
 /** The glyph on a 32 unit grid: three bars, the middle one tallest, on a base. */
 function glyph(fill: string): string {
@@ -124,15 +129,15 @@ ${fontCss}
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:1200px;height:630px;background:${CREAM};color:${NAVY}}
 body{padding:58px 72px 54px;display:flex;flex-direction:column;font-family:Inter,system-ui,sans-serif;position:relative}
-body::before{content:"";position:absolute;inset:24px;border:1px solid #D9D0C1;border-radius:6px}
+body::before{content:"";position:absolute;inset:24px;border:1px solid ${HAIRLINE};border-radius:6px}
 .top{display:flex;align-items:center;gap:20px}
 .word{font-family:"Instrument Serif",Georgia,serif;font-size:52px;letter-spacing:-0.5px}
 .eyebrow{margin-top:34px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:20px;letter-spacing:5px;text-transform:uppercase;color:${SIGNAL}}
 h1{margin-top:14px;font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:84px;line-height:0.98;letter-spacing:-1.5px}
-h1 em{display:block;color:#5B6676}
-p{margin-top:20px;max-width:900px;font-size:23px;line-height:1.4;color:#3A4757}
+h1 em{display:block;color:${STONE}}
+p{margin-top:20px;max-width:900px;font-size:23px;line-height:1.4;color:${MUTED_FOREGROUND}}
 .foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between}
-.host{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:22px;color:#3A4757}
+.host{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:22px;color:${MUTED_FOREGROUND}}
 .chips{display:flex;gap:12px}
 .chip{background:${NAVY};color:${CREAM};font-family:"JetBrains Mono",ui-monospace,monospace;font-size:19px;padding:10px 18px;border-radius:6px}
 </style></head><body>

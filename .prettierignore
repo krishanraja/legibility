@@ -17,3 +17,7 @@ docs/HARNESS_CONTEXT.md
 # The growth engine's validator, vendored byte for byte at a pinned commit; its sha256 is
 # checked against that commit's contracts/manifest.json, so it must never be reformatted.
 src/test/vendor/
+
+# The auth email templates are applied byte for byte to the hosted Supabase project, so the
+# repository copy must stay exactly what is sent.
+supabase/templates/

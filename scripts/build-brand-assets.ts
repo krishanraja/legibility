@@ -1,5 +1,5 @@
 /**
- * Generate the favicon set and the social cards from one definition of the mark.
+ * Generate the favicon set, the social cards and the email lockup from one definition of the mark.
  *
  * The previous public/favicon.png and apple-touch-icon.png were the same 2000x2000 file
  * (52 KB served for a 16 pixel tab icon), and public/og.png still carried the dead "plinth"
@@ -151,6 +151,23 @@ p{margin-top:20px;max-width:900px;font-size:23px;line-height:1.4;color:${MUTED_F
 </body></html>`;
 }
 
+/**
+ * The email lockup: the site header's icon (56px) and wordmark (40px), 12px apart, drawn at 2x
+ * on the page ground. The auth emails in supabase/templates show it at 206x56, on the same
+ * ground, so the image edge never shows.
+ */
+function emailLockupHtml(): string {
+  const asset = (file: string) => `file://${resolve(ROOT, "src/assets", file)}`;
+  return `<!doctype html><html><head><style>
+html,body{margin:0;width:413px;height:112px;overflow:hidden;background:${CREAM}}
+body{display:flex;align-items:center;gap:24px}
+img{display:block}
+</style></head><body>
+<img src="${asset("legibility-icon-and-favicon.png")}" height="112" alt="">
+<img src="${asset("legibility-wordmark-new.png.png")}" height="80" alt="">
+</body></html>`;
+}
+
 function main() {
   const chrome = process.env.CHROME;
   if (!chrome || !existsSync(chrome)) {
@@ -219,7 +236,13 @@ function main() {
       shoot(cardHtml(c, fontCss), 1200, 630, join(work, c.file), false),
     );
   }
-  console.log("Wrote favicon set, manifest icons and social cards to public/.");
+
+  // Email lockup, 413x112.
+  writeFileSync(
+    resolve(PUBLIC, "email/legibility-logo.png"),
+    shoot(emailLockupHtml(), 413, 112, join(work, "email-logo.png"), false),
+  );
+  console.log("Wrote favicon set, manifest icons, social cards and email lockup to public/.");
 }
 
 if (import.meta.main) main();

@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "Legibility" },
       // Browser chrome colour, matched to the page background (cream). One tag only: TanStack
       // keeps a single meta per name, so a light/dark pair would silently lose one half.
-      { name: "theme-color", content: "#F4EFE6" },
+      { name: "theme-color", content: "#F4EDE5" },
     ],
     // JSON-LD structured data: what Google rich results AND AI answer engines consume.
     // Fitting for a product-data company to ship clean structured data about itself.

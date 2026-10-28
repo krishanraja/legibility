@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -7,7 +7,8 @@ import { describe, expect, it } from "vitest";
  *
  * The tokens in src/styles.css are the source. Hex copies live where CSS variables cannot
  * reach: the favicon, the web manifest, the theme-color meta, the generated icons and social
- * cards, and the comments beside the tokens. Those copies had drifted to approximations
+ * cards, the auth email templates, and the comments beside the tokens. Those copies had drifted
+ * to approximations
  * (#0E1B2C for a navy that renders #071725), so a colour taken from any of them was wrong.
  * A token change now fails here until every copy follows it.
  */
@@ -102,5 +103,20 @@ describe("brand colour copies", () => {
       read("src/routes/__root.tsx"),
     );
     expect(meta?.[1].toUpperCase()).toBe(render("background"));
+  });
+
+  it("colours the auth emails with token renders only", () => {
+    const allowed = new Set(
+      ["background", "foreground", "muted-foreground", "signal", "hairline"].map(render),
+    );
+    const dir = resolve(ROOT, "supabase/templates");
+    const templates = readdirSync(dir).filter((f) => f.endsWith(".html"));
+    expect(templates.length).toBe(4);
+    for (const file of templates) {
+      const hexes = [...read(`supabase/templates/${file}`).matchAll(/#[0-9A-Fa-f]{6}/g)];
+      expect(hexes.length, file).toBeGreaterThan(0);
+      for (const [hex] of hexes)
+        expect(allowed.has(hex.toUpperCase()), `${file} ${hex}`).toBe(true);
+    }
   });
 });

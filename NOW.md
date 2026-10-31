@@ -1,8 +1,8 @@
 ---
 repo: krishanraja/legibility
 product: Legibility
-as_of: 2026-10-30
-head: 30c27f3
+as_of: 2026-10-31
+head: 8a41e0b
 lifecycle: beta
 production_url: https://legibility.io
 state_doc: docs/OUTSTANDING.md
@@ -34,7 +34,7 @@ What it proves for Mindmake: Krish sees a shift (assistants reading pages instea
 
 Objection it answers: "AI product data is guesswork." Legibility returns `product: null` at low confidence rather than a guess, and a null read costs the caller nothing (`README.md`, "Honest scope" and "Billing").
 
-## Where it is right now (as of 2026-10-30)
+## Where it is right now (as of 2026-10-31)
 
 <!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": 0, "current_as_of": "2026-10-27", "current_source": "northstar_weekly_keys() on the production database, internal accounts excluded (migration 20261027120000 applied 2026-10-27)", "urgency": 4, "urgency_reason": "0 against 1 this week, under 40%"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: 0 against 1 this week (measured 27 Oct with `northstar_weekly_keys`, internal accounts excluded), on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
 

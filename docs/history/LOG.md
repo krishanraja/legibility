@@ -4,6 +4,10 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-03
+
+- stamped at `84913e8`: the only commit since `8a41e0b` was a canon block sync with no documentation consequence; NOW.md head and as_of re-stamped, nothing else changed.
+
 ## 2026-10-30
 
 - reconciled at `30c27f3`: the seven commits since `44cf0b2` were brand colours, the auth email templates and canon or harness syncs; NOW.md already carried the brand and auth-email work, so it was shortened to meet the audit (one bullet over the line limit, eleven "right now" bullets, no "Next" line) and re-stamped.

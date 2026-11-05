@@ -4,6 +4,10 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-05
+
+- stamped at `84913e8`: no commits since the 2026-11-03 stamp except steward re-stamps; NOW.md as_of re-stamped. The audit's North Star check age finding (check dated 2026-10-28) is left for a session to re-date, since the steward never writes `holds`.
+
 ## 2026-11-03
 
 - stamped at `84913e8`: the only commit since `8a41e0b` was a canon block sync with no documentation consequence; NOW.md head and as_of re-stamped, nothing else changed.

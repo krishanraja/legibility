@@ -1,7 +1,7 @@
 ---
 repo: krishanraja/legibility
 product: Legibility
-as_of: 2026-11-05
+as_of: 2026-11-06
 head: 84913e8
 lifecycle: beta
 production_url: https://legibility.io
@@ -34,7 +34,7 @@ What it proves for Mindmake: Krish sees a shift (assistants reading pages instea
 
 Objection it answers: "AI product data is guesswork." Legibility returns `product: null` at low confidence rather than a guess, and a null read costs the caller nothing (`README.md`, "Honest scope" and "Billing").
 
-## Where it is right now (as of 2026-11-05)
+## Where it is right now (as of 2026-11-06)
 
 <!-- north-star-state {"week_of": "2026-10-26", "week_target": 1, "current": 0, "current_as_of": "2026-10-27", "current_source": "northstar_weekly_keys() on the production database, internal accounts excluded (migration 20261027120000 applied 2026-10-27)", "urgency": 4, "urgency_reason": "0 against 1 this week, under 40%"} --> **North Star number: U4, far behind.** Production agents making trusted reads this week: 0 against 1 this week (measured 27 Oct with `northstar_weekly_keys`, internal accounts excluded), on the way to 1,000 by 29 March 2027. A bold swing every day; work that does not move the number waits.
 
@@ -76,7 +76,7 @@ Broken, blocked or waiting:
 ## What is next and what is waiting on Krish
 
 - Next: create the Turnstile keys so the Founding 200 page opens (`docs-internal/ops.md`, "Open the Founding 200 page"); it is the path to the first external key this week.
-- Create the MCP Registry publishing key, publish `server.json`, and submit the directory listings by 5 November (`docs-internal/ops.md`, "Publish to the MCP Registry").
+- Create the MCP Registry publishing key, publish `server.json`, and submit the directory listings (the 5 November date has passed; whether it was met is unverified) (`docs-internal/ops.md`, "Publish to the MCP Registry").
 - Give the growth export a dedicated token, so rotating the engine's Control Center bearer cannot break it (`docs-internal/ops.md`, "Growth export token").
 - Mark `generate_lead`, `sign_up` and `test_run` as key events in Google Analytics admin.
 - Confirm or change A8's defaults (5,000 reads, the clock from the grant, Free from day 30, automatic Founding 200 trials off).

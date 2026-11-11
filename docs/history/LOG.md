@@ -4,6 +4,10 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-11
+
+- stamped at `84913e8`: no product commits since; NOW.md as_of re-stamped. The North Star check (2026-10-28) is 14 days old; left for a session to re-date, since the steward never writes `holds`.
+
 ## 2026-11-07
 
 - stamped at `84913e8`: no product commits since; NOW.md as_of re-stamped. The North Star check (2026-10-28) is still 10 days old; only a session that re-reads the North Star can re-date it, so it is left as written.

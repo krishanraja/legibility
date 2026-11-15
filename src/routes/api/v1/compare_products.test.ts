@@ -190,6 +190,42 @@ describe("compare_products: price_delta arithmetic", () => {
     stubPerUrl({ [A]: env(A, 98.1), [B]: env(B, 120.3) });
     expect((await (await post({ urls: [A, B] }, AUTH)).json()).price_delta.spread).toBe(22.2);
   });
+
+  it("states no reason when a delta was computed", async () => {
+    stubPerUrl({ [A]: env(A, 100), [B]: env(B, 120) });
+    expect((await (await post({ urls: [A, B] }, AUTH)).json()).price_delta_reason).toBeNull();
+  });
+
+  it("is null with a reason when nothing is priced", async () => {
+    stubPerUrl({ [A]: env(A, null), [B]: env(B, null) });
+    expect((await (await post({ urls: [A, B] }, AUTH)).json()).price_delta_reason).toBe(
+      "no_priced_item",
+    );
+  });
+
+  it("refuses a spread across currencies and keeps each item's own price", async () => {
+    // The same product on a US and a UK storefront. The old code returned a spread of 44 "USD",
+    // treating GBP 66 as dollars.
+    const gbp = env(B, 66);
+    (gbp.product as { price: { currency: string } }).price.currency = "GBP";
+    stubPerUrl({ [A]: env(A, 110), [B]: gbp });
+    const body = await (await post({ urls: [A, B] }, AUTH)).json();
+    expect(body.price_delta).toBeNull();
+    expect(body.price_delta_reason).toBe("mixed_currencies");
+    expect(body.items.map((i: { price: { currency: string } }) => i.price.currency)).toEqual([
+      "USD",
+      "GBP",
+    ]);
+  });
+
+  it("refuses a spread when one priced item states no currency", async () => {
+    const unknown = env(B, 66);
+    (unknown.product as { price: { currency: string | null } }).price.currency = null;
+    stubPerUrl({ [A]: env(A, 110), [B]: unknown });
+    const body = await (await post({ urls: [A, B] }, AUTH)).json();
+    expect(body.price_delta).toBeNull();
+    expect(body.price_delta_reason).toBe("mixed_currencies");
+  });
 });
 
 describe("compare_products: cost and metering", () => {

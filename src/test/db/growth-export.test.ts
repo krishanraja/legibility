@@ -158,6 +158,12 @@ beforeAll(async () => {
   await db.query("SELECT public.record_key_creation($1, $2::jsonb)", [key, JSON.stringify(touch)]);
   await db.query("SELECT public.record_key_client($1, 'curl')", [key]);
   await db.query("SELECT * FROM public.record_email_verified($1)", [builder]);
+  // record_email_verified stamps the event with now(); pin it inside the fixed window, as the key
+  // is pinned above, or the test fails for every run after END (it did from 2026-11-03).
+  await db.query(
+    "UPDATE public.growth_events SET occurred_at = '2026-10-28T10:02:00Z' WHERE account_id = $1 AND type = 'email_verified'",
+    [builder],
+  );
   await read(builder, key, "2026-10-30T11:00:00.123456Z");
   await read(builder, key, "2026-11-01T09:00:00Z", "/api/mcp");
   await read(builder, key, "2026-10-30T12:00:00Z", "testbench");

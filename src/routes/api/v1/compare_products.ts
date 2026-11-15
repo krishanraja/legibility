@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { postOnly } from "@/lib/api/http";
+import { priceDelta } from "@/lib/api/price-delta";
 
 // v1 REST: compare_products. Extracts 2 to 5 product URLs (via the worker) and returns a
-// side-by-side matrix plus the price delta. Validates a lgk_ key, rate-limits, meters once.
+// side-by-side matrix plus the price delta (same-currency items only; see lib/api/price-delta).
+// Validates a lgk_ key, rate-limits, meters once.
 
 type Envelope = {
   input?: { url?: string };
@@ -118,17 +120,9 @@ export const Route = createFileRoute("/api/v1/compare_products")({
           confidence: e.confidence ?? 0,
           method: e.method ?? null,
         }));
-        const lows = items
-          .map((i) => i.price?.low)
-          .filter((n): n is number => typeof n === "number");
-        const price_delta = lows.length
-          ? {
-              min: Math.min(...lows),
-              max: Math.max(...lows),
-              spread: Number((Math.max(...lows) - Math.min(...lows)).toFixed(2)),
-              currency: items.find((i) => i.price)?.price?.currency ?? null,
-            }
-          : null;
+        // Null, with a reason, when nothing is priced or the prices are in more than one
+        // currency: a spread across currencies is not a number anyone can act on.
+        const { price_delta, price_delta_reason } = priceDelta(items);
         const cost = Number(
           results
             .reduce((s, e) => s + (typeof e.cost_usd === "number" ? e.cost_usd : 0), 0)
@@ -173,7 +167,11 @@ export const Route = createFileRoute("/api/v1/compare_products")({
           /* metering best-effort */
         }
 
-        return json({ input: { urls }, items, price_delta, cost_usd: cost, cached }, 200, rlh);
+        return json(
+          { input: { urls }, items, price_delta, price_delta_reason, cost_usd: cost, cached },
+          200,
+          rlh,
+        );
       },
     },
   },

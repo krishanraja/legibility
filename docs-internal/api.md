@@ -106,9 +106,17 @@ when Exa is out of credits the call returns a null envelope, not an error.)
   is never charged and never consumes quota (see Billing). The extractor never throws: an upstream
   failure returns a null envelope, not a 500.
 
-`compare_products` returns `{ input, items[], price_delta, cost_usd, cached }`. Each `items[]` entry
-is `{ url, title, brand, price, availability, confidence, method }`; `price_delta` is
-`{ min, max, spread, currency }` computed over the low ends, or `null` when no priced item resolved.
+`compare_products` returns `{ input, items[], price_delta, price_delta_reason, cost_usd, cached }`.
+Each `items[]` entry is `{ url, title, brand, price, availability, confidence, method }`;
+`price_delta` is `{ min, max, spread, currency }` computed over the low ends when every priced item
+carries the same currency (matched ignoring case and surrounding spaces; `currency` is copied
+unchanged from the first priced item, and is `null` when no priced item states one). It is `null`
+when no priced item resolved (`price_delta_reason: "no_priced_item"`), or when the priced items are
+in more than one currency or only some of them state one (`"mixed_currencies"`); each item keeps its
+own price and currency. Before November 2026 a mixed-currency comparison returned a delta stamped
+with the first item's currency; a client that read `price_delta` without a null check on that path
+must add one. Nothing is converted: an exchange rate would be a second source with its own date.
+`price_delta_reason` is `null` whenever a delta is returned.
 `brief_product` returns `{ input, product, confidence, method, brief, cost_usd, cached }` where
 `brief` is a short string composed deterministically from the typed fields (no LLM, no invention).
 

@@ -42,7 +42,7 @@ Lifecycle: beta. `README.md` says "Status: live" and "Private beta": the app ser
 
 Live and recorded as verified:
 
-- Evaluated Fincept Terminal (AGPL-3.0-or-later, C++/Qt desktop with Python connectors) for Legibility and integrated none of it: it is market and macro data, outside product data for agents, and copying its code into this network service would put the app under AGPL. The evaluation found one real defect in compare_products, now fixed on a local branch: price_delta no longer computes a spread across currencies (USD 110 against GBP 66 used to return a spread of 44 "USD"); it returns null with price_delta_reason "mixed_currencies", and same-currency output is unchanged (src/lib/api/price-delta.ts, docs-internal/api.md). (2026-11-15)
+- Evaluated Fincept Terminal (AGPL-3.0-or-later, C++/Qt desktop with Python connectors) for Legibility and integrated none of it: it is market and macro data, outside product data for agents, and copying its code into this network service would put the app under AGPL. The evaluation found one real defect in compare_products, fixed and live: price_delta no longer computes a spread across currencies (USD 110 against GBP 66 used to return a spread of 44 "USD"); it returns null with price_delta_reason "mixed_currencies", and same-currency output is unchanged (`f47e333`, PR 67; production deploy READY by Vercel API readback, 15 Nov). Cross-currency conversion is deliberately not built; if Krish wants it, it reads ECB reference rates directly, never Fincept code. (2026-11-15)
 - All four tools, key auth, trusted-read metering, per-plan quota, the dashboard, Stripe checkout wiring and the MCP server at `/api/mcp` (`README.md`).
 - The free domain check, the cohort index and the `/why` pages; the index reads one row per domain, newest reading each, since `10bf892`. The weekly sweep runs on a GitHub runner on Mondays (`.github/workflows/sweep.yml`); its last recorded run, on 19 Oct, succeeded (GitHub Actions readback, 22 Oct).
 - The answer hub at `/answers` (`docs/ANSWER-HUB.md`), and the public errors and rate-limits pages, which render from `src/content/api-reference.ts` and are checked by tests against the code (`346c1c3`).
@@ -76,7 +76,7 @@ Broken, blocked or waiting:
 
 ## What is next and what is waiting on Krish
 
-- Next (2026-11-15): Krish decides whether to push the branch and open the pull request; cross-currency conversion stays unbuilt until he wants it, and would then read ECB reference rates directly, never Fincept code.
+- Next: create the Turnstile keys so the Founding 200 page opens (`docs-internal/ops.md`, "Open the Founding 200 page"); it is the path to the first external key this week.
 - Create the MCP Registry publishing key, publish `server.json`, and submit the directory listings (the 5 November date has passed; whether it was met is unverified) (`docs-internal/ops.md`, "Publish to the MCP Registry").
 - Give the growth export a dedicated token, so rotating the engine's Control Center bearer cannot break it (`docs-internal/ops.md`, "Growth export token").
 - Mark `generate_lead`, `sign_up` and `test_run` as key events in Google Analytics admin.

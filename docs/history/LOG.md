@@ -4,6 +4,10 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-16
+
+- stamped at `09df3a3`: the five commits since `84913e8` were the compare_products mixed-currency fix (`f47e333`), a test window pin, a canon sync and a closeout fold; NOW.md already carries the fix and the Turnstile next step, so only head and as_of were re-stamped. The audit passed with no findings.
+
 ## 2026-11-11
 
 - stamped at `84913e8`: no product commits since; NOW.md as_of re-stamped. The North Star check (2026-10-28) is 14 days old; left for a session to re-date, since the steward never writes `holds`.

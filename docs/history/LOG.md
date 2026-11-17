@@ -4,6 +4,10 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-17
+
+- reconciled at `91484a5`: six commits since `84913e8` (the compare_products currency fix, a test window fix, two canon syncs, the closeout fold) were already closed out in NOW.md. Fixed the audit finding `where_too_many`: the Fincept evaluation moved from "Where it is right now" to "What changed recently" (it is history, not state). NOW.md head and as_of re-stamped. The North Star check (2026-11-15) is carried forward unchanged.
+
 ## 2026-11-11
 
 - stamped at `84913e8`: no product commits since; NOW.md as_of re-stamped. The North Star check (2026-10-28) is 14 days old; left for a session to re-date, since the steward never writes `holds`.

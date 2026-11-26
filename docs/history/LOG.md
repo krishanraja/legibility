@@ -4,6 +4,13 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-26
+
+- reconciled at `cf345c2`: the five commits since `91484a5` were three canon syncs and one docs note on the new page-reading and web-search keys (`5cf64af`); no code moved. The closeout note `now-notes/2026-11-20-firecrawl-parallel-keys.md` was malformed for the fold (free-form headings), so its substance was placed in NOW.md by hand and the note was left in place for a person to fix or remove. The steward cannot delete it. NOW.md head and as_of re-stamped. The North Star check (2026-11-20, written by that session) is carried forward unchanged.
+- rolled from NOW.md: 2026-10-23 the North Star gained a number, a weekly ladder and an urgency rating (ruling in `docs/NORTH_STAR.md`; contract: ai-harness `contract/north-star-metric.md`).
+- rolled from NOW.md: **2026-10-19: Mindmaker LLC and Mindmaker Ltd named in the footer, terms and privacy** (`a7709ac`; ruling in the commit).
+- rolled from NOW.md: **2026-10-18: the North Star was set** (`abd91f7`, `f3c6b77`): by March 2027, more revenue from agents paying per call in USDC on mainnet than from human sign-ups, with a hundred production agents depending on it every week.
+
 ## 2026-11-17
 
 - reconciled at `91484a5`: six commits since `84913e8` (the compare_products currency fix, a test window fix, two canon syncs, the closeout fold) were already closed out in NOW.md. Fixed the audit finding `where_too_many`: the Fincept evaluation moved from "Where it is right now" to "What changed recently" (it is history, not state). NOW.md head and as_of re-stamped. The North Star check (2026-11-15) is carried forward unchanged.

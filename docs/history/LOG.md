@@ -4,6 +4,11 @@ Newest first. Entries are written by the docs steward (see the steward link in
 NOW.md) and by humans doing the same job by hand. Nothing in this file
 describes current behaviour; NOW.md and the state doc do.
 
+## 2026-11-27
+
+- reconciled at `ec09b87`: the six commits since `91484a5` were canon syncs and one docs note on the new Firecrawl and Parallel keys. The 2026-11-20 closeout note was malformed for the fold (free prose, no Changed line), so its content was folded into NOW.md by hand and the note removed. Rolled the 2026-10-23 bullet below; head and as_of re-stamped. The North Star check is the note's own 2026-11-20 line, carried unchanged.
+- rolled from NOW.md: 2026-10-23 **The North Star now has a number, a weekly ladder and an urgency rating, so every session knows how far behind it is and how hard to push.** Ruling (Krish, 2026-10-23): every repository chases one aggressive number on a weekly ladder, and urgency U1 to U5 sets its intensity. The number and ladder are in `docs/NORTH_STAR.md`; where it stands is the first line under "Where it is right now". Contract: ai-harness `contract/north-star-metric.md`.
+
 ## 2026-11-17
 
 - reconciled at `91484a5`: six commits since `84913e8` (the compare_products currency fix, a test window fix, two canon syncs, the closeout fold) were already closed out in NOW.md. Fixed the audit finding `where_too_many`: the Fincept evaluation moved from "Where it is right now" to "What changed recently" (it is history, not state). NOW.md head and as_of re-stamped. The North Star check (2026-11-15) is carried forward unchanged.
